@@ -1,0 +1,34 @@
+#root, .App {
+	height: 100%;	
+}
+.grid-form {
+	height: 100%;
+	background-color: #006838;
+}
+.format-form {
+	width: 400px;
+	padding: 30px 30px 30px 30px;
+	background-color: #FFFFFF;
+	box-shadow: 2px 2px 2px 2px #000000;
+}
+.format-form label {
+	float: left;
+}
+.format-form button {
+	width: 100%;
+}
+.login-form {
+	height: 40vh;
+	margin-top: 30vh;
+}
+.regist-form {
+	margin-top: 20px;
+	margin-bottom: 20px
+}
+.field a {
+	display: block;
+	text-decoration: underline;
+}
+.field span {
+	display: block;
+}
