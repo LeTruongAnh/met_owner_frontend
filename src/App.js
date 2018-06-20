@@ -17,7 +17,10 @@ class App extends Component {
                     <Route path="/login" component={LoginForm} />
                 </Router>
                 <Router className="route-regist">
-                    <Route path="/regist" component={RegistForm} />
+                    <Route path="/register" component={RegistForm} />
+                </Router>
+                <Router>
+                    <Route path="/" component={Dashboard} />
                 </Router>
             </div>
         );
