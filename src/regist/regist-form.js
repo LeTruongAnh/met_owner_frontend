@@ -1,8 +1,12 @@
 import React, { Component } from 'react'
-import { Button, Checkbox, Form, Grid } from 'semantic-ui-react'
+import { Button, Checkbox, Form, Grid, Icon, Image } from 'semantic-ui-react'
 import moment from 'moment'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
+import axios from 'axios'
+import config from '../config'
+import { Redirect } from 'react-router-dom'
+import logo from '../asset/favicon.png'
 
 class RegistForm extends Component {
 	constructor(props){
@@ -21,7 +25,9 @@ class RegistForm extends Component {
 			errPassword:"",
 			errPassRep:"",
 			errEmail:"",
-			errCheckTerm:""
+			errCheckTerm:"",
+			userInfo: localStorage.getItem('MET_userInfo'),
+			loading: false
 		}
 	}
 	handleChange = (e, { name, value }) => this.setState({ [name]: value })
@@ -77,6 +83,12 @@ class RegistForm extends Component {
 			});
 			isOK = false;
 		}
+		else if (this.state.password.length< 6) {
+			this.setState({
+				errPassword: "*Mật khẩu phải từ 6 ký tự"
+			});
+			isOK = false;
+		}
 		else 
 			this.setState({
 				errPassword: ""
@@ -122,60 +134,101 @@ class RegistForm extends Component {
 		else 
 			this.setState({errCheckTerm:""})
 		if (isOK) {
-			alert("Bạn đã đăng ký thành công!");
-			this.setState({
+			this.setState({loading:true})
+			axios.post(`${config.apiBaseURL}/api/user/register`, {
+				"phone":this.state.phone,
+				"firstName":this.state.firstName,
+				"lastName":this.state.lastName,
+				"password":this.state.password,
+				"role":2
+			})
+			.then((response) => {
+				this.setState({
 				firstName:"",
 				lastName:"",
 				phone:"",
 				password:"",
 				passwordRep:"",
 				email:"",
-				dob:null
+				dob:null,
+				loading: false
 			})
-			document.getElementById('check-regist').checked = false;
+			})
+			.catch((error)=> {
+				this.setState({
+					errPhone: "*" + error.response.data.message,
+					loading: false
+				})
+			})			
 		}
 	}
 	render() {
-		return (
-			<Grid className="grid-form" centered={true}>
-				<Form onSubmit={this.handleSubmit} className="format-form regist-form">
-					<h1>ĐĂNG KÝ MET</h1>
-					<Form.Field>
-						<span>{this.state.errFirstName}</span>
-						<Form.Input name="firstName" value={this.state.firstName} onChange={this.handleChange} placeholder='Tên' />						
-					</Form.Field>
-					<Form.Field>
-						<span>{this.state.errLastName}</span>
-						<Form.Input name="lastName" value={this.state.lastName} onChange={this.handleChange} placeholder='Họ' />						
-					</Form.Field>
-					<Form.Field>
-						<span>{this.state.errPhone}</span>
-						<Form.Input name="phone" value={this.state.phone} onChange={this.handleChange} placeholder='Số điện thoại' />						
-					</Form.Field>
-					<Form.Field>
-						<span>{this.state.errPassword}</span>
-						<Form.Input type="password" name="password" value={this.state.password} onChange={this.handleChange} placeholder='Mật khẩu' />						
-					</Form.Field>
-					<Form.Field>
-						<span>{this.state.errPassRep}</span>
-						<Form.Input type="password" name="passwordRep" value={this.state.passwordRep} onChange={this.handleChange} placeholder='Nhập lại mật khẩu' />						
-					</Form.Field>
-					<Form.Field>
-						<span>{this.state.errEmail}</span>
-						<Form.Input name="email" value={this.state.email} onChange={this.handleChange} placeholder='Email' />
-					</Form.Field>
-					<Form.Field>
-						<DatePicker placeholderText="Chọn ngày sinh" selected={this.state.dob} onChange={this.handleChangeDate} />
-					</Form.Field>
-					<Form.Field>
-						<span>{this.state.errCheckTerm}</span>
-						<Checkbox id="check-regist" label='Tôi đồng ý với các điều khoản và điều kiện' />						
-						<a href="https://www.google.com/?gws_rd=ssl" target="_blank">Điều khoản và điều kiện</a>
-					</Form.Field>
-					<Button color="green" type='submit'>Đăng ký</Button>
-				</Form>
-			</Grid>
-		);
+		if (this.state.userInfo) {
+			return <Redirect to="/"/>
+		}
+		else {
+			return (
+				<Grid className="grid-form" centered={true}>
+					<Form onSubmit={this.handleSubmit} className="format-form regist-form">
+						<Form.Field>
+							<Image src={logo} avatar />
+							<span className="title-span">ĐĂNG KÝ MET</span>						
+						</Form.Field>
+						<Form.Field>
+							<span className="err-span">{this.state.errFirstName}</span>
+							<Form.Input iconPosition="left" name="firstName" value={this.state.firstName} onChange={this.handleChange} placeholder='Tên'>
+								<Icon name='user' />
+								<input />
+							</Form.Input>						
+						</Form.Field>
+						<Form.Field>
+							<span className="err-span">{this.state.errLastName}</span>
+							<Form.Input iconPosition="left" name="lastName" value={this.state.lastName} onChange={this.handleChange} placeholder='Họ'>
+								<Icon name='users' />
+								<input />
+							</Form.Input>
+						</Form.Field>
+						<Form.Field>
+							<span className="err-span">{this.state.errPhone}</span>
+							<Form.Input iconPosition="left" name="phone" value={this.state.phone} onChange={this.handleChange} placeholder='Số điện thoại'>
+								<Icon name='phone' />
+								<input />
+							</Form.Input>
+						</Form.Field>
+						<Form.Field>
+							<span className="err-span">{this.state.errPassword}</span>
+							<Form.Input iconPosition="left" type="password" name="password" value={this.state.password} onChange={this.handleChange} placeholder='Mật khẩu'>
+								<Icon name='key' />
+								<input />
+							</Form.Input>
+						</Form.Field>
+						<Form.Field>
+							<span className="err-span">{this.state.errPassRep}</span>
+							<Form.Input iconPosition="left" type="password" name="passwordRep" value={this.state.passwordRep} onChange={this.handleChange} placeholder='Nhập lại mật khẩu'>
+								<Icon name='key' />
+								<input />
+							</Form.Input>
+						</Form.Field>
+						<Form.Field>
+							<span className="err-span">{this.state.errEmail}</span>
+							<Form.Input iconPosition="left" iconPosition="left" name="email" value={this.state.email} onChange={this.handleChange} placeholder='Email'>
+								<Icon name='at' />
+								<input />
+							</Form.Input>
+						</Form.Field>
+						<Form.Field>
+							<DatePicker locale="vi-VN" dateFormat="DD/MM/YYYY" placeholderText="Chọn ngày sinh" selected={this.state.dob} onChange={this.handleChangeDate} />
+						</Form.Field>
+						<Form.Field>
+							<span className="err-span">{this.state.errCheckTerm}</span>
+							<Checkbox id="check-regist" label='Tôi đồng ý với các điều khoản và điều kiện' />						
+							<a href="https://www.google.com/?gws_rd=ssl" target="_blank">Điều khoản và điều kiện</a>
+						</Form.Field>
+						<Button className="form-but" loading={this.state.loading} type='submit'>Đăng ký</Button>
+					</Form>
+				</Grid>
+			);
+		}
 	}
 }
 

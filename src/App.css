@@ -1,13 +1,11 @@
 body * {
 	font-family: roboto;
 }
-#root, .App {
-	height: 100vh;
-	width: 100vw;
+#root, .App, .App>div {
+	height: 100%;
 }
 .grid-form {
 	height: 100%;
-	max-width: 100%;
 	background-color: #006838;
 	display: flex;
 	align-items: center !important;
@@ -15,38 +13,66 @@ body * {
 }
 .format-form {
 	width: 400px;
-	padding-top: 20px;
+	padding: 20px 14px;
 	margin: 10px;
 	background-color: #FFFFFF;
+	border-radius: 3px;
+	border-style: inset;
+	border-color: rgba(0, 104, 56, 0.7)
 }
 .format-form label {
 	float: left;
 }
-.format-form button {
+.form-but {
 	width: 100%;
-}
-.login-form {
-	height: 300px;
+	color: #FFFFFF !important;
+	background-color: #006838 !important;	
 }
 .regist-form {
-	margin-top: 20px;
-	margin-bottom: 20px;
-	overflow: scroll;
+	margin: 20px 10px;
+	overflow-y: auto;
+	max-height: 100%;
 }
 .field a {
 	display: block;
 	text-decoration: underline;
 }
-.field span {
+.field .err-span {
 	position: relative;
 	float: left;
 	font-size: 10px;
 	font-weight: bold;
-	color: #ed1c24
+	color: #ed1c24;
 }
 .react-datepicker-wrapper, .react-datepicker__input-container {
 	width: 100%;
 }
+.App .menu-grid .menu-column {
+	padding: 20px 0 0 0 !important;
+	background-color: #006838;
+	opacity: 0.8;
+}
+.App .menu-grid .menu-menu{
+	width: 100%;
+	margin: 0;
+}
+.App .menu-grid .item {
+	color: rgba(255, 255, 255, 0.8);
+	padding-left: 30px !important;
+}
+.App .menu-grid .item:hover {
+	color: rgb(255, 255, 255) !important;
+}
+.App .menu-grid .active {
+	color: rgb(255, 255, 255) !important;
+}
+.title-span {
+	position: relative;
+    top: 5px;
+    font-weight: bold;
+    font-size: 24px;
+}
+
 @media screen and (max-width: 767px) {
 	.format-form {
 		width: 100%;

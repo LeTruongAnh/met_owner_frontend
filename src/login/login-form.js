@@ -1,38 +1,39 @@
 import React, { Component } from 'react'
-import { Button, Form, Grid } from 'semantic-ui-react'
+import { Button, Form, Grid, Image } from 'semantic-ui-react'
 import axios from 'axios'
 import config from '../config'
+import { Redirect } from 'react-router-dom'
+import logo from '../asset/favicon.png'
 
 class LoginForm extends Component {
 	constructor(props) {
-		super(props);
+		super(props)
 		this.state = {
 			phone:"",
 			password:"",
 			errPhone:"",
 			errPassword:"",
-			errLogin:""
+			errLogin:"",
+			userInfo: localStorage.getItem('MET_userInfo'),
+			loading: false
 		}
 	}
-	// componentWillMount() {
-	// 	if (MET_userInfo) 
-	// }
 	handleSubmit = () => {
-		let isOK = true;
+		let isOK = true
 		if (this.state.phone === "") {
 			this.setState({
 				errPhone: "*Vui lòng nhập SĐT"
-			});
-			isOK = false;
+			})
+			isOK = false
 		}
 		else {
-			var reg = /[0-9]{10,11}/;
-			var regBool = this.state.phone.match(reg);
+			var reg = /[0-9]{10,11}/
+			var regBool = this.state.phone.match(reg)
 			if (!regBool) {
 				this.setState({
 					errPhone: "*SĐT không đúng"
 				})
-				isOK = false;
+				isOK = false
 			}
 			else
 				this.setState({
@@ -42,57 +43,70 @@ class LoginForm extends Component {
 		if (this.state.password === "") {
 			this.setState({
 				errPassword: "*Vui lòng nhập mật khẩu"
-			});
-			isOK = false;
+			})
+			isOK = false
 		}
 		else 
 			this.setState({
 				errPassword: ""
 			})
 		if(isOK) {
+			this.setState({loading:true})
 			axios.post(`${config.apiBaseURL}/api/user/login`, {
 				"phone": this.state.phone,
 				"password": this.state.password
 			})
-			.then(function (response) {
-				console.log(response.data);
+			.then((response) => {
 				if (typeof(Storage) !== "undefined") {
-					localStorage.setItem("MET_userInfo", JSON.stringify(response.data));
-					console.log(JSON.parse(localStorage.getItem("MET_userInfo")).token);
+					localStorage.setItem("MET_userInfo", JSON.stringify(response.data))
+					window.location.href = '/'
+					this.setState({loading:false})
 				}
+				else
+					alert("Vui lòng sử dụng trình duyệt khác để truy cập!")
 			})
-			.catch((error)=> {
-				console.log(error.response);
-				var errorMess = '*' + error.response.data.message;
-				this.setState({errLogin: errorMess})
-			});
+			.catch((error) => {
+				var errorMess = '*' + error.response.data.message
+				this.setState({
+					errLogin: errorMess,
+					loading:false
+				})
+			})
 		}
 	}
 	handleChange = (e, { name, value }) => this.setState({ [name]: value })
 	render() {
-		return (
-			<Grid className="grid-form" centered={true}>
-				<Form onSubmit={this.handleSubmit} className="format-form login-form ">
-					<h1>MET CHỦ SÂN</h1>
-				    <Form.Field>
-				    	<span>{this.state.errLogin}</span>
-				    	<span>{this.state.errPhone}</span>
-				      	<Form.Input name="phone" onChange={this.handleChange} placeholder='Số điện thoại' />
-				    </Form.Field>
-				    <Form.Field>
-				    	<span>{this.state.errPassword}</span>
-				      	<Form.Input name="password" onChange={this.handleChange} type="password" placeholder='Mật khẩu' />
-				    </Form.Field>
-				    <Form.Field>
-				    	<Button color="green" type='submit'>Đăng nhập</Button>
-				    </Form.Field>
-				    <Form.Field>
-				    	<a href="./register" target="_blank">Đăng ký tài khoản</a>
-				    </Form.Field>
-			  	</Form>
-		  	</Grid>
-	  	);
+		if (this.state.userInfo) {
+			return <Redirect to="/"/>
+		}
+		else {
+			return (
+				<Grid className="grid-form" centered={true}>
+					<Form onSubmit={this.handleSubmit} className="format-form login-form ">
+						<Form.Field>
+							<Image src={logo} avatar />
+							<span className="title-span">MET CHỦ SÂN</span>						
+						</Form.Field>
+					    <Form.Field>
+					    	<span className="err-span">{this.state.errLogin}</span>
+					    	<span className="err-span">{this.state.errPhone}</span>
+					      	<Form.Input name="phone" onChange={this.handleChange} placeholder='Số điện thoại' />
+					    </Form.Field>
+					    <Form.Field>
+					    	<span className="err-span">{this.state.errPassword}</span>
+					      	<Form.Input name="password" onChange={this.handleChange} type="password" placeholder='Mật khẩu' />
+					    </Form.Field>
+					    <Form.Field>
+					    	<Button loading={this.state.loading} className="form-but" color="green" type='submit'>Đăng nhập</Button>
+					    </Form.Field>
+					    <Form.Field>
+					    	<a href="./register" target="_blank">Đăng ký tài khoản</a>
+					    </Form.Field>
+				  	</Form>
+			  	</Grid>
+		  	)
+		}
 	}
 }
 
-export default LoginForm;
+export default LoginForm
