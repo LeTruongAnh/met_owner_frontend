@@ -26,6 +26,7 @@ class RegistForm extends Component {
 			errPassRep:"",
 			errEmail:"",
 			errCheckTerm:"",
+			errDob: "",
 			userInfo: localStorage.getItem('MET_userInfo'),
 			loading: false
 		}
@@ -133,6 +134,14 @@ class RegistForm extends Component {
 		}
 		else 
 			this.setState({errCheckTerm:""})
+		if (this.state.dob) {
+			if ((moment().year() - this.state.dob.year()) < 10) {
+				this.setState({errDob:"*Bạn phải từ 10 tuổi trở lên"})
+				isOK = false
+			}
+			else
+				this.setState({errDob:""})
+		}
 		if (isOK) {
 			this.setState({loading:true})
 			axios.post(`${config.apiBaseURL}/api/user/register`, {
@@ -217,7 +226,8 @@ class RegistForm extends Component {
 							</Form.Input>
 						</Form.Field>
 						<Form.Field>
-							<DatePicker locale="vi-VN" dateFormat="DD/MM/YYYY" placeholderText="Chọn ngày sinh" selected={this.state.dob} onChange={this.handleChangeDate} />
+							<span className="err-span">{this.state.errDob}</span>
+							<DatePicker fixedHeight peekNextMonth showMonthDropdown showYearDropdown dropdownMode="select" locale="vi-VN" dateFormat="DD/MM/YYYY" placeholderText="Chọn ngày sinh" selected={this.state.dob} onChange={this.handleChangeDate} />
 						</Form.Field>
 						<Form.Field>
 							<span className="err-span">{this.state.errCheckTerm}</span>
