@@ -36,6 +36,7 @@ body * {
 .field a {
 	display: block;
 	text-decoration: underline;
+	color: #f15a26;
 }
 .field .err-span {
 	position: relative;

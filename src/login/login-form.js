@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Form, Grid, Image } from 'semantic-ui-react'
+import { Button, Form, Grid, Image, Icon } from 'semantic-ui-react'
 import axios from 'axios'
 import config from '../config'
 import { Redirect } from 'react-router-dom'
@@ -90,11 +90,17 @@ class LoginForm extends Component {
 					    <Form.Field>
 					    	<span className="err-span">{this.state.errLogin}</span>
 					    	<span className="err-span">{this.state.errPhone}</span>
-					      	<Form.Input name="phone" onChange={this.handleChange} placeholder='Số điện thoại' />
+					      	<Form.Input iconPosition="left" name="phone" onChange={this.handleChange} placeholder='Số điện thoại'>
+								<Icon name='phone' />
+								<input />
+							</Form.Input>
 					    </Form.Field>
 					    <Form.Field>
 					    	<span className="err-span">{this.state.errPassword}</span>
-					      	<Form.Input name="password" onChange={this.handleChange} type="password" placeholder='Mật khẩu' />
+					      	<Form.Input iconPosition="left" type="password" name="password" onChange={this.handleChange} placeholder='Mật khẩu'>
+								<Icon name='key' />
+								<input />
+							</Form.Input>
 					    </Form.Field>
 					    <Form.Field>
 					    	<Button loading={this.state.loading} className="form-but" color="green" type='submit'>Đăng nhập</Button>
