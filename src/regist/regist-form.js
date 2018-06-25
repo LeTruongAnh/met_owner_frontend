@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Checkbox, Form, Grid, Icon, Image } from 'semantic-ui-react'
+import { Button, Checkbox, Form, Grid, Icon, Image, Segment, Header, Modal } from 'semantic-ui-react'
 import moment from 'moment'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
@@ -28,7 +28,8 @@ class RegistForm extends Component {
 			errCheckTerm:"",
 			errDob: "",
 			userInfo: localStorage.getItem('MET_userInfo'),
-			loading: false
+			loading: false,
+			modalOpen: false
 		}
 	}
 	handleChange = (e, { name, value }) => this.setState({ [name]: value })
@@ -153,15 +154,19 @@ class RegistForm extends Component {
 			})
 			.then((response) => {
 				this.setState({
-				firstName:"",
-				lastName:"",
-				phone:"",
-				password:"",
-				passwordRep:"",
-				email:"",
-				dob:null,
-				loading: false
-			})
+					firstName:"",
+					lastName:"",
+					phone:"",
+					password:"",
+					passwordRep:"",
+					email:"",
+					dob:null,
+					loading: false,
+					modalOpen: true
+				})
+				setTimeout(() => {
+					this.setState({ modalOpen: false })
+				}, 3000)
 			})
 			.catch((error)=> {
 				this.setState({
@@ -178,7 +183,7 @@ class RegistForm extends Component {
 		else {
 			return (
 				<Grid className="grid-form" centered={true}>
-					<Form onSubmit={this.handleSubmit} className="format-form regist-form">
+					<Form onSubmit={this.handleSubmit} className="format-form regist-form">					
 						<Form.Field>
 							<Image src={logo} avatar />
 							<span className="title-span">ĐĂNG KÝ MET</span>						
@@ -234,7 +239,10 @@ class RegistForm extends Component {
 							<Checkbox id="check-regist" label='Tôi đồng ý với các điều khoản và điều kiện' />						
 							<a href="https://www.google.com/?gws_rd=ssl" target="_blank">Điều khoản và điều kiện</a>
 						</Form.Field>
-						<Button className="form-but" loading={this.state.loading} type='submit'>Đăng ký</Button>
+						<Modal open={this.state.modalOpen} centered={false} size="large" closeIcon={true} trigger={<Button className="form-but" loading={this.state.loading} type='submit'>Đăng ký</Button>}>
+							<Header color="red">Chúc mừng bạn đã đăng ký thành công!</Header>
+						</Modal>
+						
 					</Form>
 				</Grid>
 			);

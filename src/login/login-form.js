@@ -103,7 +103,7 @@ class LoginForm extends Component {
 							</Form.Input>
 					    </Form.Field>
 					    <Form.Field>
-					    	<Button loading={this.state.loading} className="form-but" color="green" type='submit'>Đăng nhập</Button>
+					    	<Button loading={this.state.loading} className="form-but" type='submit'>Đăng nhập</Button>
 					    </Form.Field>
 					    <Form.Field>
 					    	<a href="./register" target="_blank">Đăng ký tài khoản</a>

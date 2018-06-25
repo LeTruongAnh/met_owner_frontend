@@ -1,26 +1,44 @@
 import React, { Component } from 'react'
-import { Button, Grid, Menu, Label } from 'semantic-ui-react'
-import { Redirect } from 'react-router-dom'
+import { Grid, Menu } from 'semantic-ui-react'
+import MenuApp from './menu-app.js'
+import ContentApp from './content-app.js'
 
 class Dashboard extends Component {
-	state = { activeItem: "stadium"}
-	handleItemClick = (e, { name }) => {
-		this.setState({ activeItem: name })
+	constructor(props){
+		super(props)
+		this.state = {
+			screenSize: window.screen.width
+		}
 	}
+	detectScreenChange = () => {
+		this.setState({
+			screenSize: window.screen.width
+		})
+	}
+	componentDidMount = () => window.addEventListener('resize',this.detectScreenChange)
 	render() {
-		const { activeItem } = this.state
-		return (
-			<Grid className="menu-grid">
-				<Grid.Row>
-					<Grid.Column className="menu-column" width={4}>
-						<Menu className="menu-menu" secondary vertical>
-							<Menu.Item name='stadium' active={activeItem === 'stadium'} onClick={this.handleItemClick}>Quản lý sân</Menu.Item>
-							<Menu.Item name='owner' active={activeItem === 'owner'} onClick={this.handleItemClick}>Quản lý chủ sân</Menu.Item>
-						</Menu>
-					</Grid.Column>
-				</Grid.Row>
-			</Grid>
-		);
+		return(
+			(this.state.screenSize >= 768)?(
+				<Grid centered={true} className="dashboard-grid">
+					<Grid.Row column={2}>
+						<Grid.Column className="menu-column" width={4}>
+							<MenuApp />
+						</Grid.Column>
+						<Grid.Column className="content-column" width={12}>
+							<ContentApp />
+						</Grid.Column>
+					</Grid.Row>
+				</Grid>
+			):(
+				<Grid centered={true} className="dashboard-grid">
+					<Grid.Row column={1}>
+						<Grid.Column className="content-column" width={16}>
+							<ContentApp />
+						</Grid.Column>
+					</Grid.Row>
+				</Grid>
+			)
+		)
 	}
 }
 

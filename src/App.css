@@ -14,7 +14,6 @@ body * {
 .format-form {
 	width: 400px;
 	padding: 20px 14px;
-	margin: 10px;
 	background-color: #FFFFFF;
 	border-radius: 3px;
 	border-style: inset;
@@ -29,16 +28,16 @@ body * {
 	background-color: #006838 !important;	
 }
 .regist-form {
-	margin: 20px 10px;
+	margin: 0 10px;
 	overflow-y: auto;
-	max-height: 100%;
+	max-height: calc(100% - 20px);
 }
 .field a {
 	display: block;
 	text-decoration: underline;
 	color: #f15a26;
 }
-.field .err-span {
+.err-span {
 	position: relative;
 	float: left;
 	font-size: 10px;
@@ -48,34 +47,85 @@ body * {
 .react-datepicker-wrapper, .react-datepicker__input-container {
 	width: 100%;
 }
-.App .menu-grid .menu-column {
-	padding: 20px 0 0 0 !important;
-	background-color: #006838;
-	opacity: 0.8;
-}
-.App .menu-grid .menu-menu{
-	width: 100%;
-	margin: 0;
-}
-.App .menu-grid .item {
-	color: rgba(255, 255, 255, 0.8);
-	padding-left: 30px !important;
-}
-.App .menu-grid .item:hover {
-	color: rgb(255, 255, 255) !important;
-}
-.App .menu-grid .active {
-	color: rgb(255, 255, 255) !important;
-}
 .title-span {
 	position: relative;
     top: 3px;
     font-weight: bold;
     font-size: 25px;
 }
+.popup-regist {
+    color: #f15a26;
+    position: absolute;
+    top: 100px;
+    z-index: 1;
+}
+.close-but {
+	padding: 2px !important;
+	float: right;
+}
+.close-but>i {
+	margin: 0 !important;
+}
+.dashboard-grid {
+	height: 100%;
+	margin: 0 !important;
+}
+.App .dashboard-grid .row {
+	padding: 0 !important;
+}
+.App .dashboard-grid .menu-column {
+	padding: 20px 0 0 0 !important;
+	background-color: #006838;
+	opacity: 1;
+}
+.App .dashboard-grid .menu-menu{
+	margin: 0;
+	width: auto;
+}
+.App .dashboard-grid .menu-column .item {
+	color: rgba(255, 255, 255, 0.8);
+	padding-left: 30px !important;
+}
+.App .dashboard-grid .menu-column .item:hover {
+	color: rgb(255, 255, 255) !important;
+}
+.App .dashboard-grid .menu-column .active {
+	color: rgb(255, 255, 255) !important;
+}
+.content-column {
+	padding-top: 14px;
+}
+.content-column .content-grid .content-content-tab {
+	border: none;
+	box-shadow: none;
+}
+.content-tab-form-bg {
+	background-color: #FFFFFF;
+}
+.content-tab-form {
+	border: none;
+}
+.content-tab-form .field .field, .content-tab-form .field select {
+	width: 70% !important;
+}
+.content-tab-form .field label{
+	width: 30% !important;
+	margin: 0 !important;
+}
+.content-tab-form .field button {
+	margin-right: 0 !important;
+}
+.content-tab-form .field {
+	display: flex;
+	align-items: center;
+	text-align: left;
+}
 
 @media screen and (max-width: 767px) {
 	.format-form {
 		width: 100%;
+	}
+	.content-tab-form .field .field, .content-tab-form .field select {
+		width: 100% !important;
 	}
 }
