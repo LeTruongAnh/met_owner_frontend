@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Grid } from 'semantic-ui-react'
-import MenuApp from './menu-app.js'
-import StadiumInfo from './stadium-info.js'
+import MenuApp from '../dashboard/menu-app.js'
+import BookingInfo from './booking-info.js'
 
 class Dashboard extends Component {
 	constructor(props){
@@ -22,10 +22,10 @@ class Dashboard extends Component {
 				<Grid centered={true} className="dashboard-grid">
 					<Grid.Row column={2}>
 						<Grid.Column className="menu-column" width={3}>
-							<MenuApp content="stadium"/>
+							<MenuApp content="booking"/>
 						</Grid.Column>
 						<Grid.Column className="content-column" width={13}>
-							<StadiumInfo />
+							<BookingInfo />
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
@@ -33,7 +33,7 @@ class Dashboard extends Component {
 				<Grid centered={true} className="dashboard-grid">
 					<Grid.Row column={1}>
 						<Grid.Column className="content-column" width={16}>
-							<StadiumInfo />
+							<BookingInfo />
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>

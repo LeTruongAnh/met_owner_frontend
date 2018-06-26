@@ -95,27 +95,27 @@ body * {
 .content-column {
 	padding-top: 14px;
 }
-.content-column .content-grid .content-content-tab {
+.content-column .stadium-info .content-content-tab {
 	border: none;
 	box-shadow: none;
 }
-.content-tab-form-bg {
+.stadium-grid {
 	background-color: #FFFFFF;
 }
-.content-tab-form {
+.stadium-form {
 	border: none;
 }
-.content-tab-form .field .field, .content-tab-form .field select {
+.stadium-form .field .field, .stadium-form .field select {
 	width: 70% !important;
 }
-.content-tab-form .field label{
+.stadium-form .field label{
 	width: 30% !important;
 	margin: 0 !important;
 }
-.content-tab-form .field button {
+.stadium-form .field button {
 	margin-right: 0 !important;
 }
-.content-tab-form .field {
+.stadium-form .field {
 	display: flex;
 	align-items: center;
 	text-align: left;
@@ -125,7 +125,7 @@ body * {
 	.format-form {
 		width: 100%;
 	}
-	.content-tab-form .field .field, .content-tab-form .field select {
+	.stadium-form .field .field, .stadium-form .field select {
 		width: 100% !important;
 	}
 }

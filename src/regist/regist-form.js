@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Checkbox, Form, Grid, Icon, Image, Segment, Header, Modal } from 'semantic-ui-react'
+import { Button, Checkbox, Form, Grid, Icon, Image, Header, Modal } from 'semantic-ui-react'
 import moment from 'moment'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css';
@@ -66,9 +66,9 @@ class RegistForm extends Component {
 			isOK = false;
 		}
 		else {
-			var reg = /[0-9]{10,11}/;
-			var regBool = this.state.phone.match(reg);
-			if (!regBool) {
+			var regPhone = /[0-9]{10,11}/;
+			var regBoolPhone = this.state.phone.match(regPhone);
+			if (!regBoolPhone) {
 				this.setState({
 					errPhone: "*SĐT không đúng định dạng"
 				})
@@ -112,23 +112,21 @@ class RegistForm extends Component {
 			this.setState({
 				errPassRep: ""
 			})
-		{
-			var reg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-			var regBool = this.state.email.match(reg);
-			if (this.state.email === "") {
-				regBool = true;
-			}
-			if (!regBool) {
-				this.setState({
-					errEmail: "*Email không đúng định dạng"
-				})
-				isOK = false;
-			}
-			else
-				this.setState({
-					errEmail: ""
-				})
+		var regMail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+		var regBoolMail = this.state.email.match(regMail);
+		if (this.state.email === "") {
+			regBoolMail = true;
 		}
+		if (!regBoolMail) {
+			this.setState({
+				errEmail: "*Email không đúng định dạng"
+			})
+			isOK = false;
+		}
+		else
+			this.setState({
+				errEmail: ""
+			})
 		if (!document.getElementById('check-regist').checked) {
 			this.setState({errCheckTerm:"*Bạn chưa đồng ý với chúng tôi"})
 			isOK = false;
@@ -225,7 +223,7 @@ class RegistForm extends Component {
 						</Form.Field>
 						<Form.Field>
 							<span className="err-span">{this.state.errEmail}</span>
-							<Form.Input iconPosition="left" iconPosition="left" name="email" value={this.state.email} onChange={this.handleChange} placeholder='Email'>
+							<Form.Input iconPosition="left" name="email" value={this.state.email} onChange={this.handleChange} placeholder='Email'>
 								<Icon name='at' />
 								<input />
 							</Form.Input>
@@ -237,7 +235,7 @@ class RegistForm extends Component {
 						<Form.Field>
 							<span className="err-span">{this.state.errCheckTerm}</span>
 							<Checkbox id="check-regist" label='Tôi đồng ý với các điều khoản và điều kiện' />						
-							<a href="https://www.google.com/?gws_rd=ssl" target="_blank">Điều khoản và điều kiện</a>
+							<a href="https://www.google.com/?gws_rd=ssl" rel="noopener noreferrer" target="_blank">Điều khoản và điều kiện</a>
 						</Form.Field>
 						<Modal open={this.state.modalOpen} centered={false} size="large" closeIcon={true} trigger={<Button className="form-but" loading={this.state.loading} type='submit'>Đăng ký</Button>}>
 							<Header color="red">Chúc mừng bạn đã đăng ký thành công!</Header>
