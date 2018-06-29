@@ -17,7 +17,10 @@ class StadiumForm extends Component {
 			errAddress: "",
 			disabled: false,
 			cityList: [],
-			loading: false,
+			lat: 0,
+			lng: 0,
+			loadingForm: true,
+			loadingBut: false,
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
 			districtList: []
 		}
@@ -35,12 +38,16 @@ class StadiumForm extends Component {
 		}
 		else this.setState({ errAddress: "" })
 		if (isOK) {
-			this.setState({ loading: true })
+			this.setState({ loadingBut: true })
 			axios.put(
-				`${config.apiBaseURL}/api/stadium/manager`,
+				`${config.apiBaseURL}/api/stadium/` + this.state.idStadium,
 				{
-					"stadiumID": this.state.userInfo.id,
-					"idList":[1,2]
+					"name": this.state.name,
+					"address": this.state.address,
+					"region": this.state.city,
+					"subRegion": this.state.district,
+					"lat": this.state.lat,
+					"lng": this.state.lng
 				},
 				{
 					'headers': {'Authorization': this.state.userInfo.token, 'Content-Type': 'application/json'}
@@ -48,11 +55,11 @@ class StadiumForm extends Component {
 			)
 			.then((response) => {
 				console.log(response)
-				this.setState({ loading:false })
+				this.setState({ loadingBut:false })
 			})
 			.catch((error) => {
 				console.log(error.response.data);
-				this.setState({ loading:false })
+				this.setState({ loadingBut:false })
 			})
 		}
 	}
@@ -102,7 +109,8 @@ class StadiumForm extends Component {
 				axios.get(`${config.apiBaseURL}/api/region/district?region=` + data.region)
 				.then((response) => {
 					this.setState({
-						districtList: response.data.items
+						districtList: response.data.items,
+						loadingForm: false
 					})
 				})
 				.catch(function (error) {
@@ -112,7 +120,10 @@ class StadiumForm extends Component {
 					name: data.name,
 					address: data.address,
 					city: data.region,
-					district: data.sub_region
+					district: data.sub_region,
+					lat: data.lat,
+					lng: data.lng,
+					idStadium: data.id
 				})
 			})
 			.catch(function (error) {
@@ -129,7 +140,7 @@ class StadiumForm extends Component {
 				<Grid.Row centered={true}>
 					{
 						(this.state.screenSize >= 768)?(
-							<Form onSubmit={this.handleSubmit} className="format-form stadium-form">
+							<Form loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>
 									<label>Tên</label>
@@ -161,11 +172,11 @@ class StadiumForm extends Component {
 								</Form.Field>
 								<span className="err-span">{this.state.errManager}</span>
 							    <Form.Field>
-							    	<Button className="form-but" type='submit'>Cập nhật</Button>
+							    	<Button loading={this.state.loadingBut} className="form-but" type='submit'>Cập nhật</Button>
 							    </Form.Field>
 						  	</Form>
 						):(
-							<Form onSubmit={this.handleSubmit} className="format-form stadium-form">
+							<Form loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>
 							      	<Form.Input value={this.state.name} placeholder="Tên" name="name" onChange={this.handleChange} />
@@ -194,7 +205,7 @@ class StadiumForm extends Component {
 								</Form.Field>
 								<span className="err-span">{this.state.errManager}</span>
 							    <Form.Field>
-							    	<Button loading={this.state.loading} className="form-but" type='submit'>Cập nhật</Button>
+							    	<Button loading={this.state.loadingBut} className="form-but" type='submit'>Cập nhật</Button>
 							    </Form.Field>
 						  	</Form>
 						)

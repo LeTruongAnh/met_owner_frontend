@@ -1,6 +1,9 @@
 body * {
 	font-family: roboto;
 }
+button {
+	font-family: roboto !important;
+}
 #root, .App, .App>div {
 	height: 100%;
 }
@@ -63,9 +66,6 @@ body * {
 	padding: 2px !important;
 	float: right;
 }
-.close-but>i {
-	margin: 0 !important;
-}
 .dashboard-grid {
 	height: 100%;
 	margin: 0 !important;
@@ -74,17 +74,14 @@ body * {
 	padding: 0 !important;
 }
 .App .dashboard-grid .menu-column {
-	padding: 20px 0 0 0 !important;
+	padding: 14px 0 0 0 !important;
 	background-color: #006838;
 	opacity: 1;
 }
-.App .dashboard-grid .menu-menu{
+.App .dashboard-grid .menu-menu {
 	margin: 0;
-	width: auto;
-}
-.App .dashboard-grid .menu-column .item {
-	color: rgba(255, 255, 255, 0.8);
-	padding-left: 30px !important;
+	width: 100%;
+    padding: 14px 0;
 }
 .App .dashboard-grid .menu-column .item:hover {
 	color: rgb(255, 255, 255) !important;
@@ -92,10 +89,36 @@ body * {
 .App .dashboard-grid .menu-column .active {
 	color: rgb(255, 255, 255) !important;
 }
+.menu-grid {
+	margin: 0 !important;
+}
+.menu-header {
+	width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.menu-header * {
+	color: #FFFFFF;
+}
+.logo-name {
+    display: flex;
+    align-items: center;
+}
+.logo-name img {
+	margin-right: 14px;
+}
+.button-column {
+	display: flex;
+}
+.button-column button {
+	padding: 2px !important;
+	background-color: #006838 !important;
+}
 .content-column {
 	padding-top: 14px;
 }
-.content-column .stadium-info .content-content-tab {
+.content-column .stadium-info .detail-stadium {
 	border: none;
 	box-shadow: none;
 }
@@ -112,13 +135,33 @@ body * {
 	width: 30% !important;
 	margin: 0 !important;
 }
-.stadium-form .field button {
+button {
 	margin-right: 0 !important;
 }
 .stadium-form .field {
 	display: flex;
 	align-items: center;
 	text-align: left;
+}
+.detail-stadium .column {
+	padding: 14px;
+}
+.detail-stadium button {
+    width: 100%;
+    height: 100%;
+}
+button>i {
+	margin-right: 0 !important;
+}
+.detail-stadium .add-image-button input {
+	display: none;
+}
+.menu-menu a {
+	display: flex !important;
+	align-items: center !important;
+}
+#menu-overlay p, #menu-overlay i {
+	color: #FFFFFF;
 }
 
 @media screen and (max-width: 767px) {
@@ -127,5 +170,8 @@ body * {
 	}
 	.stadium-form .field .field, .stadium-form .field select {
 		width: 100% !important;
+	}
+	.add-image-button {
+		height: 69% !important;
 	}
 }
