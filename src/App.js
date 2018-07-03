@@ -5,9 +5,11 @@ import LoginForm from './login/login-form.js'
 import RegistForm from './regist/regist-form.js'
 import Dashboard from './dashboard/dashboard.js'
 import Booking from './booking/booking.js'
+import BookingDetail from './booking/booking-detail.js'
 import {
   BrowserRouter as Router,
-  Route
+  Route,
+  Switch
 } from 'react-router-dom'
 
 class App extends Component {
@@ -15,16 +17,21 @@ class App extends Component {
         return (
             <div className="App">
                 <Router>
-                    <div className="router-div">
+                    <Switch className="router-div">
                         <Route path="/" exact component={Dashboard} />
                         <Route path="/login" exact component={LoginForm} />
                         <Route path="/register" exact component={RegistForm} />
                         <Route path="/booking" exact component={Booking} />
-                    </div>
+                        <Route path="/booking/:bookingID" exact children={
+                            ( {match} ) => {
+                                return <BookingDetail bookingID={match.params.bookingID}/>
+                            }
+                        }/>
+                    </Switch>
                 </Router>
             </div>
         );
     }
 }
 
-export default App;
+export default App

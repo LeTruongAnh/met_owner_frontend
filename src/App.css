@@ -124,6 +124,7 @@ button {
 }
 .stadium-grid {
 	background-color: #FFFFFF;
+	margin: 0 !important;
 }
 .stadium-form {
 	border: none;
@@ -162,6 +163,9 @@ button>i {
 }
 #menu-overlay p, #menu-overlay i {
 	color: #FFFFFF;
+}
+.stadium-form .field .booking-detail-label, .stadium-form .field .bookking-detail-input {
+	width: 50% !important;
 }
 
 @media screen and (max-width: 767px) {

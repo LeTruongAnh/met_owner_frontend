@@ -9,20 +9,15 @@ class Dashboard extends Component {
 		super(props)
 		this.state = {
 			screenSize: window.screen.width,
-			menuWidth: (localStorage.getItem('isExpand') === "true")?((parseInt(localStorage.getItem('screenSize'), 10) > 1024)?3:4):((parseInt(localStorage.getItem('screenSize'), 10) > 1024)?1:2),
-			contentWidth: (localStorage.getItem('isExpand') === "true")?((parseInt(localStorage.getItem('screenSize'), 10) > 1024)?13:12):((parseInt(localStorage.getItem('screenSize'), 10) > 1024)?15:14),
+			menuWidth: (localStorage.getItem('isExpand') === "true")?((window.screen.width > 1024)?3:4):((window.screen.width > 1024)?1:2),
+			contentWidth: (localStorage.getItem('isExpand') === "true")?((window.screen.width > 1024)?13:12):((window.screen.width > 1024)?15:14),
 			isOn: false,
 			visible: false
 		}
 	}
-	detectScreenChange = () => {
-		this.setState({
-			screenSize: window.screen.width
-		})
-	}
 	handleMenuParent = (param) => {
 		if (param === true) {
-			if (parseInt(localStorage.getItem('screenSize'), 10) > 1024) {
+			if (window.screen.width > 1024) {
 				this.setState({
 					menuWidth: 3,
 					contentWidth: 13
@@ -34,7 +29,7 @@ class Dashboard extends Component {
 				})
 		}
 		else {
-			if (parseInt(localStorage.getItem('screenSize'), 10) > 1024) {
+			if (window.screen.width > 1024) {
 				this.setState({
 					menuWidth: 1,
 					contentWidth: 15
@@ -48,12 +43,17 @@ class Dashboard extends Component {
 	}
 	componentDidMount = () => {
 		window.addEventListener('resize',this.detectScreenChange)
-		localStorage.setItem('screenSize', window.screen.width.toString())
 	}
 	handleSidebarHide = () => this.setState({ visible: false })
 	handleButtonClick = () => this.setState({ visible: !this.state.visible })
+	detectScreenChange = () => {
+		this.setState({
+			screenSize: window.screen.width,
+			menuWidth: (localStorage.getItem('isExpand') === "true")?((window.screen.width > 1024)?3:4):((window.screen.width > 1024)?1:2),
+			contentWidth: (localStorage.getItem('isExpand') === "true")?((window.screen.width > 1024)?13:12):((window.screen.width > 1024)?15:14)
+		})
+	}
 	render() {
-		console.log(this.state.menuWidth)
 		return(
 			(this.state.screenSize >= 768)?(
 				<Grid centered={true} className="dashboard-grid">
@@ -70,7 +70,7 @@ class Dashboard extends Component {
 				<Grid centered={true} className="dashboard-grid">
 					<Grid.Row columns={1}>
 						<Sidebar.Pushable style={style.fullWidth}>
-							<Sidebar style={style.menu} animation='overlay' onHide={this.handleSidebarHide} visible={this.state.visible}>
+							<Sidebar style={style.menu} animation='overlay' visible={this.state.visible}>
 								<MenuApp screenSize={this.state.screenSize} content="stadium"/>
 							</Sidebar>
 							<Sidebar.Pusher>

@@ -8,7 +8,7 @@ class MenuApp extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			isExpand: localStorage.getItem('isExpand')?((localStorage.getItem('isExpand') === "true")?true:false):(true),
+			isExpand: ((window.screen.width) >= 768)?(localStorage.getItem('isExpand')?((localStorage.getItem('isExpand') === "true")?true:false):(true)):(true),
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo'))
 		}
 	}
@@ -52,16 +52,25 @@ class MenuApp extends Component {
 		return (
 			<Grid className="menu-grid">
 				{
-					(this.props.screenSize)?"":(
-						<div style={(!this.state.isExpand)?style.flexCenter:style.marginTopBot} className="menu-header">
+					(this.props.screenSize)?(
+						<div style={(this.state.isExpand)?style.userAvatar:style.contentCenter}>
+							<div style={styleAvatar}></div>
 							{
 								(this.state.isExpand)?(
-								<div className="logo-name">
-									<div><Image style={style.margin0} circular src={logo} size="mini"/></div>
-									<div style={style.marginLeftText}><h2>MET</h2></div>
-								</div>
+									<div style={style.marginLeftText}><h4 style={style.marginLeftText}>{this.state.userInfo.full_name}</h4></div>
 								):""
 							}
+						</div>
+					):(
+						<div style={(!this.state.isExpand)?style.flexCenter:style.marginTopBot} className="menu-header">
+							<div style={(this.state.isExpand)?style.userAvatar:style.contentCenter}>
+								<div style={styleAvatar}></div>
+								{
+									(this.state.isExpand)?(
+										<div style={style.marginLeftText}><h4 style={style.marginLeftText}>{this.state.userInfo.full_name}</h4></div>
+									):""
+								}
+							</div>
 							<div className="button-column">
 								<Button onClick={this.handleMenuChild}>
 								{
@@ -72,14 +81,7 @@ class MenuApp extends Component {
 						</div>
 					)
 				}
-				<div style={(this.state.isExpand)?style.userAvatar:style.contentCenter}>
-					<div style={styleAvatar}></div>
-					{
-						(this.state.isExpand)?(
-							<div style={style.marginLeftText}><h4 style={style.marginLeftText}>{this.state.userInfo.full_name}</h4></div>
-						):""
-					}
-				</div>
+							
 				{
 					(!this.state.isExpand)?"":(<div style={style.marginTopBot}><h3 style={style.colorText}>Quản lý</h3></div>)
 				}

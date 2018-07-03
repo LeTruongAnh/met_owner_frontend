@@ -70,5 +70,64 @@ module.exports = {
 		marginRight: "14px",
 		padding: "0"
 	},
+	paginationActive: {
+		backgroundColor: "#006838",
+		color: "#FFF"
+	},
+	paginationHover: {
+		backgroundColor: "rgba(0,104,56,0.5)",
+		color: "#FFF"
+	},
+	pendingColor: {
+		color: "#ffab00"
+	},
+	approvedColor: {
+		color: "#00b8d9"
+	},
+	paymentCompletedColor: {
+		color: "#28a570"
+	},
+	errorColor: {
+		color: "#de350b"
+	},
+	detailLink: {
+		color: "#006838"
+	},
+	marginTotal14px: {
+		margin: "14px"
+	},
+	marginTotal0px: {
+		margin: "0"
+	},
+	marginBooking: {
+		margin: "0 0 14px 0"
+	},
+	colorButtonAccept: {
+		backgroundColor: "#006838",
+		color: "#FFF",
+		width: "70px",
+		padding: "14px"
+	},
+	colorButtonCancel: {
+		backgroundColor: "#f15a26",
+		color: "#FFF",
+		width: "70px",
+		padding: "14px"
+	},
+	styleTimerCountDown: {
+		padding: "14px",
+	    backgroundColor: "#ed1c24",
+	    width: "70px",
+	    color: "white",
+	    borderRadius: ".28571429rem"
+	},
+	colorMassageAccept: {
+		backgroundColor: "#006838",
+		color: "#FFF"
+	},
+	colorMassageCancel: {
+		backgroundColor: "#f15a26",
+		color: "#FFF"
+	},
 	none: {}
 }
