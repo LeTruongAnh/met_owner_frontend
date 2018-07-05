@@ -37,14 +37,11 @@ module.exports = {
 		color: "#FFF"
 	},
 	contentCenter: {
-		padding: "14px 20px",
+		padding: "14px",
 		justifyContent: "center",
 		width: "100%",
 	    display: "flex",
 	    alignItems: "center"
-	},
-	fullWidth: {
-		width: "100%"
 	},
 	flexCenter: {
 		display: "flex",
@@ -97,10 +94,10 @@ module.exports = {
 		margin: "14px"
 	},
 	marginTotal0px: {
-		margin: "0"
+		margin: "0 !important"
 	},
 	marginBooking: {
-		margin: "0 0 14px 0"
+		margin: "0"
 	},
 	colorButtonAccept: {
 		backgroundColor: "#006838",
@@ -129,5 +126,55 @@ module.exports = {
 		backgroundColor: "#f15a26",
 		color: "#FFF"
 	},
-	none: {}
+	rowButtonExpand: {
+		flexDirection: "row-reverse"
+	},
+	displayNone: {
+		display: 'none'
+	},
+	width70: {
+		width: "70%"
+	},
+	fullWidth: {
+		width: "100%"
+	},
+	logoImage: {
+		height: "150px"
+	},
+	none: {},
+	fullWidthHeight: {
+		height: "100%",
+		width: "100%"
+	},
+	height69: {
+		height: "69%"
+	},
+	styleDescription: {
+		margin: "14px 28px"
+	},
+	paddingTotal14px: {
+		padding: "14px"
+	},
+	styleImageStadium: {
+		transition: "transform .2s",
+		justifyContent:"center",
+		margin: "0"
+	},
+	styleImageStadiumSelect: {
+		transition: "transform .2s",
+		justifyContent:"center",
+		margin: "0",
+		border: "1px solid #006838"
+	},
+	styleRowImageButton: {
+		flexDirection: "row-reverse",
+		display: "flex",
+		width: "100%"
+	},
+	styleImageStadiumButton: {
+		marginLeft: "28px",
+		marginBottom: "28px",
+		backgroundColor: "#006838",
+		color: "#fff"
+	}
 }

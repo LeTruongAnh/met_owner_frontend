@@ -85,7 +85,7 @@ class BookingDetail extends Component {
                                             <Icon name="bars"/>
                                         </Button>
                                     </Grid.Row>
-                                    <BookingForm bookingID={this.props.bookingID} />
+                                    <BookingForm isMobile={this.state.screenSize} bookingID={this.props.bookingID} />
                                 </Grid.Column>
                             </Sidebar.Pusher>
                         </Sidebar.Pushable>

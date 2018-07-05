@@ -1,13 +1,17 @@
 import React, { Component } from 'react'
-import { Grid, Form, Button } from 'semantic-ui-react'
+import { Grid, Form, Button, Image, Modal, Header } from 'semantic-ui-react'
 import axios from 'axios'
 import config from '../config'
+import style from '../dashboard/style.js'
+import StadiumImage from './stadium-image'
 
 class StadiumForm extends Component {
 	constructor(props){
 		super(props)
+		this.textInput = React.createRef()
 		this.state = {
 			screenSize: window.screen.width,
+			logoImage: "",
 			name: "",
 			address: "",
 			manager: "",
@@ -22,7 +26,8 @@ class StadiumForm extends Component {
 			loadingForm: true,
 			loadingBut: false,
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
-			districtList: []
+			districtList: [],
+			modalOpen: false
 		}
 	}
 	handleSubmit = () => {
@@ -54,11 +59,9 @@ class StadiumForm extends Component {
 				}
 			)
 			.then((response) => {
-				console.log(response)
 				this.setState({ loadingBut:false })
 			})
 			.catch((error) => {
-				console.log(error.response.data);
 				this.setState({ loadingBut:false })
 			})
 		}
@@ -117,6 +120,7 @@ class StadiumForm extends Component {
 					console.log(error);
 				})
 				this.setState({
+					logoImage: data.image,
 					name: data.name,
 					address: data.address,
 					city: data.region,
@@ -131,16 +135,38 @@ class StadiumForm extends Component {
 			})
 		}
 	}
+	handleOpenModalImage = () => {
+		this.setState({ modalOpen: true })
+	}
+	handleCloseModal = () => {
+		this.setState({ modalOpen: false })
+	}
+	handleChooseImage = () => {
+		this.setState({ modalOpen: false })
+	}
 	render() {
 		return (
 			<Grid className="grid-form stadium-grid">
 				<Grid.Row>
 					<h3>Thông tin</h3>
 				</Grid.Row>
-				<Grid.Row centered={true}>
+				<Grid.Row style={style.marginTopBot} centered={true}>
 					{
 						(this.state.screenSize >= 768)?(
 							<Form loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
+								<Form.Field>
+									<label>Logo sân</label>
+									<Image style={style.logoImage} src={this.state.logoImage} />
+								</Form.Field>
+								<Form.Field>
+									<Modal style={style.none} open={this.state.modalOpen} centered={false} 
+									trigger={<Button style={style.fullWidth} onClick={this.handleOpenModalImage}>Chọn ảnh</Button>}>
+										<Header style={style.colorMassageAccept}>Ảnh của bạn</Header>
+										<Modal.Description style={style.styleDescription}>
+											<StadiumImage content={true} handleChooseImage={this.handleChooseImage} handleCloseModal={this.handleCloseModal}/>
+										</Modal.Description>
+									</Modal>
+								</Form.Field>
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>
 									<label>Tên</label>
@@ -177,6 +203,18 @@ class StadiumForm extends Component {
 						  	</Form>
 						):(
 							<Form loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
+								<Form.Field style={style.flexCenter}>
+									<Image style={style.logoImage} src={this.state.logoImage} />
+								</Form.Field>
+								<Form.Field>
+									<Modal style={style.none} open={this.state.modalOpen} centered={false} 
+									trigger={<Button style={style.fullWidth} onClick={this.handleOpenModalImage}>Chọn ảnh</Button>}>
+										<Header style={style.colorMassageAccept}>Ảnh của bạn</Header>
+										<Modal.Description style={style.styleDescription}>
+											<StadiumImage content={true} handleChooseImage={this.handleChooseImage} />
+										</Modal.Description>
+									</Modal>
+								</Form.Field>
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>
 							      	<Form.Input value={this.state.name} placeholder="Tên" name="name" onChange={this.handleChange} />
@@ -214,7 +252,7 @@ class StadiumForm extends Component {
 				<Grid.Row>
 					<h3>Quản lý sân</h3>
 				</Grid.Row>
-				<Grid.Row centered={true}>
+				<Grid.Row style={style.marginTopBot} centered={true}>
 					<Form>
 						<Form.Input/>
 					</Form>

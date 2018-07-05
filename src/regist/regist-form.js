@@ -7,6 +7,7 @@ import axios from 'axios'
 import config from '../config'
 import { Redirect } from 'react-router-dom'
 import logo from '../asset/favicon.png'
+import style from '../dashboard/style.js'
 
 class RegistForm extends Component {
 	constructor(props){
@@ -167,10 +168,14 @@ class RegistForm extends Component {
 				}, 3000)
 			})
 			.catch((error)=> {
-				this.setState({
-					errPhone: "*" + error.response.data.message,
-					loading: false
-				})
+				if (!error.response.data)
+					this.setState({
+						errPhone: "*" + error.response.data.message,
+						loading: false
+					})
+				else this.setState({
+						loading: false
+					})
 			})			
 		}
 	}
@@ -238,7 +243,7 @@ class RegistForm extends Component {
 							<a href="https://www.google.com/?gws_rd=ssl" rel="noopener noreferrer" target="_blank">Điều khoản và điều kiện</a>
 						</Form.Field>
 						<Modal open={this.state.modalOpen} centered={false} size="large" closeIcon={true} trigger={<Button className="form-but" loading={this.state.loading} type='submit'>Đăng ký</Button>}>
-							<Header color="red">Chúc mừng bạn đã đăng ký thành công!</Header>
+							<Header style={style.colorMassageAccept}>Chúc mừng bạn đã đăng ký thành công!</Header>
 						</Modal>
 						
 					</Form>

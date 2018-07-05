@@ -9,17 +9,18 @@ class BookingForm extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
-            bookingInfo: [],
-            creator: [],
+            token: (localStorage.getItem('MET_userInfo'))?JSON.parse(localStorage.getItem('MET_userInfo')).token:"",
+            bookingInfo: {},
+            creator: {},
             loading: true,
             approved: false,
             canceled: false
         }
     }
     componentDidMount = () => {
+
         axios.get(`${config.apiBaseURL}/api/booking/${this.props.bookingID}`, {
-            'headers': {'Authorization': this.state.userInfo.token}
+            'headers': {'Authorization': this.state.token}
         })
         .then((response) => {
             this.setState({ 
@@ -51,9 +52,9 @@ class BookingForm extends Component {
         return time
     }
     handleAccept = () => {
-        axios.post(`${config.apiBaseURL}/api/booking/${this.props.bookingID}/approve`, {} ,{
+        axios.post(`${config.apiBaseURL}/api/booking/${this.props.bookingID}/approve`, {}, {
             'headers': {
-                'Authorization': this.state.userInfo.token,
+                'Authorization': this.state.token,
                 'Content-Type': "application/json"
             }
         })
@@ -65,26 +66,44 @@ class BookingForm extends Component {
         })
     }
     handleCancel = () => {
-        axios.post(`${config.apiBaseURL}/api/booking/${this.props.bookingID}/reject`, {} ,{
+        axios.post(`${config.apiBaseURL}/api/booking/${this.props.bookingID}/reject`, {}, {
             'headers': {
-                'Authorization': this.state.userInfo.token,
+                'Authorization': this.state.token,
                 'Content-Type': "application/json"
             }
         })
         .then((response) => {
             this.setState({ canceled: true })
-            console.log(response)
         })
         .catch((error) => {
             console.log(error.response)
         })
     }
+    renderButton = () => {
+        if (this.state.bookingInfo.status !== 1)
+            return
+        else if (this.state.bookingInfo.remain_time <= 0)
+            return <Message style={style.colorMassageCancel} floating>Đã quá hạn!</Message>
+        else if (this.state.approved) 
+            return <Message style={style.colorMassageAccept} floating>Bạn đã duyệt thành công!</Message>
+        else if (this.state.canceled)
+            return <Message style={style.colorMassageCancel} floating>Đặt sân đã bị hủy!</Message>
+        else {
+            return (
+                <Grid columns={3} centered={true}>
+                    <Grid.Column style={style.flexCenter}><Button style={style.colorButtonAccept} onClick={this.handleAccept}>Duyệt</Button></Grid.Column>
+                    <Grid.Column style={style.flexCenter}><CountDownTime time={parseInt(this.state.bookingInfo.remain_time / 1000, 10)} handleCancel={this.handleCancel} /></Grid.Column>
+                    <Grid.Column style={style.flexCenter}><Button style={style.colorButtonCancel} onClick={this.handleCancel}>Hủy</Button></Grid.Column>
+                </Grid>
+            )
+        }
+    }
     render() {
         return (
             <Grid style={style.marginTotal0px} className="stadium-grid">
                 <Grid.Row><h3 style={style.marginTotal14px}>Thông tin đặt sân</h3></Grid.Row>
-                <Grid.Row centered={true}>
-                    <Segment>
+                <Grid.Row style={style.marginTotal14px} centered={true}>
+                    <Segment style={(this.props.isMobile)?style.fullWidth:style.none}>
                         <Form loading={this.state.loading} className="format-form stadium-form">
                             <Form.Field>
                                 <label className="booking-detail-label">Mã đặt sân</label>
@@ -144,23 +163,9 @@ class BookingForm extends Component {
                                 </Form.Input>
                             </Form.Field>
                         </Form>
-                        {(() => {
-                            if (this.state.approved) 
-                                return <Message style={style.colorMassageAccept} floating>Bạn đã duyệt thành công!</Message>
-                            else if (this.state.canceled)
-                                return <Message style={style.colorMassageCancel} floating>Đặt sân đã bị hủy!</Message>
-                            else {
-                                console.log(this.state.bookingInfo.status)
-                                return
-                                    (this.state.bookingInfo.status === 1)?(
-                                        <Grid columns={3} centered={true}>
-                                            <Grid.Column style={style.flexCenter}><Button style={style.colorButtonAccept} onClick={this.handleAccept}>Duyệt</Button></Grid.Column>
-                                            <Grid.Column style={style.flexCenter}>{}<CountDownTime handleCancel={() => this.handleCancel} /></Grid.Column>
-                                            <Grid.Column style={style.flexCenter}><Button style={style.colorButtonCancel} onClick={this.handleCancel}>Hủy</Button></Grid.Column>
-                                        </Grid>
-                                    ):""
-                                }
-                        })()}
+                        {
+                            this.renderButton()
+                        }
                     </Segment>
                 </Grid.Row>
                 

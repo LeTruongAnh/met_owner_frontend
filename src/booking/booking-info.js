@@ -13,7 +13,7 @@ class BookingInfo extends Component {
 			numPagi: [],
 			currentPagi: 1,
 			loading: false,
-			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
+			token: (localStorage.getItem('MET_userInfo'))?JSON.parse(localStorage.getItem('MET_userInfo')).token:"",
 			screenSize: window.screen.width
 		}
 	}
@@ -21,7 +21,7 @@ class BookingInfo extends Component {
 		window.addEventListener('resize',this.detectScreenChange)
 		this.setState({ loading: true })
 		axios.get(`${config.apiBaseURL}/api/booking/list?page=1&limit=0`, {
-				'headers': {'Authorization': this.state.userInfo.token}
+				'headers': {'Authorization': this.state.token}
 			})
 		.then((response) => {
 			let bookingListLength = response.data.items.length
@@ -36,7 +36,7 @@ class BookingInfo extends Component {
 			console.log(error.response)
 		})
 		axios.get(`${config.apiBaseURL}/api/booking/list?page=1&limit=10`, {
-			'headers': {'Authorization': this.state.userInfo.token}
+			'headers': {'Authorization': this.state.token}
 		})
 		.then((response) => {
 			this.setState({
@@ -84,7 +84,7 @@ class BookingInfo extends Component {
 				}, () => 
 				{
 					axios.get(`${config.apiBaseURL}/api/booking/list?page=` + this.state.currentPagi + '&limit=10', {
-						'headers': {'Authorization': this.state.userInfo.token}
+						'headers': {'Authorization': this.state.token}
 					})
 					.then((response) => {
 						this.setState({
@@ -109,7 +109,7 @@ class BookingInfo extends Component {
 		return (
 			<Grid style={style.marginBooking}>
 				<Loader active={this.state.loading} />
-				<Header style={style.marginTopBot} as="h1">Danh sách đặt sân</Header>
+				<Header style={(this.state.screenSize >= 768)?style.margin0:style.marginTopBot} as="h1">Danh sách đặt sân</Header>
 				{
 					(this.state.screenSize >= 768)?(
 						<Table style={style.marginTable} celled striped>
