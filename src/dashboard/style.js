@@ -157,14 +157,14 @@ module.exports = {
 	},
 	styleImageStadium: {
 		transition: "transform .2s",
-		justifyContent:"center",
-		margin: "0"
+		margin: "0",
+		boxSizing: "border-box"
 	},
 	styleImageStadiumSelect: {
 		transition: "transform .2s",
-		justifyContent:"center",
 		margin: "0",
-		border: "1px solid #006838"
+		border: "1px solid #006838",
+		boxSizing: "border-box"
 	},
 	styleRowImageButton: {
 		flexDirection: "row-reverse",
@@ -176,5 +176,26 @@ module.exports = {
 		marginBottom: "28px",
 		backgroundColor: "#006838",
 		color: "#fff"
+	},
+	styleCloseImageStadiumButton: {
+		float: "right",
+		position: "relative",
+		top: "-18px",
+		backgroundColor: "#006838",
+		color: "#fff",
+		padding: "0"
+	},
+	changeImage: {
+		color: "#fff",
+		fontWeight: "bold",
+		textDecoration: "none",
+		fontSize: "13px"
+	},
+	changeImageField: {
+		padding: "9px 21px",
+		backgroundColor: "#006838",
+		justifyContent: "center",
+		borderRadius: ".28571429rem",
+		cursor: "pointer"
 	}
 }

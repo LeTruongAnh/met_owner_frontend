@@ -74,7 +74,9 @@ button {
 	margin: 0 !important;
 }
 .hover-image-stadium:hover {
-	border: 1px solid #006838;
+	z-index: 2;
+	transform: scale(1.5);
+	border: none;
 }
 .App .dashboard-grid .row {
 	padding: 0 !important;

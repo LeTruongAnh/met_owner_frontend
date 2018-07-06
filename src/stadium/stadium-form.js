@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { Grid, Form, Button, Image, Modal, Header } from 'semantic-ui-react'
+import { Grid, Form, Button, Image, } from 'semantic-ui-react'
 import axios from 'axios'
 import config from '../config'
 import style from '../dashboard/style.js'
-import StadiumImage from './stadium-image'
 
 class StadiumForm extends Component {
 	constructor(props){
@@ -11,7 +10,10 @@ class StadiumForm extends Component {
 		this.textInput = React.createRef()
 		this.state = {
 			screenSize: window.screen.width,
+			cityList: [],
+			stadiumData: [],
 			logoImage: "",
+			bgImage: "",
 			name: "",
 			address: "",
 			manager: "",
@@ -20,14 +22,12 @@ class StadiumForm extends Component {
 			errName: "",
 			errAddress: "",
 			disabled: false,
-			cityList: [],
 			lat: 0,
 			lng: 0,
 			loadingForm: true,
 			loadingBut: false,
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
-			districtList: [],
-			modalOpen: false
+			districtList: []
 		}
 	}
 	handleSubmit = () => {
@@ -47,6 +47,8 @@ class StadiumForm extends Component {
 			axios.put(
 				`${config.apiBaseURL}/api/stadium/` + this.state.idStadium,
 				{
+					"image": this.state.logoImage,
+					"bgImage": this.state.bgImage,
 					"name": this.state.name,
 					"address": this.state.address,
 					"region": this.state.city,
@@ -80,9 +82,10 @@ class StadiumForm extends Component {
 				this.setState({
 					districtList: response.data.items
 				})
+				console.log("City first OK")
 			})
 			.catch(function (error) {
-				console.log(error);
+				console.log(error)
 			})
 		}
 	}
@@ -92,57 +95,29 @@ class StadiumForm extends Component {
 		})
 	}
 	detectScreenChange = () => this.setState({ screenSize: window.screen.width })
-	componentDidMount = () => {
-		window.addEventListener('resize', this.detectScreenChange)
-		axios.get(`${config.apiBaseURL}/api/region/province`)
+	componentWillReceiveProps = (nextProps) => {
+		this.setState({
+			cityList: nextProps.cityList,
+			logoImage: nextProps.stadiumData.image,
+			bgImage: nextProps.stadiumData.bg_image,
+			name: nextProps.stadiumData.name,
+			address: nextProps.stadiumData.address,
+			city: nextProps.stadiumData.region
+		}, console.log("123"))
+		axios.get(`${config.apiBaseURL}/api/region/district?region=` + nextProps.stadiumData.region)
 		.then((response) => {
 			this.setState({
-				cityList: response.data.items
-			})			
+				districtList: response.data.items,
+				loadingForm: false
+			})
 		})
 		.catch(function (error) {
-			console.log(error);
+			console.log(error)
 		})
-		if (this.state.userInfo) {
-			axios.get(`${config.apiBaseURL}/api/stadium/` + this.state.userInfo.default_stadium_id, {
-				'headers': {'Authorization': this.state.userInfo.token}
-			})
-			.then((response) => {
-				let data = response.data
-				axios.get(`${config.apiBaseURL}/api/region/district?region=` + data.region)
-				.then((response) => {
-					this.setState({
-						districtList: response.data.items,
-						loadingForm: false
-					})
-				})
-				.catch(function (error) {
-					console.log(error);
-				})
-				this.setState({
-					logoImage: data.image,
-					name: data.name,
-					address: data.address,
-					city: data.region,
-					district: data.sub_region,
-					lat: data.lat,
-					lng: data.lng,
-					idStadium: data.id
-				})
-			})
-			.catch(function (error) {
-				console.log(error);
-			})
-		}
 	}
-	handleOpenModalImage = () => {
-		this.setState({ modalOpen: true })
-	}
-	handleCloseModal = () => {
-		this.setState({ modalOpen: false })
-	}
-	handleChooseImage = () => {
-		this.setState({ modalOpen: false })
+	componentDidMount = () => {
+		window.addEventListener('resize', this.detectScreenChange)
+		console.log(this.state)
 	}
 	render() {
 		return (
@@ -153,19 +128,20 @@ class StadiumForm extends Component {
 				<Grid.Row style={style.marginTopBot} centered={true}>
 					{
 						(this.state.screenSize >= 768)?(
-							<Form loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
+							<Form onSubmit={this.handleSubmit} className="format-form stadium-form">
 								<Form.Field>
 									<label>Logo sân</label>
 									<Image style={style.logoImage} src={this.state.logoImage} />
 								</Form.Field>
+								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(1)}>
+									<a style={style.changeImage}>Thay đổi logo</a>
+								</Form.Field>
 								<Form.Field>
-									<Modal style={style.none} open={this.state.modalOpen} centered={false} 
-									trigger={<Button style={style.fullWidth} onClick={this.handleOpenModalImage}>Chọn ảnh</Button>}>
-										<Header style={style.colorMassageAccept}>Ảnh của bạn</Header>
-										<Modal.Description style={style.styleDescription}>
-											<StadiumImage content={true} handleChooseImage={this.handleChooseImage} handleCloseModal={this.handleCloseModal}/>
-										</Modal.Description>
-									</Modal>
+									<label>Ảnh nền sân</label>
+									<Image style={style.logoImage} src={this.state.bgImage} />
+								</Form.Field>
+								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(2)}>
+									<a style={style.changeImage}>Thay đổi ảnh nền</a>
 								</Form.Field>
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>
@@ -206,14 +182,14 @@ class StadiumForm extends Component {
 								<Form.Field style={style.flexCenter}>
 									<Image style={style.logoImage} src={this.state.logoImage} />
 								</Form.Field>
-								<Form.Field>
-									<Modal style={style.none} open={this.state.modalOpen} centered={false} 
-									trigger={<Button style={style.fullWidth} onClick={this.handleOpenModalImage}>Chọn ảnh</Button>}>
-										<Header style={style.colorMassageAccept}>Ảnh của bạn</Header>
-										<Modal.Description style={style.styleDescription}>
-											<StadiumImage content={true} handleChooseImage={this.handleChooseImage} />
-										</Modal.Description>
-									</Modal>
+								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(1)}>
+									<a style={style.changeImage}>Chọn ảnh</a>
+								</Form.Field>
+								<Form.Field style={style.flexCenter}>
+									<Image style={style.logoImage} src={this.state.bgImage} />
+								</Form.Field>
+								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(2)}>
+									<a style={style.changeImage}>Chọn ảnh</a>
 								</Form.Field>
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>
@@ -248,14 +224,6 @@ class StadiumForm extends Component {
 						  	</Form>
 						)
 					}
-				</Grid.Row>
-				<Grid.Row>
-					<h3>Quản lý sân</h3>
-				</Grid.Row>
-				<Grid.Row style={style.marginTopBot} centered={true}>
-					<Form>
-						<Form.Input/>
-					</Form>
 				</Grid.Row>
 			</Grid>
 		)
