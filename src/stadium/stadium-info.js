@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Tab } from 'semantic-ui-react'
+import { Grid, Tab, Loader } from 'semantic-ui-react'
 import { Redirect } from 'react-router-dom'
 import StadiumForm from './stadium-form.js'
 import StadiumImage from './stadium-image.js'
@@ -18,7 +18,8 @@ class StadiumInfo extends Component {
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
 			stadiumData: [],
 			cityList: [],
-			imageList: []
+			imageList: [],
+			loading:true
 		}
 	}
 	handleTabImage = (number) => {
@@ -46,16 +47,7 @@ class StadiumInfo extends Component {
 			activeIndex: data.activeIndex
 		})
 	}
-	componentDidMount = () => {
-		axios.get(`${config.apiBaseURL}/api/region/province`)
-		.then((response) => {
-			this.setState({
-				cityList: response.data.items
-			})
-		})
-		.catch(function (error) {
-			console.log(error)
-		})
+	fetchData = () => {
 		if (this.state.userInfo) {
 			axios.get(`${config.apiBaseURL}/api/stadium/` + this.state.userInfo.default_stadium_id, {
 				'headers': {'Authorization': this.state.userInfo.token}
@@ -63,7 +55,8 @@ class StadiumInfo extends Component {
 			.then((response) => {
 				this.setState({
 					stadiumData: response.data,
-					imageList: response.data.img_list
+					imageList: response.data.img_list,
+					loading:false
 				})
 			})
 			.catch(function (error) {
@@ -71,36 +64,55 @@ class StadiumInfo extends Component {
 			})
 		}
 	}
+	componentDidMount = () => {
+		axios.get(`${config.apiBaseURL}/api/region/province`)
+		.then((response) => {
+			this.setState({
+				cityList: response.data.items
+			}, this.fetchData)
+		})
+		.catch(function (error) {
+			console.log(error)
+		})
+	}
 	render() {
 		if (!localStorage.getItem('MET_userInfo'))
 			return <Redirect to="/login"/>
-		else
-			return (
-				<Grid style={{margin: "0"}} className="stadium-info">
-					<Tab style={style.fullWidth} onTabChange={this.handleTabChange} activeIndex={this.state.activeIndex} menu={{ secondary: true, pointing: true }} 
-					panes={
-						[
-							{ menuItem: 'Thông tin sân', render: () => <Tab.Pane className="detail-stadium" attached={false}>
-								<StadiumForm
-									logoImage={this.state.logoImage}
-									bgImage={this.state.bgImage}
-									handleTabImage={this.handleTabImage}
-									stadiumData={this.state.stadiumData}
-									cityList={this.state.cityList}
-								/></Tab.Pane> },
-							{ menuItem: 'Hình ảnh sân', render: () => <Tab.Pane className="detail-stadium" attached={false}>
-								<StadiumImage
-									handleImageChange={this.handleImageChange}
-									handleBgImageChange={this.handleBgImageChange}
-									numberImageChange={this.state.numberImageChange}
-									imageList={this.state.stadiumData.imageList}
-									handleTabForm={this.handleTabForm}
-								/></Tab.Pane> },
-							{ menuItem: 'Quản lý sân', render: () => <Tab.Pane className="detail-stadium" attached={false}>Quản lý sân</Tab.Pane> },
-						]
-					} />
-				</Grid>
-			)
+		else {
+			if (!this.state.loading) {
+				console.log('render')
+				console.log(this.state.logoImage)
+				return (
+					<Grid style={{margin: "0"}} className="stadium-info">
+						<Tab style={style.fullWidth} onTabChange={this.handleTabChange} activeIndex={this.state.activeIndex} menu={{ secondary: true, pointing: true }} 
+						panes={
+							[
+								{ menuItem: 'Thông tin sân', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+									<StadiumForm
+										logoImage={this.state.logoImage}
+										bgImage={this.state.bgImage}
+										handleTabImage={this.handleTabImage}
+										stadiumData={this.state.stadiumData}
+										cityList={this.state.cityList}
+									/></Tab.Pane> },
+								{ menuItem: 'Hình ảnh sân', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+									<StadiumImage
+										handleImageChange={this.handleImageChange}
+										handleBgImageChange={this.handleBgImageChange}
+										numberImageChange={this.state.numberImageChange}
+										imageList={this.state.stadiumData.imageList}
+										handleTabForm={this.handleTabForm}
+									/></Tab.Pane> },
+								{ menuItem: 'Quản lý sân', render: () => <Tab.Pane className="detail-stadium" attached={false}>Quản lý sân</Tab.Pane> },
+							]
+						} />
+					</Grid>
+				)
+			}
+			else {
+				return <Loader active={this.state.loading} />
+			}
+		}
 	}
 }
 
