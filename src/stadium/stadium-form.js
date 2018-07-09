@@ -10,15 +10,15 @@ class StadiumForm extends Component {
 		this.textInput = React.createRef()
 		this.state = {
 			screenSize: window.screen.width,
-			cityList: [],
-			stadiumData: [],
-			logoImage: "",
-			bgImage: "",
-			name: "",
-			address: "",
-			manager: "",
-			city: 0,
-			district: 0,
+			cityList: props.cityList || [],
+			stadiumData: props.stadiumData || {},
+			logoImage: props.stadiumData.image || "",
+			bgImage: props.stadiumData.bg_image || "",
+			name: props.stadiumData.name || "",
+			address: props.stadiumData.address || "",
+			manager: [],
+			city: props.stadiumData.region || 0,
+			district: props.stadiumData.sub_region || 0,
 			errName: "",
 			errAddress: "",
 			disabled: false,
@@ -96,6 +96,7 @@ class StadiumForm extends Component {
 	}
 	detectScreenChange = () => this.setState({ screenSize: window.screen.width })
 	componentWillReceiveProps = (nextProps) => {
+		console.log('receive props')
 		this.setState({
 			cityList: nextProps.cityList,
 			logoImage: nextProps.stadiumData.image,
@@ -103,7 +104,7 @@ class StadiumForm extends Component {
 			name: nextProps.stadiumData.name,
 			address: nextProps.stadiumData.address,
 			city: nextProps.stadiumData.region
-		}, console.log("123"))
+		})
 		axios.get(`${config.apiBaseURL}/api/region/district?region=` + nextProps.stadiumData.region)
 		.then((response) => {
 			this.setState({
@@ -117,7 +118,6 @@ class StadiumForm extends Component {
 	}
 	componentDidMount = () => {
 		window.addEventListener('resize', this.detectScreenChange)
-		console.log(this.state)
 	}
 	render() {
 		return (
