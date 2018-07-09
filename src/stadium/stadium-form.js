@@ -94,28 +94,6 @@ class StadiumForm extends Component {
 		})
 	}
 	detectScreenChange = () => this.setState({ screenSize: window.screen.width })
-<<<<<<< HEAD
-	// componentWillReceiveProps = (nextProps) => {
-	// 	this.setState({
-	// 		cityList: nextProps.cityList,
-	// 		logoImage: nextProps.stadiumData.image,
-	// 		bgImage: nextProps.stadiumData.bg_image,
-	// 		name: nextProps.stadiumData.name,
-	// 		address: nextProps.stadiumData.address,
-	// 		city: nextProps.stadiumData.region
-	// 	}, () => console.log("nextProps receive"))
-	// 	axios.get(`${config.apiBaseURL}/api/region/district?region=` + nextProps.stadiumData.region)
-	// 	.then((response) => {
-	// 		this.setState({
-	// 			districtList: response.data.items,
-	// 			loadingForm: false
-	// 		})
-	// 	})
-	// 	.catch(function (error) {
-	// 		console.log(error)
-	// 	})
-	// }
-=======
 	componentWillReceiveProps = (nextProps) => {
 		console.log('receive props')
 		this.setState({
@@ -126,7 +104,10 @@ class StadiumForm extends Component {
 			address: nextProps.stadiumData.address,
 			city: nextProps.stadiumData.region
 		})
-		axios.get(`${config.apiBaseURL}/api/region/district?region=` + nextProps.stadiumData.region)
+	}
+	componentDidMount = () => {
+		window.addEventListener('resize', this.detectScreenChange)
+		axios.get(`${config.apiBaseURL}/api/region/district?region=` + this.state.stadiumData.region)
 		.then((response) => {
 			this.setState({
 				districtList: response.data.items,
@@ -136,10 +117,6 @@ class StadiumForm extends Component {
 		.catch(function (error) {
 			console.log(error)
 		})
-	}
->>>>>>> 389552c10d7c0659146ea988514231748fbe2666
-	componentDidMount = () => {
-		window.addEventListener('resize', this.detectScreenChange)
 	}
 	render() {
 		return (

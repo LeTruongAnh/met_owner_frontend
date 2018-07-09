@@ -23,7 +23,7 @@ class StadiumImage extends Component {
 	handleClickAddImage = () => {
 		document.getElementById('input-image').click()
 	}
-	handleAddImage = (selectorFiles: FileList) => {
+	handleAddImage = (selectorFiles) => {
 		var file = selectorFiles[0];
 		var reader = new FileReader();
 		this.setState( {loading: true} )
@@ -65,9 +65,11 @@ class StadiumImage extends Component {
 					{
 						(this.props.numberImageChange === 0)?"":(<Button style={style.styleImageStadiumButton} onClick={
 							() => {
-								let url = this.state.srcSelect
-								if (this.props.numberImageChange === 1) this.props.handleImageChange(url) 
-								else this.props.handleBgImageChange(url)
+								if (this.props.numberImageChange === 1) {
+									this.props.handleImageChange(this.state.srcSelect)
+									console.log("nhận url image")
+								}
+								else this.props.handleBgImageChange(this.state.srcSelect)
 								this.props.handleTabForm()
 							}
 						}>Chọn</Button>)
