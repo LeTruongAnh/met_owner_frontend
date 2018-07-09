@@ -16,7 +16,7 @@ class StadiumInfo extends Component {
 			logoImage: "",
 			bgImage: "",
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
-			stadiumData: [],
+			stadiumData: {},
 			cityList: [],
 			imageList: [],
 			loading:true
@@ -35,10 +35,14 @@ class StadiumInfo extends Component {
 		})
 	}
 	handleImageChange = (url) => {
-		this.setState({ logoImage: url })
+		let stadiumData = this.state.stadiumData
+		stadiumData.image = url
+		this.setState({ stadiumData: stadiumData })
 	}
 	handleBgImageChange = (url) => {
-		this.setState({ bgImage: url })
+		let stadiumData = this.state.stadiumData
+		stadiumData.bg_image = url
+		this.setState({ stadiumData: stadiumData })
 	}
 	handleTabChange = (e, data) => {
 		if (data.activeIndex === 0)
@@ -89,8 +93,6 @@ class StadiumInfo extends Component {
 							[
 								{ menuItem: 'Thông tin sân', render: () => <Tab.Pane className="detail-stadium" attached={false}>
 									<StadiumForm
-										logoImage={this.state.logoImage}
-										bgImage={this.state.bgImage}
 										handleTabImage={this.handleTabImage}
 										stadiumData={this.state.stadiumData}
 										cityList={this.state.cityList}

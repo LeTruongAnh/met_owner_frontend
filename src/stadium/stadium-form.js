@@ -94,52 +94,12 @@ class StadiumForm extends Component {
 		})
 	}
 	detectScreenChange = () => this.setState({ screenSize: window.screen.width })
-<<<<<<< HEAD
-	// componentWillReceiveProps = (nextProps) => {
-	// 	this.setState({
-	// 		cityList: nextProps.cityList,
-	// 		logoImage: nextProps.stadiumData.image,
-	// 		bgImage: nextProps.stadiumData.bg_image,
-	// 		name: nextProps.stadiumData.name,
-	// 		address: nextProps.stadiumData.address,
-	// 		city: nextProps.stadiumData.region
-	// 	}, () => console.log("nextProps receive"))
-	// 	axios.get(`${config.apiBaseURL}/api/region/district?region=` + nextProps.stadiumData.region)
-	// 	.then((response) => {
-	// 		this.setState({
-	// 			districtList: response.data.items,
-	// 			loadingForm: false
-	// 		})
-	// 	})
-	// 	.catch(function (error) {
-	// 		console.log(error)
-	// 	})
-	// }
-=======
-	componentWillReceiveProps = (nextProps) => {
-		console.log('receive props')
-		this.setState({
-			cityList: nextProps.cityList,
-			logoImage: nextProps.stadiumData.image,
-			bgImage: nextProps.stadiumData.bg_image,
-			name: nextProps.stadiumData.name,
-			address: nextProps.stadiumData.address,
-			city: nextProps.stadiumData.region
-		})
-		axios.get(`${config.apiBaseURL}/api/region/district?region=` + nextProps.stadiumData.region)
-		.then((response) => {
-			this.setState({
-				districtList: response.data.items,
-				loadingForm: false
-			})
-		})
-		.catch(function (error) {
-			console.log(error)
-		})
-	}
->>>>>>> 389552c10d7c0659146ea988514231748fbe2666
 	componentDidMount = () => {
 		window.addEventListener('resize', this.detectScreenChange)
+		this.setState({
+			logoImage:this.props.stadiumData.image,
+			bgImage:this.props.stadiumData.bg_image
+		})
 	}
 	render() {
 		return (

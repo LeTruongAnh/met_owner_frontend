@@ -23,7 +23,7 @@ class StadiumImage extends Component {
 	handleClickAddImage = () => {
 		document.getElementById('input-image').click()
 	}
-	handleAddImage = (selectorFiles: FileList) => {
+	handleAddImage = (selectorFiles) => {
 		var file = selectorFiles[0];
 		var reader = new FileReader();
 		this.setState( {loading: true} )
