@@ -10,13 +10,12 @@ class StadiumForm extends Component {
 		this.textInput = React.createRef()
 		this.state = {
 			screenSize: window.screen.width,
-			cityList: [],
-			stadiumData: [],
-			logoImage: "",
-			bgImage: "",
-			name: "",
-			address: "",
-			manager: "",
+			cityList: props.cityList || [],
+			stadiumData: props.stadiumData || {},
+			logoImage: props.logoImage,
+			bgImage: props.bgImage,
+			name: props.stadiumData.name ||  "",
+			address: props.stadiumData.address ||  "",
 			city: 0,
 			district: 0,
 			errName: "",
@@ -24,7 +23,7 @@ class StadiumForm extends Component {
 			disabled: false,
 			lat: 0,
 			lng: 0,
-			loadingForm: true,
+			loadingForm: false,
 			loadingBut: false,
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
 			districtList: []
@@ -95,26 +94,26 @@ class StadiumForm extends Component {
 		})
 	}
 	detectScreenChange = () => this.setState({ screenSize: window.screen.width })
-	componentWillReceiveProps = (nextProps) => {
-		this.setState({
-			cityList: nextProps.cityList,
-			logoImage: nextProps.stadiumData.image,
-			bgImage: nextProps.stadiumData.bg_image,
-			name: nextProps.stadiumData.name,
-			address: nextProps.stadiumData.address,
-			city: nextProps.stadiumData.region
-		}, console.log("123"))
-		axios.get(`${config.apiBaseURL}/api/region/district?region=` + nextProps.stadiumData.region)
-		.then((response) => {
-			this.setState({
-				districtList: response.data.items,
-				loadingForm: false
-			})
-		})
-		.catch(function (error) {
-			console.log(error)
-		})
-	}
+	// componentWillReceiveProps = (nextProps) => {
+	// 	this.setState({
+	// 		cityList: nextProps.cityList,
+	// 		logoImage: nextProps.stadiumData.image,
+	// 		bgImage: nextProps.stadiumData.bg_image,
+	// 		name: nextProps.stadiumData.name,
+	// 		address: nextProps.stadiumData.address,
+	// 		city: nextProps.stadiumData.region
+	// 	}, () => console.log("nextProps receive"))
+	// 	axios.get(`${config.apiBaseURL}/api/region/district?region=` + nextProps.stadiumData.region)
+	// 	.then((response) => {
+	// 		this.setState({
+	// 			districtList: response.data.items,
+	// 			loadingForm: false
+	// 		})
+	// 	})
+	// 	.catch(function (error) {
+	// 		console.log(error)
+	// 	})
+	// }
 	componentDidMount = () => {
 		window.addEventListener('resize', this.detectScreenChange)
 		console.log(this.state)

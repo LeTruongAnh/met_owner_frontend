@@ -11,30 +11,14 @@ class StadiumImage extends Component {
 		this.state = {
 			screenSize: window.screen.width,
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
-			imageList: [],
+			imageList: props.imageList || [],
 			srcSelect: "",
 			loading: true
 		}
 	}
 	componentDidMount = () => {
 		window.addEventListener('resize', this.detectScreenChange)
-		if (this.state.userInfo) {
-			axios.get(`${config.apiBaseURL}/api/stadium/` + this.state.userInfo.default_stadium_id, {
-				'headers': {'Authorization': this.state.userInfo.token}
-			})
-			.then((response) => {
-				this.setState({
-					imageList: response.data.imageList,
-					loading: false
-				})
-			})
-			.catch(function (error) {
-				console.log(error)
-				this.setState({
-					loading: false
-				})
-			})
-		}
+		this.setState({loading:false})
 	}
 	handleClickAddImage = () => {
 		document.getElementById('input-image').click()
