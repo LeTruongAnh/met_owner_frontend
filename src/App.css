@@ -136,16 +136,6 @@ button {
 	background-color: #FFFFFF;
 	margin: 0 !important;
 }
-.stadium-form {
-	border: none;
-}
-.stadium-form .field .field, .stadium-form .field select {
-	width: 70% !important;
-}
-.stadium-form .field label{
-	width: 30% !important;
-	margin: 0 !important;
-}
 button {
 	margin-right: 0 !important;
 }
@@ -164,15 +154,18 @@ button>i {
 #menu-overlay p, #menu-overlay i {
 	color: #FFFFFF;
 }
-.stadium-form .field .booking-detail-label, .stadium-form .field .bookking-detail-input {
-	width: 50% !important;
+.date-picker-profile>div {
+	width: 70%;
 }
 
 @media screen and (max-width: 767px) {
 	.format-form {
 		width: 100%;
 	}
-	.stadium-form .field .field, .stadium-form .field select {
+	.stadium-form .field input, .stadium-form .field select {
 		width: 100% !important;
+	}
+	.date-picker-profile>div {
+		width: 100%;
 	}
 }

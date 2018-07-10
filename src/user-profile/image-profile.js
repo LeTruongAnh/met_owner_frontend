@@ -28,7 +28,7 @@ class StadiumImage extends Component {
 		var reader = new FileReader();
 		this.setState( {loading: true} )
 		reader.onloadend = () => {
-			axios.post(`${config.apiBaseURL}/api/stadium/upload`, {
+			axios.post(`${config.apiBaseURL}/api/user/upload`, {
 				"image": reader.result,
 				"stadiumID": this.state.userInfo.default_stadium_id
 			}, {
@@ -49,7 +49,7 @@ class StadiumImage extends Component {
 				this.setState( {loading: true} )
 			})
 		}
-		reader.readAsDataURL(file);
+		reader.readAsDataURL(file)
 	}
 	handleClickImage = (event) => {
 		let srcSelect = event.target.src
@@ -63,10 +63,9 @@ class StadiumImage extends Component {
 			<div>
 				<div style={style.styleRowImageButton}>
 					{
-						(this.props.numberImageChange === 0)?"":(<Button style={style.styleImageStadiumButton} onClick={
+						(this.props.isImageChange === false)?"":(<Button style={style.styleImageStadiumButton} onClick={
 							() => {
-								if (this.props.numberImageChange === 1) this.props.handleImageChange(this.state.srcSelect)
-								else this.props.handleBgImageChange(this.state.srcSelect)
+								this.props.handleAvatarChange(this.state.srcSelect)
 								this.props.handleTabForm()
 							}
 						}>Chọn</Button>)

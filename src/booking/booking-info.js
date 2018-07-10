@@ -68,14 +68,15 @@ class BookingInfo extends Component {
 		return time
 	}
 	handlePagination = (number) => {
+		let maxNum = this.state.numPagi.length
 		switch(number) {
 			case this.currentPagi:
 				break
 			case 0:
 				this.setState({ currentPagi: 1 })
 				break
-			case 4:
-				this.setState({ currentPagi: 3 })
+			case maxNum + 1:
+				this.setState({ currentPagi: maxNum })
 				break
 			default:
 				this.setState({
@@ -98,7 +99,6 @@ class BookingInfo extends Component {
 				}
 			)
 		}
-		
 	}
 	detectScreenChange = () => {
 		this.setState({

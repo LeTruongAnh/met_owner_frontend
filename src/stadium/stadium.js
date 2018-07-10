@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Grid, Button, Icon, Sidebar } from 'semantic-ui-react'
-import MenuApp from './menu-app.js'
-import style from './style'
-import StadiumInfo from '../stadium/stadium-info.js'
+import MenuApp from '../dashboard/menu-app.js'
+import style from '../dashboard/style'
+import StadiumInfo from './stadium-info'
 
-class Dashboard extends Component {
+class Stadium extends Component {
 	constructor(props){
 		super(props)
 		this.state = {
@@ -96,4 +96,4 @@ class Dashboard extends Component {
 	}
 }
 
-export default Dashboard;
+export default Stadium

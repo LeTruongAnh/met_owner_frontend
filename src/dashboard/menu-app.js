@@ -68,14 +68,16 @@ class MenuApp extends Component {
 							</div>
 						)
 					}
-					<div style={(this.state.isExpand)?style.userAvatar:style.contentCenter}>
-						<div style={styleAvatar}></div>
-						{
-							(this.state.isExpand)?(
-								<div style={style.marginLeftText}><h4 style={style.marginLeftText}>{this.state.userInfo.full_name}</h4></div>
-							):""
-						}
-					</div>		
+					<Link style={style.fullWidth} to="/profile">
+						<div style={(this.state.isExpand)?style.userAvatar:style.contentCenter}>
+							<div style={styleAvatar}></div>
+							{
+								(this.state.isExpand)?(
+									<div style={style.marginLeftText}><h4 style={style.marginLeftText}>{this.state.userInfo.full_name}</h4></div>
+								):""
+							}
+						</div>
+					</Link>	
 					{
 						(!this.state.isExpand)?"":(<div style={style.marginTopBot}><h3 style={style.colorText}>Quản lý</h3></div>)
 					}

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Checkbox, Form, Grid, Icon, Image, Header, Modal } from 'semantic-ui-react'
 import moment from 'moment'
 import DatePicker from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css';
+import 'react-datepicker/dist/react-datepicker.css'
 import axios from 'axios'
 import config from '../config'
 import { Redirect } from 'react-router-dom'
@@ -20,6 +20,7 @@ class RegistForm extends Component {
 			passwordRep:"",
 			email:"",
 			dob: null,
+			dobUp: 0,
 			errFirstName:"",
 			errLastName:"",
 			errPhone: "",
@@ -35,7 +36,10 @@ class RegistForm extends Component {
 	}
 	handleChange = (e, { name, value }) => this.setState({ [name]: value })
 	handleChangeDate = (date) => {
-		this.setState({dob: date})
+		this.setState({
+			dob: date,
+			dobUp: moment(date).valueOf()
+		})
 	}
 	handleSubmit = () => {
 		let isOK = true
@@ -149,7 +153,9 @@ class RegistForm extends Component {
 				"firstName":this.state.firstName,
 				"lastName":this.state.lastName,
 				"password":this.state.password,
-				"role":2
+				"role":2,
+				"dob": this.state.dobUp,
+				"email": this.state.email
 			})
 			.then((response) => {
 				this.setState({
@@ -235,7 +241,7 @@ class RegistForm extends Component {
 						</Form.Field>
 						<Form.Field>
 							<span className="err-span">{this.state.errDob}</span>
-							<DatePicker fixedHeight peekNextMonth showMonthDropdown showYearDropdown dropdownMode="select" locale="vi-VN" dateFormat="DD/MM/YYYY" placeholderText="Chọn ngày sinh" selected={this.state.dob} onChange={this.handleChangeDate} />
+							<DatePicker fixedHeight showMonthDropdown showYearDropdown dropdownMode="select" dateFormat="DD/MM/YYYY" placeholderText="Chọn ngày sinh" selected={this.state.dob} onChange={this.handleChangeDate} />
 						</Form.Field>
 						<Form.Field>
 							<span className="err-span">{this.state.errCheckTerm}</span>
@@ -245,7 +251,6 @@ class RegistForm extends Component {
 						<Modal open={this.state.modalOpen} centered={false} size="large" closeIcon={true} trigger={<Button className="form-but" loading={this.state.loading} type='submit'>Đăng ký</Button>}>
 							<Header style={style.colorMassageAccept}>Chúc mừng bạn đã đăng ký thành công!</Header>
 						</Modal>
-						
 					</Form>
 				</Grid>
 			);

@@ -3,9 +3,10 @@ import 'semantic-ui-css/semantic.min.css'
 import './App.css'
 import LoginForm from './login/login-form.js'
 import RegistForm from './regist/regist-form.js'
-import Dashboard from './dashboard/dashboard.js'
+import Stadium from './stadium/stadium.js'
 import Booking from './booking/booking.js'
 import BookingDetail from './booking/booking-detail.js'
+import UserProfile from './user-profile/user-profile.js'
 import {
   BrowserRouter as Router,
   Route,
@@ -18,7 +19,7 @@ class App extends Component {
             <div className="App">
                 <Router>
                     <Switch className="router-div">
-                        <Route path="/" exact component={Dashboard} />
+                        <Route path="/" exact component={Stadium} />
                         <Route path="/login" exact component={LoginForm} />
                         <Route path="/register" exact component={RegistForm} />
                         <Route path="/booking" exact component={Booking} />
@@ -27,6 +28,7 @@ class App extends Component {
                                 return <BookingDetail bookingID={match.params.bookingID}/>
                             }
                         }/>
+                        <Route path="/profile" exact component={UserProfile} />
                     </Switch>
                 </Router>
             </div>

@@ -30,7 +30,8 @@ module.exports = {
 		padding: "14px 20px",
 		width: "100%",
 	    display: "flex",
-	    alignItems: "center"
+	    alignItems: "center",
+	    cursor: "pointer"
 	},
 	marginLeftText: {
 		marginLeft: "14px",
@@ -41,7 +42,8 @@ module.exports = {
 		justifyContent: "center",
 		width: "100%",
 	    display: "flex",
-	    alignItems: "center"
+	    alignItems: "center",
+	    cursor: "pointer"
 	},
 	flexCenter: {
 		display: "flex",
@@ -76,16 +78,20 @@ module.exports = {
 		color: "#FFF"
 	},
 	pendingColor: {
-		color: "#ffab00"
+		color: "#ffab00",
+		width: "50%"
 	},
 	approvedColor: {
-		color: "#00b8d9"
+		color: "#00b8d9",
+		width: "50%"
 	},
 	paymentCompletedColor: {
-		color: "#28a570"
+		color: "#28a570",
+		width: "50%"
 	},
 	errorColor: {
-		color: "#de350b"
+		color: "#de350b",
+		width: "50%"
 	},
 	detailLink: {
 		color: "#006838"
@@ -189,13 +195,23 @@ module.exports = {
 		color: "#fff",
 		fontWeight: "bold",
 		textDecoration: "none",
-		fontSize: "13px"
+		fontSize: "1rem"
 	},
 	changeImageField: {
-		padding: "9px 21px",
+		padding: ".78571429em 1.5em .78571429em",
 		backgroundColor: "#006838",
 		justifyContent: "center",
 		borderRadius: ".28571429rem",
-		cursor: "pointer"
+		cursor: "pointer",
+		lineHeight: "1em"
+	},
+	styleStadiumForm: {
+		border: "none"
+	},
+	width50: {
+		width: "50%"
+	},
+	width30: {
+		width: "30%"
 	}
 }

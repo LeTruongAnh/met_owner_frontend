@@ -104,30 +104,30 @@ class BookingForm extends Component {
                 <Grid.Row><h3 style={style.marginTotal14px}>Thông tin đặt sân</h3></Grid.Row>
                 <Grid.Row style={style.marginTotal14px} centered={true}>
                     <Segment style={(this.props.isMobile)?style.fullWidth:style.none}>
-                        <Form loading={this.state.loading} className="format-form stadium-form">
+                        <Form style={style.styleStadiumForm} loading={this.state.loading} className="format-form">
                             <Form.Field>
-                                <label className="booking-detail-label">Mã đặt sân</label>
-                                <Form.Input className="booking-detail-input">{this.state.bookingInfo.id}</Form.Input>
+                                <label style={style.width50}>Mã đặt sân</label>
+                                <Form.Input style={style.width50}>{this.state.bookingInfo.id}</Form.Input>
                             </Form.Field>
                             <Form.Field>
-                                <label className="booking-detail-label">Số điện thoại</label>
-                                <Form.Input className="booking-detail-input">{this.state.creator.country_code + this.state.creator.phone}</Form.Input>
+                                <label style={style.width50}>Số điện thoại</label>
+                                <Form.Input style={style.width50}>{this.state.creator.country_code + this.state.creator.phone}</Form.Input>
                             </Form.Field>
                             <Form.Field>
-                                <label className="booking-detail-label">Sân con</label>
-                                <Form.Input className="booking-detail-input">{this.state.bookingInfo.sc_name}</Form.Input>
+                                <label style={style.width50}>Sân con</label>
+                                <Form.Input style={style.width50}>{this.state.bookingInfo.sc_name}</Form.Input>
                             </Form.Field>
                             <Form.Field>
-                                <label className="booking-detail-label">Ngày đá</label>
-                                <Form.Input className="booking-detail-input">{this.dateConverter(this.state.bookingInfo.date_started)}</Form.Input>
+                                <label style={style.width50}>Ngày đá</label>
+                                <Form.Input style={style.width50}>{this.dateConverter(this.state.bookingInfo.date_started)}</Form.Input>
                             </Form.Field>
                             <Form.Field>
-                                <label className="booking-detail-label">Giờ đá</label>
-                                <Form.Input className="booking-detail-input">{this.timeConverter(this.state.bookingInfo.date_started,this.state.bookingInfo.date_ended)}</Form.Input>
+                                <label style={style.width50}>Giờ đá</label>
+                                <Form.Input style={style.width50}>{this.timeConverter(this.state.bookingInfo.date_started,this.state.bookingInfo.date_ended)}</Form.Input>
                             </Form.Field>
                             <Form.Field>
-                                <label className="booking-detail-label">Trạng thái</label>
-                                <Form.Input className="booking-detail-input" style={(() => {
+                                <label style={style.width50}>Trạng thái</label>
+                                <Form.Input style={(() => {
                                                         switch(this.state.bookingInfo.status) {
                                                             case 1:
                                                                 return style.pendingColor

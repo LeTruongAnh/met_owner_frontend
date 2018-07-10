@@ -18,12 +18,12 @@ class StadiumForm extends Component {
 			address: props.stadiumData.address || "",
 			city: props.stadiumData.region || 0,
 			district: props.stadiumData.sub_region || 0,
+			lat: props.stadiumData.lat,
+			lng: props.stadiumData.lng,
 			errName: "",
 			errAddress: "",
 			disabled: false,
-			lat: 0,
-			lng: 0,
-			loadingForm: false,
+			loadingForm: true,
 			loadingBut: false,
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
 			districtList: []
@@ -44,7 +44,7 @@ class StadiumForm extends Component {
 		if (isOK) {
 			this.setState({ loadingBut: true })
 			axios.put(
-				`${config.apiBaseURL}/api/stadium/` + this.state.idStadium,
+				`${config.apiBaseURL}/api/stadium/` + this.state.userInfo.default_stadium_id,
 				{
 					"image": this.state.logoImage,
 					"bgImage": this.state.bgImage,
@@ -56,7 +56,10 @@ class StadiumForm extends Component {
 					"lng": this.state.lng
 				},
 				{
-					'headers': {'Authorization': this.state.userInfo.token, 'Content-Type': 'application/json'}
+					'headers': {
+						'Authorization': this.state.userInfo.token,
+						'Content-Type': 'application/json'
+					}
 				}
 			)
 			.then((response) => {
@@ -67,7 +70,7 @@ class StadiumForm extends Component {
 			})
 		}
 	}
-	handleChange = (e, { name, value }) => this.setState({ [name]: value })
+	handleChange = (e) => this.setState({ [e.target.name]: e.target.value })
 	handleChangeCity = (e) => {
 		let citySelect = parseInt(e.target.value, 10)
 		this.setState({
@@ -81,7 +84,6 @@ class StadiumForm extends Component {
 				this.setState({
 					districtList: response.data.items
 				})
-				console.log("City first OK")
 			})
 			.catch(function (error) {
 				console.log(error)
@@ -94,17 +96,6 @@ class StadiumForm extends Component {
 		})
 	}
 	detectScreenChange = () => this.setState({ screenSize: window.screen.width })
-	componentWillReceiveProps = (nextProps) => {
-		console.log('receive props')
-		this.setState({
-			cityList: nextProps.cityList,
-			logoImage: nextProps.stadiumData.image,
-			bgImage: nextProps.stadiumData.bg_image,
-			name: nextProps.stadiumData.name,
-			address: nextProps.stadiumData.address,
-			city: nextProps.stadiumData.region
-		})
-	}
 	componentDidMount = () => {
 		window.addEventListener('resize', this.detectScreenChange)
 		axios.get(`${config.apiBaseURL}/api/region/district?region=` + this.state.stadiumData.region)
@@ -114,29 +105,26 @@ class StadiumForm extends Component {
 				loadingForm: false
 			})
 		})
-		.catch(function (error) {
+		.catch((error) => {
 			console.log(error)
 		})
 	}
 	render() {
 		return (
 			<Grid className="grid-form stadium-grid">
-				<Grid.Row>
-					<h3>Thông tin</h3>
-				</Grid.Row>
 				<Grid.Row style={style.marginTopBot} centered={true}>
 					{
 						(this.state.screenSize >= 768)?(
-							<Form onSubmit={this.handleSubmit} className="format-form stadium-form">
+							<Form style={style.styleStadiumForm} loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
 								<Form.Field>
-									<label>Logo sân</label>
+									<label style={style.width30}>Logo sân</label>
 									<Image style={style.logoImage} src={this.state.logoImage} />
 								</Form.Field>
 								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(1)}>
 									<a style={style.changeImage}>Thay đổi logo</a>
 								</Form.Field>
 								<Form.Field>
-									<label>Ảnh nền sân</label>
+									<label style={style.width30}>Ảnh nền sân</label>
 									<Image style={style.logoImage} src={this.state.bgImage} />
 								</Form.Field>
 								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(2)}>
@@ -144,15 +132,68 @@ class StadiumForm extends Component {
 								</Form.Field>
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>
-									<label>Tên</label>
-							      	<Form.Input value={this.state.name} name="name" onChange={this.handleChange} />
+									<label style={style.width30}>Tên</label>
+							      	<input style={style.width70} value={this.state.name} name="name" onChange={this.handleChange} />
 							    </Form.Field>
 								<span className="err-span">{this.state.errAddress}</span>
 								<Form.Field>
-									<label>Địa chỉ</label>
-							      	<Form.Input value={this.state.address} name="address" onChange={this.handleChange} />
+									<label style={style.width30}>Địa chỉ</label>
+							      	<input style={style.width70} value={this.state.address} name="address" onChange={this.handleChange} />
 							    </Form.Field>
-								<Form.Field value={this.state.city} label="Tỉnh/Thành" control="select" onChange={this.handleChangeCity}>
+								<Form.Field>
+									<label style={style.width30}>Tỉnh/Thành</label>
+									<select style={style.width70} value={this.state.city} onChange={this.handleChangeCity}>
+										<option value={0}>Chọn tỉnh/thành</option>
+										{
+											this.state.cityList.map(x => {
+												return (
+													<option key={x.id} value={x.id}>{x.name}</option>
+												)
+											})
+										}
+									</select>
+								</Form.Field>
+								<Form.Field>
+									<label style={style.width30}>Quận/Huyện</label>
+									<select style={style.width70} value={this.state.district} onChange={this.handleChangeDistrict} disabled={this.state.disabled}>
+										<option value={0}>Chọn quận/huyện</option>
+										{
+											this.state.districtList.map(x => {
+												return (
+													<option key={x.id} value={x.id}>{x.name}</option>
+												)
+											})
+										}
+									</select>
+								</Form.Field>
+								<span className="err-span">{this.state.errManager}</span>
+							    <Form.Field>
+							    	<Button loading={this.state.loadingBut} className="form-but" type='submit'>Cập nhật</Button>
+							    </Form.Field>
+						  	</Form>
+						):(
+							<Form style={style.styleStadiumForm} loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
+								<Form.Field style={style.flexCenter}>
+									<Image style={style.logoImage} src={this.state.logoImage} />
+								</Form.Field>
+								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(1)}>
+									<a style={style.changeImage}>Chọn ảnh</a>
+								</Form.Field>
+								<Form.Field style={style.flexCenter}>
+									<Image style={style.logoImage} src={this.state.bgImage} />
+								</Form.Field>
+								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(2)}>
+									<a style={style.changeImage}>Chọn ảnh</a>
+								</Form.Field>
+								<span className="err-span">{this.state.errName}</span>
+								<Form.Field>
+							      	<input style={style.width70} value={this.state.name} placeholder="Tên" name="name" onChange={this.handleChange} />
+							    </Form.Field>
+								<span className="err-span">{this.state.errAddress}</span>
+								<Form.Field>
+							      	<input style={style.width70} value={this.state.address} placeholder="Địa chỉ" name="address" onChange={this.handleChange} />
+							    </Form.Field>
+								<Form.Field className="region-select" value={this.state.city} placeholder="Tỉnh/Thành" control="select" onChange={this.handleChangeCity}>
 									<option value={0}>Chọn tỉnh/thành</option>
 									{
 										this.state.cityList.map(x => {
@@ -162,52 +203,7 @@ class StadiumForm extends Component {
 										})
 									}
 								</Form.Field>
-								<Form.Field value={this.state.district} label="Quận/Huyện" onChange={this.handleChangeDistrict} control="select" disabled={this.state.disabled}>
-									{
-										this.state.districtList.map(x => {
-											return (
-												<option key={x.id} value={x.id}>{x.name}</option>
-											)
-										})
-									}
-								</Form.Field>
-								<span className="err-span">{this.state.errManager}</span>
-							    <Form.Field>
-							    	<Button loading={this.state.loadingBut} className="form-but" type='submit'>Cập nhật</Button>
-							    </Form.Field>
-						  	</Form>
-						):(
-							<Form loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
-								<Form.Field style={style.flexCenter}>
-									<Image style={style.logoImage} src={this.state.logoImage} />
-								</Form.Field>
-								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(1)}>
-									<a style={style.changeImage}>Chọn ảnh</a>
-								</Form.Field>
-								<Form.Field style={style.flexCenter}>
-									<Image style={style.logoImage} src={this.state.bgImage} />
-								</Form.Field>
-								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(2)}>
-									<a style={style.changeImage}>Chọn ảnh</a>
-								</Form.Field>
-								<span className="err-span">{this.state.errName}</span>
-								<Form.Field>
-							      	<Form.Input value={this.state.name} placeholder="Tên" name="name" onChange={this.handleChange} />
-							    </Form.Field>
-								<span className="err-span">{this.state.errAddress}</span>
-								<Form.Field>
-							      	<Form.Input value={this.state.address} placeholder="Địa chỉ" name="address" onChange={this.handleChange} />
-							    </Form.Field>
-								<Form.Field value={this.state.city} placeholder="Tỉnh/Thành" control="select" onChange={this.handleChangeCity}>
-									{
-										this.state.cityList.map(x => {
-											return (
-												<option key={x.id} value={x.id}>{x.name}</option>
-											)
-										})
-									}
-								</Form.Field>
-								<Form.Field value={this.state.district} placeholder="Quận/Huyện" onChange={this.handleChangeDistrict} control="select" disabled={this.state.disabled}>
+								<Form.Field className="region-select" value={this.state.district} placeholder="Quận/Huyện" onChange={this.handleChangeDistrict} control="select" disabled={this.state.disabled}>
 									{
 										this.state.districtList.map(x => {
 											return (

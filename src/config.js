@@ -1,3 +1,3 @@
 module.exports = {
-	'apiBaseURL':'https://met-server.herokuapp.com'
+	'apiBaseURL':'http://staging.met.com.vn'
 }
