@@ -157,6 +157,10 @@ button>i {
 .date-picker-profile>div {
 	width: 70%;
 }
+.detail-form-booking>div {
+	width: 50%;
+	text-align: left;
+}
 
 @media screen and (max-width: 767px) {
 	.format-form {

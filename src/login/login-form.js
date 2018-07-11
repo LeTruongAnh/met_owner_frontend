@@ -59,6 +59,7 @@ class LoginForm extends Component {
 			.then((response) => {
 				if (typeof(Storage) !== "undefined") {
 					localStorage.setItem("MET_userInfo", JSON.stringify(response.data))
+					if (!localStorage.getItem('isExpand')) localStorage.setItem('isExpand', "true")
 					window.location.href = '/'
 					this.setState({loading:false})
 				}

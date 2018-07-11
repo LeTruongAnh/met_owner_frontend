@@ -72,10 +72,14 @@ class StadiumImage extends Component {
 						}>Chọn</Button>)
 					}
 					<Input style={style.displayNone} id="input-image" ref={this.textInput} onChange={ (e) => this.handleAddImage(e.target.files)} type="file" />
-					<Button style={style.styleImageStadiumButton} onClick={this.handleClickAddImage}><Icon name="add" size="small"></Icon></Button>
 				</div>
 				<Grid style={{margin: "0"}} columns={(this.state.screenSize >= 768)?6:2}>
 					<Loader active={this.state.loading} />
+					<Grid.Column onClick={this.handleClickAddImage}>
+						<Button style={style.fullWidthHeight}>
+							<Icon name="add" size={(this.state.screenSize > 1024)?("large"):("small")}/>
+						</Button>
+					</Grid.Column>
 					{
 						this.state.imageList.map((x, index) => {
 							return (
@@ -85,11 +89,6 @@ class StadiumImage extends Component {
 							)
 						})
 					}
-					<Grid.Column onClick={this.handleClickAddImage}>
-						<Button style={style.fullWidthHeight}>
-							<Icon name="add" size={(this.state.screenSize > 1024)?("large"):("small")}/>
-						</Button>
-					</Grid.Column>
 				</Grid>
 			</div>
 		)

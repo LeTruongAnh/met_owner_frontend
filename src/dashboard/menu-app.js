@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Menu, Icon, Grid, Button } from 'semantic-ui-react'
+import { Menu, Icon, Grid, Button, Modal, Header } from 'semantic-ui-react'
 import { Link, Redirect } from 'react-router-dom'
 import style from '../dashboard/style.js'
 
@@ -7,8 +7,15 @@ class MenuApp extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			isExpand: ((window.screen.width) >= 768)?(localStorage.getItem('isExpand')?((localStorage.getItem('isExpand') === "true")?true:false):(true)):(true),
-			userInfo: JSON.parse(localStorage.getItem('MET_userInfo'))
+			isExpand: (
+				(window.screen.width) >= 768)?(
+					localStorage.getItem('isExpand')?(
+						(localStorage.getItem('isExpand') === "true")?true:false
+					):(true)
+				):(true
+			),
+			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
+			openModal: false
 		}
 	}
 	stateMenu = { 
@@ -23,6 +30,12 @@ class MenuApp extends Component {
 	handleLogOut = () => {
 		localStorage.removeItem('MET_userInfo')
 		window.location.href = '/login'
+	}
+	handleLogOutCancel = () => {
+		this.setState({ openModal: false })
+	}
+	handleOpenModal = () => {
+		this.setState({ openModal: true })
 	}
 	handleMenuChild = () => {
 		if (this.state.isExpand === false) {
@@ -81,7 +94,6 @@ class MenuApp extends Component {
 					{
 						(!this.state.isExpand)?"":(<div style={style.marginTopBot}><h3 style={style.colorText}>Quản lý</h3></div>)
 					}
-					
 					<Menu className="menu-menu" secondary vertical>
 						<Menu.Item style={(!this.state.isExpand)?style.flexCenter:style.none} as={Link} to="/" name='stadium' active={activeItem === 'stadium'} onClick={this.handleItemClick}>
 							<Icon style={style.menuItemIcon} name="clone" />
@@ -96,11 +108,26 @@ class MenuApp extends Component {
 							}
 						</Menu.Item>
 					</Menu>
-					<div style={style.fullWidth}><Button onClick={this.handleLogOut} style={style.fullWidth}>
-					{
-						(this.state.isExpand)?"Đăng xuất":<Icon name="log out" />
-					}
-					</Button></div>
+					<Modal open={this.state.openModal} trigger={
+							<div style={style.fullWidth}><Button onClick={this.handleOpenModal} style={style.fullWidth}>
+							{
+								(this.state.isExpand)?"Đăng xuất":<Icon name="log out" />
+							}
+							</Button></div>
+						} basic size='small'>
+						<Header icon='archive' content='Tin nhắn xác nhận:' />
+						<Modal.Content>
+							<p>Bạn có chắc chắn muốn đăng xuất không?</p>
+						</Modal.Content>
+						<Modal.Actions>
+							<Button onClick={this.handleLogOutCancel} basic color='red' inverted>
+								<Icon name='remove' /> Không
+							</Button>
+							<Button onClick={this.handleLogOut} color='green' inverted>
+								<Icon name='checkmark' /> Có
+							</Button>
+						</Modal.Actions>
+					</Modal>
 				</Grid>
 			)
 		}

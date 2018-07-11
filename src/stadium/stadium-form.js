@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Form, Button, Image, } from 'semantic-ui-react'
+import { Grid, Form, Button, Image, Icon } from 'semantic-ui-react'
 import axios from 'axios'
 import config from '../config'
 import style from '../dashboard/style.js'
@@ -26,7 +26,9 @@ class StadiumForm extends Component {
 			loadingForm: true,
 			loadingBut: false,
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
-			districtList: []
+			districtList: [],
+			styleIconChangeLogo: style.changeImage,
+			styleIconChangeCover: style.changeImage
 		}
 	}
 	handleSubmit = () => {
@@ -109,6 +111,18 @@ class StadiumForm extends Component {
 			console.log(error)
 		})
 	}
+	handleMouseOverIconLogo = () => {
+		this.setState({ styleIconChangeLogo: style.changeImageHover })
+	}
+	handleMouseOutIconLogo = () => {
+		this.setState({ styleIconChangeLogo: style.changeImage })
+	}
+	handleMouseOverIconCover = () => {
+		this.setState({ styleIconChangeCover: style.changeImageHover })
+	}
+	handleMouseOutIconCover = () => {
+		this.setState({ styleIconChangeCover: style.changeImage })
+	}
 	render() {
 		return (
 			<Grid className="grid-form stadium-grid">
@@ -116,19 +130,19 @@ class StadiumForm extends Component {
 					{
 						(this.state.screenSize >= 768)?(
 							<Form style={style.styleStadiumForm} loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
-								<Form.Field>
+								<Form.Field style={style.positionRelative}>
+									<div onMouseOver={this.handleMouseOverIconLogo} onMouseOut={this.handleMouseOutIconLogo} style={this.state.styleIconChangeLogo} onClick={() => this.props.handleTabImage(1)}>
+										<Icon name="photo" size="large" />
+									</div>
 									<label style={style.width30}>Logo sân</label>
 									<Image style={style.logoImage} src={this.state.logoImage} />
 								</Form.Field>
-								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(1)}>
-									<a style={style.changeImage}>Thay đổi logo</a>
-								</Form.Field>
-								<Form.Field>
+								<Form.Field style={style.positionRelative}>
+									<div onMouseOver={this.handleMouseOverIconCover} onMouseOut={this.handleMouseOutIconCover} style={this.state.styleIconChangeCover} onClick={() => this.props.handleTabImage(2)}>
+										<Icon name="photo" size="large" />
+									</div>
 									<label style={style.width30}>Ảnh nền sân</label>
 									<Image style={style.logoImage} src={this.state.bgImage} />
-								</Form.Field>
-								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(2)}>
-									<a style={style.changeImage}>Thay đổi ảnh nền</a>
 								</Form.Field>
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>
@@ -173,17 +187,17 @@ class StadiumForm extends Component {
 						  	</Form>
 						):(
 							<Form style={style.styleStadiumForm} loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
-								<Form.Field style={style.flexCenter}>
+								<Form.Field style={style.styleFieldLogoCoverChange}>
+									<div onMouseOver={this.handleMouseOverIconLogo} onMouseOut={this.handleMouseOutIconLogo} style={this.state.styleIconChangeLogo} onClick={() => this.props.handleTabImage(1)}>
+										<Icon name="photo" size="large" />
+									</div>
 									<Image style={style.logoImage} src={this.state.logoImage} />
 								</Form.Field>
-								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(1)}>
-									<a style={style.changeImage}>Chọn ảnh</a>
-								</Form.Field>
-								<Form.Field style={style.flexCenter}>
+								<Form.Field style={style.styleFieldLogoCoverChange}>
+									<div onMouseOver={this.handleMouseOverIconCover} onMouseOut={this.handleMouseOutIconCover} style={this.state.styleIconChangeCover} onClick={() => this.props.handleTabImage(2)}>
+										<Icon name="photo" size="large" />
+									</div>
 									<Image style={style.logoImage} src={this.state.bgImage} />
-								</Form.Field>
-								<Form.Field style={style.changeImageField} onClick={() => this.props.handleTabImage(2)}>
-									<a style={style.changeImage}>Chọn ảnh</a>
 								</Form.Field>
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>

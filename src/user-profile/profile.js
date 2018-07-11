@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Form, Button, Image } from 'semantic-ui-react'
+import { Grid, Form, Button, Image, Icon } from 'semantic-ui-react'
 import moment from 'moment'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -25,7 +25,9 @@ class StadiumForm extends Component {
 			errLastName: "",
 			errDob: "",
 			loadingBut: false,
-			loadingForm: false
+			loadingForm: false,
+			styleIconChangeAvatar: style.styleIconChangeAvatar,
+			styleChangeImage: style.logoImageHover
 		}
 	}
 	handleChangeDate = (date) => {
@@ -55,6 +57,7 @@ class StadiumForm extends Component {
 				this.setState({errDob:""})
 		}
 		if (isOK) {
+			this.setState({ loadingBut: true })
 			axios.put(`${config.apiBaseURL}/api/user/profile`, {
 				"avatar": this.state.avatar,
 				"first_name": this.state.firstName,
@@ -69,9 +72,16 @@ class StadiumForm extends Component {
 			})
 			.then((reponse) => {
 				console.log(reponse.data)
+				this.setState({
+					userInfo: reponse.data,
+					loadingBut: false
+				}, () => {
+					localStorage.setItem('MET_userInfo', JSON.stringify(reponse.data))
+					console.log(JSON.parse(localStorage.getItem("MET_userInfo")))
+				})
 			})
 			.catch((error) => {
-				console.log(error.reponse)
+				console.log(error)
 			})
 		}
 	}
@@ -86,8 +96,26 @@ class StadiumForm extends Component {
 		)
 	}
 	openImageChangeAvatar = () => {
-		console.log(this.props.handleTabImage)
 		this.props.handleTabImage()
+	}
+	handleMouseOverIconAvatar = () => {
+		if (this.state.screenSize >= 768)
+			this.setState({
+				styleIconChangeAvatar: style.styleIconChangeAvatarHover,
+				styleChangeImage: style.logoImageHover
+			})
+		else
+			this.setState({
+				styleIconChangeAvatar: style.styleIconChangeAvatarHover,
+				styleChangeImage: style.logoImageHover
+			})
+	}
+	handleMouseOutIconAvatar = () => {
+		if (this.state.screenSize >= 768)
+			this.setState({
+				styleIconChangeAvatar: style.styleIconChangeAvatar,
+				styleChangeImage: style.logoImage
+			})
 	}
 	render() {
 		return (
@@ -96,11 +124,11 @@ class StadiumForm extends Component {
 					{
 						(this.state.screenSize >= 768)?(
 							<Form style={style.styleStadiumForm} loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
-								<Form.Field style={style.flexCenter}>
-									<Image style={style.logoImage} src={this.state.avatar} avatar size="small" />
-								</Form.Field>
-								<Form.Field style={style.changeImageField} onClick={this.openImageChangeAvatar}>
-									<a style={style.changeImage}>Thay đổi ảnh đại diện</a>
+								<Form.Field style={style.styleFieldAvatar}>
+									<div onMouseOver={this.handleMouseOverIconAvatar} onMouseOut={this.handleMouseOutIconAvatar} style={this.state.styleIconChangeAvatar} onClick={this.openImageChangeAvatar}>
+										<Icon name="photo" size="large" />
+									</div>
+									<Image style={this.state.styleChangeImage} src={this.state.avatar} avatar size="small" />
 								</Form.Field>
 								<Form.Field>
 									<label style={style.width30}>Số điện thoại</label>
@@ -132,11 +160,11 @@ class StadiumForm extends Component {
 						  	</Form>
 						):(
 							<Form style={style.styleStadiumForm} loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
-								<Form.Field style={style.flexCenter}>
-									<Image style={style.logoImage} src={this.state.avatar} />
-								</Form.Field>
-								<Form.Field style={style.changeImageField} onClick={() => this.props.handleAvatarChange()}>
-									<a style={style.changeImage}>Thay đổi ảnh đại diện</a>
+								<Form.Field style={style.styleFieldAvatar}>
+									<div style={style.styleIconChangeAvatar} onClick={this.openImageChangeAvatar}>
+										<Icon name="photo" size="large" />
+									</div>
+									<Image style={style.logoImage} src={this.state.avatar} avatar size="small"/>
 								</Form.Field>
 								<Form.Field>
 							      	<input value={this.state.phone} readOnly placeholder="Số điện thoại" name="phone" />

@@ -33,9 +33,11 @@ class ProfileInfo extends Component {
         })
     }
     handleAvatarChange = (url) => {
-        let userInfo = this.state.userInfo
-        userInfo.avatar = url
-        this.setState({ userInfo: userInfo })
+        if (url !== "") {
+            let userInfo = this.state.userInfo
+            userInfo.avatar = url
+            this.setState({ userInfo: userInfo })
+        }
     }
     handleTabChange = (e, data) => {
         if (data.activeIndex === 0)
@@ -49,7 +51,6 @@ class ProfileInfo extends Component {
             'headers': {'Authorization': this.state.userInfo.token}
         })
         .then((response) => {
-            console.log(response.data)
             this.setState({
                 stadiumList: response.data.items,
                 loading: false

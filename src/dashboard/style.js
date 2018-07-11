@@ -78,20 +78,16 @@ module.exports = {
 		color: "#FFF"
 	},
 	pendingColor: {
-		color: "#ffab00",
-		width: "50%"
+		color: "#ffab00"
 	},
 	approvedColor: {
-		color: "#00b8d9",
-		width: "50%"
+		color: "#00b8d9"
 	},
 	paymentCompletedColor: {
-		color: "#28a570",
-		width: "50%"
+		color: "#28a570"
 	},
 	errorColor: {
-		color: "#de350b",
-		width: "50%"
+		color: "#de350b"
 	},
 	detailLink: {
 		color: "#006838"
@@ -191,19 +187,65 @@ module.exports = {
 		color: "#fff",
 		padding: "0"
 	},
+	positionRelative: {
+		position: "relative",
+		marginBottom: "28px"
+	},
+	styleIconChangeAvatar: {
+		color: "#000",
+		position: "absolute",
+		zIndex: 2,
+		cursor: "pointer",
+		opacity: "0.3",
+		padding: "4px 6px",
+		display: "flex",
+		justifyContent: "center",
+		borderRadius: "2px"
+	},
+	styleIconChangeAvatarHover: {
+		color: "#000",
+		position: "absolute",
+		zIndex: 2,
+		cursor: "pointer",
+		opacity: 1,
+		padding: "10px",
+		display: "flex",
+		justifyContent: "center",
+		borderRadius: "50%"
+	},
+	logoImageHover: {
+		height: "150px",
+		opacity: "0.5"
+	},
 	changeImage: {
-		color: "#fff",
-		fontWeight: "bold",
-		textDecoration: "none",
-		fontSize: "1rem"
+		color: "#000",
+		position: "absolute",
+		top: "14px",
+		right: "14px",
+		zIndex: 2,
+		cursor: "pointer",
+		opacity: "0.3",
+		padding: "4px 6px",
+		borderRadius: "50%",
+		display: "flex",
+		justifyContent: "center"
+	},
+	changeImageHover: {
+		color: "#000",
+		position: "absolute",
+		top: "14px",
+		right: "14px",
+		zIndex: 2,
+		cursor: "pointer",
+		opacity: 1,
+		backgroundColor: "rgba(0,0,0,0.3)",
+		padding: "4px 6px",
+		borderRadius: "2px",
+		display: "flex",
+		justifyContent: "center"
 	},
 	changeImageField: {
-		padding: ".78571429em 1.5em .78571429em",
-		backgroundColor: "#006838",
-		justifyContent: "center",
-		borderRadius: ".28571429rem",
-		cursor: "pointer",
-		lineHeight: "1em"
+		justifyContent: "center"
 	},
 	styleStadiumForm: {
 		border: "none"
@@ -213,5 +255,19 @@ module.exports = {
 	},
 	width30: {
 		width: "30%"
+	},
+	styleInputBookingDetail: {
+		width: "50%",
+		textAlign: "left"
+	},
+	styleFieldAvatar: {
+		justifyContent: "center",
+		position: "relative",
+		marginBottom: "28px"
+	},
+	styleFieldLogoCoverChange: {
+		display: "flex",
+		justifyContent: "center",
+		position: "relative"
 	}
 }
