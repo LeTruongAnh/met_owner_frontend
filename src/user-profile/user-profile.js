@@ -85,6 +85,7 @@ class UserProfile extends Component {
 											<Icon name="bars"/>
 										</Button>
 									</Grid.Row>
+									<Grid.Row style={style.marginTopBot}><h1>Thông tin chủ sân</h1></Grid.Row>
 									<ProfileInfo />
 								</Grid.Column>
 							</Sidebar.Pusher>

@@ -135,14 +135,14 @@ class StadiumForm extends Component {
 										<Icon name="photo" size="large" />
 									</div>
 									<label style={style.width30}>Logo sân</label>
-									<Image style={style.logoImage} src={this.state.logoImage} />
+									<div style={style.width70}><Image style={style.logoImage} src={this.state.logoImage} fluid /></div>
 								</Form.Field>
 								<Form.Field style={style.positionRelative}>
 									<div onMouseOver={this.handleMouseOverIconCover} onMouseOut={this.handleMouseOutIconCover} style={this.state.styleIconChangeCover} onClick={() => this.props.handleTabImage(2)}>
 										<Icon name="photo" size="large" />
 									</div>
 									<label style={style.width30}>Ảnh nền sân</label>
-									<Image style={style.logoImage} src={this.state.bgImage} />
+									<div style={style.width70}><Image style={style.logoImage} src={this.state.bgImage} fluid /></div>
 								</Form.Field>
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>
@@ -191,13 +191,13 @@ class StadiumForm extends Component {
 									<div onMouseOver={this.handleMouseOverIconLogo} onMouseOut={this.handleMouseOutIconLogo} style={this.state.styleIconChangeLogo} onClick={() => this.props.handleTabImage(1)}>
 										<Icon name="photo" size="large" />
 									</div>
-									<Image style={style.logoImage} src={this.state.logoImage} />
+									<Image style={style.logoImage} src={this.state.logoImage} onClick={() => this.props.handleTabImage(1)} />
 								</Form.Field>
 								<Form.Field style={style.styleFieldLogoCoverChange}>
 									<div onMouseOver={this.handleMouseOverIconCover} onMouseOut={this.handleMouseOutIconCover} style={this.state.styleIconChangeCover} onClick={() => this.props.handleTabImage(2)}>
 										<Icon name="photo" size="large" />
 									</div>
-									<Image style={style.logoImage} src={this.state.bgImage} />
+									<Image style={style.logoImage} src={this.state.bgImage} onClick={() => this.props.handleTabImage(2)} />
 								</Form.Field>
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>

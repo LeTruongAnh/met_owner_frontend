@@ -85,19 +85,19 @@ class ProfileInfo extends Component {
                         <Tab onTabChange={this.handleTabChange} activeIndex={this.state.activeIndex} style={style.fullWidth} menu={{ secondary: true, pointing: true }} 
                         panes={
                             [
-                                { menuItem: 'Thông tin chủ sân', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+                                { menuItem: (window.screen.width >= 768)?'Thông tin chủ sân':'Thông tin', render: () => <Tab.Pane className="detail-stadium" attached={false}>
                                     <Profile
                                         userInfo={this.state.userInfo}
                                         handleTabImage={this.handleTabImage}
                                     /></Tab.Pane> },
-                                { menuItem: 'Hình ảnh', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+                                { menuItem: (window.screen.width >= 768)?'Hình ảnh chủ sân':'Hình ảnh', render: () => <Tab.Pane className="detail-stadium" attached={false}>
                                     <ImageProfile
                                         handleAvatarChange={this.handleAvatarChange}
                                         isImageChange={this.state.isImageChange}
                                         handleTabForm={this.handleTabForm}
                                         imageList={this.state.imageList}
                                     /></Tab.Pane> },
-                                { menuItem: 'Danh sách sân', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+                                { menuItem: (window.screen.width >= 768)?'Danh sách sân':'Danh sách', render: () => <Tab.Pane className="detail-stadium" attached={false}>
                                     <ListStadium
                                         stadiumList={this.state.stadiumList}
                                     /></Tab.Pane> }

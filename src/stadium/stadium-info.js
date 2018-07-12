@@ -60,7 +60,7 @@ class StadiumInfo extends Component {
 		.then((response) => {
 			this.setState({
 				stadiumData: response.data,
-				imageList: response.data.image_list,
+				imageList: response.data.image_list.filter((x) => x.includes("_thumbnail.jpg")),
 				loading: false
 			})
 		})
@@ -91,13 +91,13 @@ class StadiumInfo extends Component {
 						<Tab style={style.fullWidth} onTabChange={this.handleTabChange} activeIndex={this.state.activeIndex} menu={{ secondary: true, pointing: true }} 
 						panes={
 							[
-								{ menuItem: 'Thông tin sân', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+								{ menuItem: (window.screen.width >= 768)?'Thông tin sân':'Thông tin', render: () => <Tab.Pane className="detail-stadium" attached={false}>
 									<StadiumForm
 										handleTabImage={this.handleTabImage}
 										stadiumData={this.state.stadiumData}
 										cityList={this.state.cityList}
 									/></Tab.Pane> },
-								{ menuItem: 'Hình ảnh sân', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+								{ menuItem: (window.screen.width >= 768)?'Hình ảnh sân':'Hình ảnh', render: () => <Tab.Pane className="detail-stadium" attached={false}>
 									<StadiumImage
 										handleImageChange={this.handleImageChange}
 										handleBgImageChange={this.handleBgImageChange}
@@ -105,7 +105,7 @@ class StadiumInfo extends Component {
 										imageList={this.state.imageList}
 										handleTabForm={this.handleTabForm}
 									/></Tab.Pane> },
-								{ menuItem: 'Quản lý sân', render: () => <Tab.Pane className="detail-stadium" attached={false}>Quản lý sân</Tab.Pane> },
+								{ menuItem: (window.screen.width >= 768)?'Quản lý sân':'Quản lý', render: () => <Tab.Pane className="detail-stadium" attached={false}>Quản lý sân</Tab.Pane> },
 							]
 						} />
 					</Grid>

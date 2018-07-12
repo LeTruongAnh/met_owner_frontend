@@ -141,7 +141,7 @@ module.exports = {
 		width: "100%"
 	},
 	logoImage: {
-		height: "150px"
+		height: "200px"
 	},
 	none: {},
 	fullWidthHeight: {
@@ -158,15 +158,17 @@ module.exports = {
 		padding: "14px"
 	},
 	styleImageStadium: {
+		float: "left",
 		transition: "transform .2s",
-		margin: "0",
-		boxSizing: "border-box"
-	},
-	styleImageStadiumSelect: {
-		transition: "transform .2s",
-		margin: "0",
-		border: "1px solid #006838",
-		boxSizing: "border-box"
+		margin: "14px",
+		boxSizing: "border-box",
+		padding: "0",
+		height: "150px",
+		width: "150px",
+		backgroundRepeat: "no-repeat",
+		backgroundSize: "cover",
+		backgroundPosition: "center",
+		display: "inline-block"
 	},
 	styleRowImageButton: {
 		flexDirection: "row-reverse",
@@ -174,7 +176,7 @@ module.exports = {
 		width: "100%"
 	},
 	styleImageStadiumButton: {
-		marginLeft: "28px",
+		marginLeft: "14px",
 		marginBottom: "28px",
 		backgroundColor: "#006838",
 		color: "#fff"
@@ -214,7 +216,7 @@ module.exports = {
 		borderRadius: "50%"
 	},
 	logoImageHover: {
-		height: "150px",
+		height: "200px",
 		opacity: "0.5"
 	},
 	changeImage: {
@@ -269,5 +271,9 @@ module.exports = {
 		display: "flex",
 		justifyContent: "center",
 		position: "relative"
+	},
+	styleGridImage: {
+		display: "flex",
+		justifyContent: "space-between"
 	}
 }

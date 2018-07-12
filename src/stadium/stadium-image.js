@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Image, Button, Input, Icon, Loader } from 'semantic-ui-react'
+import { Grid, Image, Button, Icon, Loader } from 'semantic-ui-react'
 import axios from 'axios'
 import config from '../config'
 import style from '../dashboard/style.js'
@@ -46,50 +46,43 @@ class StadiumImage extends Component {
 			})
 			.catch((error) => {
 				console.log(error)
-				this.setState( {loading: true} )
+				this.setState( {loading: false} )
 			})
 		}
 		reader.readAsDataURL(file);
 	}
 	handleClickImage = (event) => {
-		let srcSelect = event.target.src
+		console.log(event.target.getAttribute('link'))
+		let srcSelect = event.target.getAttribute('link')
 		if (this.state.srcSelect !== srcSelect)
 			this.setState({ srcSelect: srcSelect})
 		else
 			this.setState({ srcSelect: ""})
 	}
+	detectScreenChange = () => {
+		this.setState({ screenSize: window.screen.width })
+	}
 	render() {
 		return (
 			<div>
-				<div style={style.styleRowImageButton}>
-					{
-						(this.props.numberImageChange === 0)?"":(<Button style={style.styleImageStadiumButton} onClick={
-							() => {
-								if (this.props.numberImageChange === 1) this.props.handleImageChange(this.state.srcSelect)
-								else this.props.handleBgImageChange(this.state.srcSelect)
-								this.props.handleTabForm()
-							}
-						}>Chọn</Button>)
-					}
-					<Input style={style.displayNone} id="input-image" ref={this.textInput} onChange={ (e) => this.handleAddImage(e.target.files)} type="file" />
+				<div style={{height: "150px", width: "150px", margin: "14px", padding: 0, float: "left"}} onClick={this.handleClickAddImage}>
+					<Button style={style.fullWidthHeight}>
+						<Icon name="add" size={(this.state.screenSize > 1024)?("large"):("small")}/>
+					</Button>
 				</div>
-				<Grid style={{margin: "0"}} columns={(this.state.screenSize >= 768)?6:2}>
-					<Loader active={this.state.loading} />
-					<Grid.Column onClick={this.handleClickAddImage}>
-						<Button style={style.fullWidthHeight}>
-							<Icon name="add" size={(this.state.screenSize > 1024)?("large"):("small")}/>
-						</Button>
-					</Grid.Column>
-					{
-						this.state.imageList.map((x, index) => {
-							return (
-								<Grid.Column className="hover-image-stadium" style={(x === this.state.srcSelect)?style.styleImageStadiumSelect:style.styleImageStadium} key={index}>
-									<Image onClick={this.handleClickImage} src={x} />
-								</Grid.Column>
-							)
-						})
-					}
-				</Grid>
+				{
+					this.state.imageList.map((x, index) => {
+						let styleImageStadium = Object.assign({}, style.styleImageStadium)
+						styleImageStadium.backgroundImage = `url('${x}')`
+						let styleImageStadiumSelect = Object.assign({}, styleImageStadium)
+						styleImageStadiumSelect.border = "2px outset #006838"
+						return (
+							<div link={x} className="hover-image-stadium" onClick={this.handleClickImage}
+								style={(x === this.state.srcSelect)?styleImageStadiumSelect:styleImageStadium} key={index}>
+							</div>
+						)
+					})
+				}
 			</div>
 		)
 	}
