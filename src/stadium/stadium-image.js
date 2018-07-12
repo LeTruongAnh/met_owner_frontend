@@ -75,8 +75,8 @@ class StadiumImage extends Component {
 					}>Chọn</Button>)
 				}
 				<input style={style.displayNone} id="input-image" ref={this.textInput} onChange={ (e) => this.handleAddImage(e.target.files)} type="file" />
-
-				<Grid.Row style={{margin: "0"}} columns={(this.state.screenSize >= 768)?6:2}>
+				
+				<Grid.Row style={{margin: "0"}}>
 					<Loader active={this.state.loading} />
 					<Grid.Column style={{heigth: "150px", width: "150px", margin: "14px", padding: 0}} onClick={this.handleClickAddImage}>
 						<Button style={style.fullWidthHeight}>
