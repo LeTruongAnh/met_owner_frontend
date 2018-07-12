@@ -64,26 +64,40 @@ class StadiumImage extends Component {
 	}
 	render() {
 		return (
-			<div>
-				<div style={{height: "150px", width: "150px", margin: "14px", padding: 0, float: "left"}} onClick={this.handleClickAddImage}>
-					<Button style={style.fullWidthHeight}>
-						<Icon name="add" size={(this.state.screenSize > 1024)?("large"):("small")}/>
-					</Button>
-				</div>
+			<Grid>
 				{
-					this.state.imageList.map((x, index) => {
-						let styleImageStadium = Object.assign({}, style.styleImageStadium)
-						styleImageStadium.backgroundImage = `url('${x}')`
-						let styleImageStadiumSelect = Object.assign({}, styleImageStadium)
-						styleImageStadiumSelect.border = "2px outset #006838"
-						return (
-							<div link={x} className="hover-image-stadium" onClick={this.handleClickImage}
-								style={(x === this.state.srcSelect)?styleImageStadiumSelect:styleImageStadium} key={index}>
-							</div>
-						)
-					})
+					(this.props.numberImageChange === 0)?"":(<Button style={style.styleImageStadiumButton} onClick={
+						() => {
+							if (this.props.numberImageChange === 1) this.props.handleImageChange(this.state.srcSelect)
+							else this.props.handleBgImageChange(this.state.srcSelect)
+							this.props.handleTabForm()
+						}
+					}>Chọn</Button>)
 				}
-			</div>
+				<input style={style.displayNone} id="input-image" ref={this.textInput} onChange={ (e) => this.handleAddImage(e.target.files)} type="file" />
+
+				<Grid.Row style={{margin: "0"}} columns={(this.state.screenSize >= 768)?6:2}>
+					<Loader active={this.state.loading} />
+					<Grid.Column style={{heigth: "150px", width: "150px", margin: "14px", padding: 0}} onClick={this.handleClickAddImage}>
+						<Button style={style.fullWidthHeight}>
+							<Icon name="add" size={(this.state.screenSize > 1024)?("large"):("small")}/>
+						</Button>
+					</Grid.Column>
+					{
+						this.state.imageList.map((x, index) => {
+							let styleImageStadium = Object.assign({}, style.styleImageStadium)
+							styleImageStadium.backgroundImage = `url('${x}')`
+							let styleImageStadiumSelect = Object.assign({}, styleImageStadium)
+							styleImageStadiumSelect.border = "2px outset #006838"
+							return (
+								<Grid.Column link={x} className="hover-image-stadium" onClick={this.handleClickImage}
+									style={(x === this.state.srcSelect)?styleImageStadiumSelect:styleImageStadium} key={index}>
+								</Grid.Column>
+							)
+						})
+					}
+				</Grid.Row>
+			</Grid>
 		)
 	}
 }
