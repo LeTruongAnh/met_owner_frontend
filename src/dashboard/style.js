@@ -141,7 +141,7 @@ module.exports = {
 		width: "100%"
 	},
 	logoImage: {
-		height: "200px"
+		height: "150px"
 	},
 	none: {},
 	fullWidthHeight: {
@@ -156,19 +156,6 @@ module.exports = {
 	},
 	paddingTotal14px: {
 		padding: "14px"
-	},
-	styleImageStadium: {
-		float: "left",
-		transition: "transform .2s",
-		margin: "14px",
-		boxSizing: "border-box",
-		padding: "0",
-		height: "150px",
-		width: "150px",
-		backgroundRepeat: "no-repeat",
-		backgroundSize: "cover",
-		backgroundPosition: "center",
-		display: "inline-block"
 	},
 	styleRowImageButton: {
 		flexDirection: "row-reverse",
@@ -216,7 +203,7 @@ module.exports = {
 		borderRadius: "50%"
 	},
 	logoImageHover: {
-		height: "200px",
+		height: "150px",
 		opacity: "0.5"
 	},
 	changeImage: {
@@ -275,5 +262,14 @@ module.exports = {
 	styleGridImage: {
 		display: "flex",
 		justifyContent: "space-between"
+	},
+	styleImageStadium: {
+		transition: "transform .2s",
+		boxSizing: "border-box",
+		padding: "0",
+		backgroundRepeat: "no-repeat",
+		backgroundSize: "cover",
+		backgroundPosition: "center",
+		height: "100%"
 	}
 }

@@ -27,7 +27,7 @@ class StadiumForm extends Component {
 			loadingBut: false,
 			loadingForm: false,
 			styleIconChangeAvatar: style.styleIconChangeAvatar,
-			styleChangeImage: style.logoImageHover
+			styleChangeImage: style.logoImage
 		}
 	}
 	handleChangeDate = (date) => {

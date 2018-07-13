@@ -3,6 +3,7 @@ import { Grid, Tab, Loader } from 'semantic-ui-react'
 import { Redirect } from 'react-router-dom'
 import StadiumForm from './stadium-form'
 import StadiumImage from './stadium-image'
+import StaidiumManager from './stadium-manager'
 import style from '../dashboard/style.js'
 import axios from 'axios'
 import config from '../config'
@@ -17,7 +18,8 @@ class StadiumInfo extends Component {
 			stadiumData: {},
 			cityList: [],
 			imageList: [],
-			loading: true
+			loading: true,
+			managerList: {}
 		}
 	}
 	handleTabImage = (number) => {
@@ -96,7 +98,8 @@ class StadiumInfo extends Component {
 										handleTabImage={this.handleTabImage}
 										stadiumData={this.state.stadiumData}
 										cityList={this.state.cityList}
-									/></Tab.Pane> },
+									/></Tab.Pane>
+								},
 								{ menuItem: (window.screen.width >= 768)?'Hình ảnh sân':'Hình ảnh', render: () => <Tab.Pane className="detail-stadium" attached={false}>
 									<StadiumImage
 										handleImageChange={this.handleImageChange}
@@ -104,8 +107,13 @@ class StadiumInfo extends Component {
 										numberImageChange={this.state.numberImageChange}
 										imageList={this.state.imageList}
 										handleTabForm={this.handleTabForm}
-									/></Tab.Pane> },
-								{ menuItem: (window.screen.width >= 768)?'Quản lý sân':'Quản lý', render: () => <Tab.Pane className="detail-stadium" attached={false}>Quản lý sân</Tab.Pane> },
+									/></Tab.Pane>
+								},
+								{ menuItem: (window.screen.width >= 768)?'Quản lý sân':'Quản lý', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+									<StaidiumManager
+										managerList={this.state.managerList}
+									/></Tab.Pane>
+								},
 							]
 						} />
 					</Grid>
