@@ -33,7 +33,7 @@ class BookingInfo extends Component {
 			})
 		})
 		.catch((error) => {
-			console.log(error.response)
+			console.log(error)
 		})
 		axios.get(`${config.apiBaseURL}/api/booking/list?page=1&limit=10`, {
 			'headers': {'Authorization': this.state.token}
@@ -45,7 +45,7 @@ class BookingInfo extends Component {
 			})
 		})
 		.catch((error) => {
-			console.log(error.response)
+			console.log(error)
 		})
 	}
 	timeConverter = (timeStart, timeEnd) => {
@@ -94,7 +94,7 @@ class BookingInfo extends Component {
 						})
 					})
 					.catch((error) => {
-						console.log(error.response)
+						console.log(error)
 					})
 				}
 			)
@@ -174,7 +174,6 @@ class BookingInfo extends Component {
 									})							
 								}
 							</Table.Body>
-
 							<Table.Footer>
 								<Table.Row>
 									<Table.HeaderCell colSpan='7'>
@@ -217,7 +216,6 @@ class BookingInfo extends Component {
 									})							
 								}
 							</Table.Body>
-
 							<Table.Footer>
 								<Table.Row>
 									<Table.HeaderCell colSpan='3'>
@@ -239,8 +237,7 @@ class BookingInfo extends Component {
 							</Table.Footer>
 						</Table>
 					)
-				}
-						
+				}	
 			</Grid>
 		)
 	}

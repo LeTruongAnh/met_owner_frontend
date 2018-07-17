@@ -71,13 +71,11 @@ class StadiumForm extends Component {
 				}
 			})
 			.then((reponse) => {
-				console.log(reponse.data)
 				this.setState({
 					userInfo: reponse.data,
 					loadingBut: false
 				}, () => {
 					localStorage.setItem('MET_userInfo', JSON.stringify(reponse.data))
-					console.log(JSON.parse(localStorage.getItem("MET_userInfo")))
 				})
 			})
 			.catch((error) => {

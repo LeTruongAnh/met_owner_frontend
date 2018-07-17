@@ -38,7 +38,6 @@ class StadiumImage extends Component {
 				}
 			})
 			.then((response) => {
-				console.log(response.data)
 				let lst = [...this.state.imageList, response.data.url]
 				this.setState({
 					imageList: lst,
@@ -53,7 +52,7 @@ class StadiumImage extends Component {
 		reader.readAsDataURL(file)
 	}
 	handleClickImage = (event) => {
-		let srcSelect = event.target.src
+		let srcSelect = event.target.getAttribute('link')
 		if (this.state.srcSelect !== srcSelect)
 			this.setState({ srcSelect: srcSelect})
 		else
@@ -96,7 +95,6 @@ class StadiumImage extends Component {
 								if (localStorage.getItem("isExpand") === "true") styleCol.height = "calc((75vw - 224px) / 6)"
 								else styleCol.height = "calc((87.5vw - 224px) / 6)"
 							else styleCol.height = "calc((100vw - 84px) / 2)"
-							console.log(styleCol.height)
 							styleImageStadium.backgroundImage = `url('${x}')`
 							let styleImageStadiumSelect = Object.assign({}, styleImageStadium)
 							styleImageStadiumSelect.border = `2px solid #006838`

@@ -29,7 +29,7 @@ class BookingForm extends Component {
             }, () => this.setState({ loading: false }))
         })
         .catch((error) => {
-            console.log(error.response)
+            console.log(error)
         })
     }
     timeConverter = (timeStart, timeEnd) => {
@@ -62,7 +62,7 @@ class BookingForm extends Component {
             this.setState({ approved: true })
         })
         .catch((error) => {
-            console.log(error.response)
+            console.log(error)
         })
     }
     handleCancel = () => {
@@ -76,7 +76,7 @@ class BookingForm extends Component {
             this.setState({ canceled: true })
         })
         .catch((error) => {
-            console.log(error.response)
+            console.log(error)
         })
     }
     renderButton = () => {

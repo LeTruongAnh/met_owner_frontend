@@ -19,7 +19,7 @@ class StadiumInfo extends Component {
 			cityList: [],
 			imageList: [],
 			loading: true,
-			managerList: {}
+			managerList: []
 		}
 	}
 	handleTabImage = (number) => {
@@ -44,7 +44,7 @@ class StadiumInfo extends Component {
 	handleBgImageChange = (url) => {
 		if (url !== "") {
 			let stadiumData = this.state.stadiumData
-			stadiumData.bg_image = url
+			stadiumData.image_background = url
 			this.setState({ stadiumData: stadiumData })
 		}
 	}
@@ -56,15 +56,27 @@ class StadiumInfo extends Component {
 		})
 	}
 	fetchData = () => {
-		axios.get(`${config.apiBaseURL}/api/stadium/` + this.state.userInfo.default_stadium_id, {
+		axios.get(`${config.apiBaseURL}/api/stadium/${this.state.userInfo.default_stadium_id}`, {
 			'headers': {'Authorization': this.state.userInfo.token}
 		})
 		.then((response) => {
 			this.setState({
 				stadiumData: response.data,
-				imageList: response.data.image_list.filter((x) => x.includes("_thumbnail.jpg")),
-				loading: false
-			})
+				imageList: response.data.image_list.filter((x) => x.includes("_thumbnail.jpg"))
+			},
+				() => axios.get(`${config.apiBaseURL}/api/stadium/manager?stadiumID=${this.state.userInfo.default_stadium_id}`, {
+					'headers': {'Authorization': this.state.userInfo.token}
+				})
+				.then((response) => {
+					this.setState({
+						managerList: response.data.items,
+						loading: false
+					})
+				})
+				.catch((error) => {
+					console.log(error)
+				})
+			)
 		})
 		.catch(function (error) {
 			console.log(error)
@@ -111,7 +123,7 @@ class StadiumInfo extends Component {
 								},
 								{ menuItem: (window.screen.width >= 768)?'Quản lý sân':'Quản lý', render: () => <Tab.Pane className="detail-stadium" attached={false}>
 									<StaidiumManager
-										managerList={this.state.managerList}
+										managerlist={this.state.managerList}
 									/></Tab.Pane>
 								},
 							]

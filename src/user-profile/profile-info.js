@@ -67,7 +67,7 @@ class ProfileInfo extends Component {
             })
             .then((response) => {
                 this.setState({
-                    imageList: response.data.items
+                    imageList: response.data.items.filter((x) => x.includes("_thumbnail.jpg"))
                 }, this.fetchData)
             })
             .catch(function (error) {

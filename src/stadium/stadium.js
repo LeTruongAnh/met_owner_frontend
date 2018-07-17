@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Button, Icon, Sidebar } from 'semantic-ui-react'
+import { Grid, Icon, Sidebar } from 'semantic-ui-react'
 import MenuApp from '../dashboard/menu-app.js'
 import style from '../dashboard/style'
 import StadiumInfo from './stadium-info'
@@ -80,10 +80,11 @@ class Stadium extends Component {
 									):""
 								}
 								<Grid.Column className="content-column" width={16}>
-									<Grid.Row style={style.button}>
-										<Button style={style.buttonColor} onClick={this.handleButtonClick}>
-											<Icon name="bars"/>
-										</Button>
+									<Grid.Row style={{backgroundColor: "#006838", position: "relative", display: "flex", alignItems: "center", justifyContent: "center"}}>
+										<div style={{position: "absolute", left: "1em"}} onClick={this.handleButtonClick}>
+											<Icon size="large" style={{color: "#fff"}} name="bars"/>
+										</div>
+										<h3 style={{margin: "auto", padding: "1em 0", color: "#fff"}}>MET</h3>
 									</Grid.Row>
 									<Grid.Row style={style.marginTopBot}><h1>Quản lý sân</h1></Grid.Row>
 									<StadiumInfo />

@@ -13,7 +13,7 @@ class StadiumForm extends Component {
 			cityList: props.cityList || [],
 			stadiumData: props.stadiumData || {},
 			logoImage: props.stadiumData.image || "",
-			bgImage: props.stadiumData.bg_image || "",
+			bgImage: props.stadiumData.image_background || "",
 			name: props.stadiumData.name || "",
 			address: props.stadiumData.address || "",
 			city: props.stadiumData.region || 0,
@@ -135,14 +135,14 @@ class StadiumForm extends Component {
 										<Icon name="photo" size="large" />
 									</div>
 									<label style={style.width30}>Logo sân</label>
-									<div style={style.width70}><Image style={style.logoImage} src={this.state.logoImage} fluid /></div>
+									<div style={style.width70}><Image style={{height: "260.4px"}} src={this.state.logoImage} fluid /></div>
 								</Form.Field>
 								<Form.Field style={style.positionRelative}>
 									<div onMouseOver={this.handleMouseOverIconCover} onMouseOut={this.handleMouseOutIconCover} style={this.state.styleIconChangeCover} onClick={() => this.props.handleTabImage(2)}>
 										<Icon name="photo" size="large" />
 									</div>
 									<label style={style.width30}>Ảnh nền sân</label>
-									<div style={style.width70}><Image style={style.logoImage} src={this.state.bgImage} fluid /></div>
+									<div style={style.width70}><Image style={{height: "260.4px"}} src={this.state.bgImage} fluid /></div>
 								</Form.Field>
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>

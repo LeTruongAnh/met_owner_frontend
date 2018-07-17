@@ -8,14 +8,14 @@ module.exports = {
 		margin: "0",
 		color: "#FFF"
 	},
-	button: {
-		textAlign: "left",
-   		marginLeft: "14px"
-	},
-	buttonColor: {
-   		backgroundColor: "#006838",
-   		color: "#FFF"
-   	},
+	// button: {
+	// 	textAlign: "left",
+ //   		marginLeft: "14px"
+	// },
+	// buttonColor: {
+ //   		backgroundColor: "#006838",
+ //   		color: "#FFF"
+ //   	},
 	colorText: {
 		color: "#FFF"
 	},

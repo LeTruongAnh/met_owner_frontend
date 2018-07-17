@@ -20,16 +20,16 @@ class StadiumImage extends Component {
 		this.setState({
 			loading:false
 		})
-		console.log(this.state.imageheight)
 		window.addEventListener('resize', this.detectScreenChange)
 	}
 	handleClickAddImage = () => {
 		document.getElementById('input-image').click()
 	}
 	handleAddImage = (selectorFiles) => {
-		var file = selectorFiles[0];
-		var reader = new FileReader();
 		this.setState( {loading: true} )
+		var file = selectorFiles[0]
+		var reader = new FileReader()
+		reader.readAsDataURL(file)
 		reader.onloadend = () => {
 			axios.post(`${config.apiBaseURL}/api/stadium/upload`, {
 				"image": reader.result,
@@ -52,10 +52,8 @@ class StadiumImage extends Component {
 				this.setState( {loading: false} )
 			})
 		}
-		reader.readAsDataURL(file);
 	}
 	handleClickImage = (event) => {
-		console.log(event.target.getAttribute('link'))
 		let srcSelect = event.target.getAttribute('link')
 		if (this.state.srcSelect !== srcSelect)
 			this.setState({ srcSelect: srcSelect})
@@ -105,7 +103,6 @@ class StadiumImage extends Component {
 								if (localStorage.getItem("isExpand") === "true") styleCol.height = "calc((75vw - 224px) / 6)"
 								else styleCol.height = "calc((87.5vw - 224px) / 6)"
 							else styleCol.height = "calc((100vw - 84px) / 2)"
-							console.log(styleCol.height)
 							styleImageStadium.backgroundImage = `url('${x}')`
 							let styleImageStadiumSelect = Object.assign({}, styleImageStadium)
 							styleImageStadiumSelect.border = `2px solid #006838`

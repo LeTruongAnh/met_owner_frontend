@@ -161,6 +161,16 @@ button>i {
 	width: 50%;
 	text-align: left;
 }
+.search .results .result {
+	cursor: default !important;
+}
+.icon-manager-hover:hover{
+	background-color: rgba(0,0,0,0.1);
+	border-radius: .28571429rem;
+}
+.ui.search>.ui.icon.input {
+	width: 100%;
+}
 
 @media screen and (max-width: 767px) {
 	.format-form {
@@ -171,5 +181,8 @@ button>i {
 	}
 	.date-picker-profile>div {
 		width: 100%;
+	}
+	.content-column {
+		padding: 0;
 	}
 }
