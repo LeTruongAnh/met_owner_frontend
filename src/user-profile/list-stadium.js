@@ -6,6 +6,7 @@ import axios from 'axios'
 class ListStadium extends Component {
 	constructor(props) {
 		super(props)
+		console.log(props.stadiumList)
 		this.state = {
 			token: JSON.parse(localStorage.getItem('MET_userInfo')).token,
 			stadiumList: props.stadiumList,
@@ -36,7 +37,7 @@ class ListStadium extends Component {
 	                loading: false
 	            })
 	        })
-	        .catch(function (error) {
+	        .catch((error) => {
 	            console.log(error)
 	            this.setState({ loading: false })
 	        })
@@ -49,42 +50,34 @@ class ListStadium extends Component {
 	render() {
 		return (
 			<Grid>
-				{
-					(this.state.stadiumList.length > 0)?(
-						<Grid.Row>
-							<Table celled striped unstackable={true}>
-								<Table.Header>
-									<Table.Row>
-										<Table.HeaderCell>STT</Table.HeaderCell>
-										<Table.HeaderCell>Tên sân</Table.HeaderCell>
-										<Table.HeaderCell>Chọn sân mặc định</Table.HeaderCell>
+				<Grid.Row>
+					<Table celled striped unstackable={true}>
+						<Table.Header>
+							<Table.Row>
+								<Table.HeaderCell>STT</Table.HeaderCell>
+								<Table.HeaderCell>Tên sân</Table.HeaderCell>
+								<Table.HeaderCell>Chọn sân mặc định</Table.HeaderCell>
+							</Table.Row>
+						</Table.Header>
+						<Table.Body>
+						{
+							this.state.stadiumList.map((x, index) => {
+								return (
+									<Table.Row key={index}>
+										<Table.Cell>{x.id}</Table.Cell>
+										<Table.Cell>{x.name}</Table.Cell>
+										<Table.Cell style={{display: "flex", justifyContent: "center"}}>
+											<Button onClick={() => this.handleChooseDefaultStadium(x.id)}>
+												Chọn
+											</Button>
+										</Table.Cell>
 									</Table.Row>
-								</Table.Header>
-								<Table.Body>
-								{
-									this.state.stadiumList.map((x, index) => {
-										return (
-											<Table.Row key={index}>
-												<Table.Cell>{x.id}</Table.Cell>
-												<Table.Cell>{x.name}</Table.Cell>
-												<Table.Cell style={{display: "flex", justifyContent: "center"}}>
-													<Button onClick={() => this.handleChooseDefaultStadium(x.id)}>
-														Chọn
-													</Button>
-												</Table.Cell>
-											</Table.Row>
-										)
-									})
-								}
-								</Table.Body>
-							</Table>
-						</Grid.Row>
-					):(
-						<Grid.Row centered>
-							<h3>Không có sân nào!</h3>
-						</Grid.Row>
-					)
-				}
+								)
+							})
+						}
+						</Table.Body>
+					</Table>
+				</Grid.Row>
 				<Loader active={this.state.loading} />
 			</Grid>
 		)

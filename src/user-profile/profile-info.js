@@ -3,7 +3,7 @@ import { Grid, Tab, Loader } from 'semantic-ui-react'
 import { Redirect } from 'react-router-dom'
 import Profile from './profile'
 import ImageProfile from './image-profile'
-import ListStadium from './list-stadium'
+//import ListStadium from './list-stadium'
 import style from '../dashboard/style.js'
 import axios from 'axios'
 import config from '../config'
@@ -46,20 +46,20 @@ class ProfileInfo extends Component {
             activeIndex: data.activeIndex
         })
     }
-    fetchData = () => {
-        axios.get(`${config.apiBaseURL}/api/stadium/list?page=1&limit=10`, {
-            'headers': {'Authorization': this.state.userInfo.token}
-        })
-        .then((response) => {
-            this.setState({
-                stadiumList: response.data.items,
-                loading: false
-            })
-        })
-        .catch(function (error) {
-            console.log(error)
-        })
-    }
+    // fetchData = () => {
+    //     axios.get(`${config.apiBaseURL}/api/stadium/list?page=1&limit=10`, {
+    //         'headers': {'Authorization': this.state.userInfo.token}
+    //     })
+    //     .then((response) => {
+    //         this.setState({
+    //             stadiumList: response.data.items,
+    //             loading: false
+    //         })
+    //     })
+    //     .catch((error) => {
+    //         console.log(error)
+    //     })
+    // }
     componentDidMount = () => {
         if (this.state.userInfo.token) {
             axios.get(`${config.apiBaseURL}/api/user/pictures?userID=${this.state.userInfo.id}&page=1&limit=12`, {
@@ -67,11 +67,15 @@ class ProfileInfo extends Component {
             })
             .then((response) => {
                 this.setState({
-                    imageList: response.data.items.filter((x) => x.includes("_thumbnail.jpg"))
-                }, this.fetchData)
+                    imageList: response.data.items.filter((x) => x.includes("_thumbnail.jpg")),
+                    loading: false
+                })
             })
-            .catch(function (error) {
+            .catch((error) => {
                 console.log(error)
+                this.setState({
+                    loading: false
+                })
             })
         }
     }
@@ -97,10 +101,10 @@ class ProfileInfo extends Component {
                                         handleTabForm={this.handleTabForm}
                                         imageList={this.state.imageList}
                                     /></Tab.Pane> },
-                                { menuItem: (window.screen.width >= 768)?'Danh sách sân':'Danh sách', render: () => <Tab.Pane className="detail-stadium" attached={false}>
-                                    <ListStadium
-                                        stadiumList={this.state.stadiumList}
-                                    /></Tab.Pane> }
+                                // { menuItem: (window.screen.width >= 768)?'Danh sách sân':'Danh sách', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+                                //     <ListStadium
+                                //         stadiumList={this.state.stadiumList}
+                                //     /></Tab.Pane> }
                             ]
                         } />
                     </Grid>

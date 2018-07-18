@@ -78,7 +78,7 @@ class StadiumInfo extends Component {
 				})
 			)
 		})
-		.catch(function (error) {
+		.catch((error) => {
 			console.log(error)
 		})
 	}
@@ -90,7 +90,7 @@ class StadiumInfo extends Component {
 					cityList: response.data.items
 				}, this.fetchData)
 			})
-			.catch(function (error) {
+			.catch((error) => {
 				console.log(error)
 			})
 		}

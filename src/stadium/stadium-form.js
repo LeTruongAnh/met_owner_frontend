@@ -87,7 +87,7 @@ class StadiumForm extends Component {
 					districtList: response.data.items
 				})
 			})
-			.catch(function (error) {
+			.catch((error) => {
 				console.log(error)
 			})
 		}

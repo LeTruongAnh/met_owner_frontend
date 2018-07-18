@@ -91,12 +91,12 @@ button {
 	width: 100%;
     padding: 14px 0;
 }
-.App .dashboard-grid .menu-column .item:hover {
+/*.App .dashboard-grid .menu-column .item:hover {
 	color: rgb(255, 255, 255) !important;
 }
 .App .dashboard-grid .menu-column .active {
 	color: rgb(255, 255, 255) !important;
-}
+}*/
 .menu-grid {
 	margin: 0 !important;
 }

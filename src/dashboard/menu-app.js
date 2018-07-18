@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import { Menu, Icon, Grid, Button, Modal, Header } from 'semantic-ui-react'
+import { Menu, Icon, Grid, Button, Modal, Header, Divider, Dropdown, Loader } from 'semantic-ui-react'
 import { Link, Redirect } from 'react-router-dom'
+import config from '../config.js'
+import axios from 'axios'
 import style from '../dashboard/style.js'
 
 class MenuApp extends Component {
@@ -15,7 +17,10 @@ class MenuApp extends Component {
 				):(true
 			),
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
-			openModal: false
+			openModal: false,
+			stadiumList: [],
+			defaultStadium: JSON.parse(localStorage.getItem('MET_userInfo')).stadium.name,
+			loading: true
 		}
 	}
 	stateMenu = { 
@@ -55,6 +60,73 @@ class MenuApp extends Component {
 	}
 	componentDidMount = () => {
 		localStorage.setItem('screenSize', window.screen.width.toString())
+		axios.get(`${config.apiBaseURL}/api/stadium/list?page=1&limit=10`, {
+            'headers': {'Authorization': this.state.userInfo.token}
+        })
+        .then((response) => {
+        	let temp = {
+	        	key: this.state.userInfo.default_stadium_id,
+	        	value: this.state.userInfo.default_stadium_id,
+	        	text: this.state.userInfo.stadium.name
+	        }
+        	let stadiumList = response.data.items.map(x => {
+            	return ({
+            		key: x.id,
+                	value: x.id,
+                	text: x.name
+            	})
+            })
+        	stadiumList.unshift(temp)
+            this.setState({
+                stadiumList: stadiumList,
+                loading: false
+            })
+        })
+        .catch((error) => {
+            console.log(error)
+            this.setState({ loading: false })
+        })
+		this.setState({ loading: false })
+	}
+	handleChangeDefaulStadium = (event, object) => {
+		if(object.value !== this.state.userInfo.default_stadium_id) {
+			this.setState({ loading: true })
+	  		axios.put(`${config.apiBaseURL}/api/user/profile`, {
+				"default_stadium_id": object.value
+			}, {
+				'headers': {
+					'Authorization': this.state.userInfo.token,
+					'Content-Type': 'application/json'
+				}
+			})
+			.then((response) => {
+				console.log(response.data)
+				this.setState({
+					userInfo: response.data
+				}, () => {
+					axios.get(`${config.apiBaseURL}/api/stadium/list?page=1&limit=10`, {
+			            'headers': {'Authorization': this.state.userInfo.token}
+			        })
+			        .then((response) => {
+			        	console.log(response.data)
+			        	this.setState({
+			        		stadiumList: response.data.items,
+			        		defaultStadium: object.text,
+			        		loading: false
+			        	}, () => window.location.reload())
+			        })
+			        .catch((error) => {
+			            console.log(error)
+			            this.setState({ loading: false })
+			        })
+			        localStorage.setItem('MET_userInfo', JSON.stringify(response.data))
+				})
+			})
+			.catch((error) => {
+				console.log(error)
+				this.setState({ loading: false })
+			})
+		}
 	}
 	render() {
 		if (!this.state.userInfo) {
@@ -90,9 +162,18 @@ class MenuApp extends Component {
 								):""
 							}
 						</div>
-					</Link>	
+					</Link>
+					<Grid.Row>
+						{
+							(!this.state.isExpand)?"":(<div style={style.marginLeftText}><h3>Sân mặc định</h3></div>)
+						}
+						<Dropdown style={style.marginTotal14px} text={this.state.defaultStadium}
+							search selection options={this.state.stadiumList} onChange={this.handleChangeDefaulStadium}
+						/>
+					</Grid.Row>
+					<Divider style={style.fullWidth}/>
 					{
-						(!this.state.isExpand)?"":(<div style={style.marginTopBot}><h3 style={style.colorText}>Quản lý</h3></div>)
+						(!this.state.isExpand)?"":(<div><h3 style={style.colorText}>Quản lý</h3></div>)
 					}
 					<Menu className="menu-menu" secondary vertical>
 						<Menu.Item style={(!this.state.isExpand)?style.flexCenter:style.none} as={Link} to="/" name='stadium' active={activeItem === 'stadium'} onClick={this.handleItemClick}>
@@ -128,6 +209,7 @@ class MenuApp extends Component {
 							</Button>
 						</Modal.Actions>
 					</Modal>
+					<Loader active={this.state.loading} />
 				</Grid>
 			)
 		}

@@ -70,12 +70,12 @@ class StadiumForm extends Component {
 					'Content-Type': 'application/json'
 				}
 			})
-			.then((reponse) => {
+			.then((response) => {
 				this.setState({
-					userInfo: reponse.data,
+					userInfo: response.data,
 					loadingBut: false
 				}, () => {
-					localStorage.setItem('MET_userInfo', JSON.stringify(reponse.data))
+					localStorage.setItem('MET_userInfo', JSON.stringify(response.data))
 				})
 			})
 			.catch((error) => {

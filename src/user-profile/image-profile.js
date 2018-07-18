@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Button, Icon, Loader } from 'semantic-ui-react'
+import { Grid, Button, Icon, Loader, Modal, Image } from 'semantic-ui-react'
 import axios from 'axios'
 import config from '../config'
 import style from '../dashboard/style.js'
@@ -64,7 +64,7 @@ class StadiumImage extends Component {
 				<Loader active={this.state.loading} />
 				<Grid.Row>
 					{
-						(this.props.isImageChange === false)?"":(<Button style={style.styleImageStadiumButton} onClick={
+						(this.props.isImageChange === false)?"":(<Button disabled={(this.state.srcSelect !== "")?false:true} style={style.styleImageStadiumButton} onClick={
 							() => {
 								this.props.handleAvatarChange(this.state.srcSelect)
 								this.props.handleTabForm()
@@ -100,6 +100,15 @@ class StadiumImage extends Component {
 							styleImageStadiumSelect.border = `2px solid #006838`
 							return (
 								<Grid.Column style={styleCol} key={index}>
+									<Modal closeIcon={true} trigger={
+											<div style={{position: "absolute", top: 0, right: "14px", zIndex: 2, cursor: "pointer", opacity: 0.5}}>
+												<Icon style={{color: "#006838"}} name="external"/>
+											</div>
+										}>
+										<Modal.Content>
+											<Image style={{margin: "auto"}} src={x} />
+										</Modal.Content>
+									</Modal>
 									<div link={x} className="hover-image-stadium" onClick={this.handleClickImage}
 									style={(x === this.state.srcSelect)?styleImageStadiumSelect:styleImageStadium}></div>
 								</Grid.Column>
