@@ -16,11 +16,12 @@ class MenuApp extends Component {
 					):(true)
 				):(true
 			),
-			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
+			userInfo: (!localStorage.getItem('MET_userInfo'))?{}:JSON.parse(localStorage.getItem('MET_userInfo')),
 			openModal: false,
 			stadiumList: [],
-			defaultStadium: JSON.parse(localStorage.getItem('MET_userInfo')).stadium.name,
-			loading: true
+			defaultStadium: (!localStorage.getItem('MET_userInfo'))?0:JSON.parse(localStorage.getItem('MET_userInfo')).stadium.name,
+			loading: true,
+			dropdownLoading: true
 		}
 	}
 	stateMenu = { 
@@ -28,6 +29,10 @@ class MenuApp extends Component {
 	}
 	componentWillMount = () => {
 		localStorage.setItem('screenSize', window.screen.width.toString())
+		this.setState({
+			loading: false,
+			dropdownLoading: false
+		})
 	}
 	handleItemClick = (e, { name }) => {
 		this.setState({ activeItem: name })
@@ -90,7 +95,7 @@ class MenuApp extends Component {
 	}
 	handleChangeDefaulStadium = (event, object) => {
 		if(object.value !== this.state.userInfo.default_stadium_id) {
-			this.setState({ loading: true })
+			this.setState({ dropdownLoading: true })
 	  		axios.put(`${config.apiBaseURL}/api/user/profile`, {
 				"default_stadium_id": object.value
 			}, {
@@ -112,24 +117,24 @@ class MenuApp extends Component {
 			        	this.setState({
 			        		stadiumList: response.data.items,
 			        		defaultStadium: object.text,
-			        		loading: false
+			        		dropdownLoading: false
 			        	}, () => window.location.reload())
 			        })
 			        .catch((error) => {
 			            console.log(error)
-			            this.setState({ loading: false })
+			            this.setState({ dropdownLoading: false })
 			        })
 			        localStorage.setItem('MET_userInfo', JSON.stringify(response.data))
 				})
 			})
 			.catch((error) => {
 				console.log(error)
-				this.setState({ loading: false })
+				this.setState({ dropdownLoading: false })
 			})
 		}
 	}
 	render() {
-		if (!this.state.userInfo) {
+		if (!localStorage.getItem('MET_userInfo')) {
 			return <Redirect to="/login"/>
 		}
 		else {
@@ -144,7 +149,7 @@ class MenuApp extends Component {
 							<div style={(!this.state.isExpand)?style.flexCenter:style.rowButtonExpand} className="menu-header">
 					
 								<div className="button-column">
-									<Button  onClick={this.handleMenuChild}>
+									<Button onClick={this.handleMenuChild}>
 									{
 										(this.state.isExpand)?(<Icon name="arrow left" />):(<Icon style={style.margin0} name="arrow right" />)
 									}
@@ -153,7 +158,7 @@ class MenuApp extends Component {
 							</div>
 						)
 					}
-					<Link style={style.fullWidth} to="/profile">
+					<Link className="icon-manager-hover" style={style.fullWidth} to="/profile">
 						<div style={(this.state.isExpand)?style.userAvatar:style.contentCenter}>
 							<div style={styleAvatar}></div>
 							{
@@ -163,14 +168,17 @@ class MenuApp extends Component {
 							}
 						</div>
 					</Link>
-					<Grid.Row>
-						{
-							(!this.state.isExpand)?"":(<div style={style.marginLeftText}><h3>Sân mặc định</h3></div>)
-						}
-						<Dropdown style={style.marginTotal14px} text={this.state.defaultStadium}
-							search selection options={this.state.stadiumList} onChange={this.handleChangeDefaulStadium}
-						/>
-					</Grid.Row>
+					{
+						(!this.state.isExpand)?"":(
+							<Grid.Row>
+								<div style={style.marginLeftText}><h3>Sân mặc định</h3></div>
+								<Dropdown style={style.styleDropdown} text={this.state.defaultStadium}
+									search selection options={this.state.stadiumList} onChange={this.handleChangeDefaulStadium}
+								/>
+								<Loader active={this.state.dropdownLoading} />
+							</Grid.Row>
+						)
+					}
 					<Divider style={style.fullWidth}/>
 					{
 						(!this.state.isExpand)?"":(<div><h3 style={style.colorText}>Quản lý</h3></div>)
@@ -189,7 +197,8 @@ class MenuApp extends Component {
 							}
 						</Menu.Item>
 					</Menu>
-					<Modal open={this.state.openModal} trigger={
+					<Modal open={this.state.openModal}
+						trigger={
 							<div style={style.fullWidth}><Button onClick={this.handleOpenModal} style={style.fullWidth}>
 							{
 								(this.state.isExpand)?"Đăng xuất":<Icon name="log out" />

@@ -3,7 +3,8 @@ import { Grid, Tab, Loader } from 'semantic-ui-react'
 import { Redirect } from 'react-router-dom'
 import StadiumForm from './stadium-form'
 import StadiumImage from './stadium-image'
-import StaidiumManager from './stadium-manager'
+import StadiumManager from './stadium-manager'
+import StadiumChild from './stadium-child'
 import style from '../dashboard/style.js'
 import axios from 'axios'
 import config from '../config'
@@ -19,7 +20,9 @@ class StadiumInfo extends Component {
 			cityList: [],
 			imageList: [],
 			loading: true,
-			managerList: []
+			managerList: [],
+			stadiumChild: [],
+			screenSize: window.screen.width
 		}
 	}
 	handleTabImage = (number) => {
@@ -55,7 +58,13 @@ class StadiumInfo extends Component {
 			activeIndex: data.activeIndex
 		})
 	}
+	handleAddImage = (lst) => {
+		this.setState({ imageList: lst})
+	}
 	fetchData = () => {
+		let loading1 = true
+		let loading2 = true
+		let loading3 = true
 		axios.get(`${config.apiBaseURL}/api/stadium/${this.state.userInfo.default_stadium_id}`, {
 			'headers': {'Authorization': this.state.userInfo.token}
 		})
@@ -63,23 +72,45 @@ class StadiumInfo extends Component {
 			this.setState({
 				stadiumData: response.data,
 				imageList: response.data.image_list.filter((x) => x.includes("_thumbnail.jpg"))
-			},
-				() => axios.get(`${config.apiBaseURL}/api/stadium/manager?stadiumID=${this.state.userInfo.default_stadium_id}`, {
-					'headers': {'Authorization': this.state.userInfo.token}
-				})
-				.then((response) => {
-					this.setState({
-						managerList: response.data.items,
-						loading: false
-					})
-				})
-				.catch((error) => {
-					console.log(error)
-				})
-			)
+			}, () => {
+				loading1 = false
+				if (!loading1 && !loading2 && !loading3) this.setState({ loading: false })
+			})
 		})
 		.catch((error) => {
 			console.log(error)
+			loading1 = false
+			if (!loading1 && !loading2 && !loading3) this.setState({ loading: false })
+		})
+		axios.get(`${config.apiBaseURL}/api/stadium/manager?stadiumID=${this.state.userInfo.default_stadium_id}`, {
+			'headers': {'Authorization': this.state.userInfo.token}
+		})
+		.then((response) => {
+			this.setState({
+				managerList: response.data.items,
+			}, () => {
+				loading2 = false
+				if (!loading1 && !loading2 && !loading3) this.setState({ loading: false })
+			})
+		})
+		.catch((error) => {
+			console.log(error)
+			loading2 = false
+			if (!loading1 && !loading2 && !loading3) this.setState({ loading: false })
+		})
+		axios.get(`${config.apiBaseURL}/api/stadium/child?stadiumID=${this.state.userInfo.default_stadium_id}`, {
+			'headers': {'Authorization': this.state.userInfo.token}
+		})
+		.then((response) => {
+			this.setState({ stadiumChild: response.data }, () => {
+				loading3 = false
+				if (!loading1 && !loading2 && !loading3) this.setState({ loading: false })
+			})
+		})
+		.catch((error) => {
+			console.log(error)
+			loading3 = false
+			if (!loading1 && !loading2 && !loading3) this.setState({ loading: false })
 		})
 	}
 	componentDidMount = () => {
@@ -94,6 +125,10 @@ class StadiumInfo extends Component {
 				console.log(error)
 			})
 		}
+		window.addEventListener('resize',this.detectScreenChange)
+	}
+	detectScreenChange = () => {
+		this.setState({ screenSize: window.screen.width })
 	}
 	render() {
 		if (!localStorage.getItem('MET_userInfo'))
@@ -101,19 +136,21 @@ class StadiumInfo extends Component {
 		else {
 			if (!this.state.loading) {
 				return (
-					<Grid style={{margin: "0"}} className="stadium-info">
-						<Tab style={style.fullWidth} onTabChange={this.handleTabChange} activeIndex={this.state.activeIndex} menu={{ secondary: true, pointing: true }} 
+					<Grid style={style.marginTotal0px} className="stadium-info">
+						<Tab style={style.styleClassInfo} onTabChange={this.handleTabChange} activeIndex={this.state.activeIndex}
+						menu={{ secondary: true, pointing: true, style: (this.state.screenSize >= 377)?style.none:style.scrollX }} 
 						panes={
 							[
-								{ menuItem: (window.screen.width >= 768)?'Thông tin sân':'Thông tin', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+								{ menuItem: (this.state.screenSize >= 768)?'Thông tin sân':'Thông tin', render: () => <Tab.Pane className="detail-stadium" attached={false}>
 									<StadiumForm
 										handleTabImage={this.handleTabImage}
 										stadiumData={this.state.stadiumData}
 										cityList={this.state.cityList}
 									/></Tab.Pane>
 								},
-								{ menuItem: (window.screen.width >= 768)?'Hình ảnh sân':'Hình ảnh', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+								{ menuItem: (this.state.screenSize >= 768)?'Hình ảnh sân':'Hình ảnh', render: () => <Tab.Pane className="detail-stadium" attached={false}>
 									<StadiumImage
+										handleAddImage={this.handleAddImage}
 										handleImageChange={this.handleImageChange}
 										handleBgImageChange={this.handleBgImageChange}
 										numberImageChange={this.state.numberImageChange}
@@ -121,9 +158,14 @@ class StadiumInfo extends Component {
 										handleTabForm={this.handleTabForm}
 									/></Tab.Pane>
 								},
-								{ menuItem: (window.screen.width >= 768)?'Quản lý sân':'Quản lý', render: () => <Tab.Pane className="detail-stadium" attached={false}>
-									<StaidiumManager
+								{ menuItem: (this.state.screenSize >= 768)?'Quản lý sân':'Quản lý', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+									<StadiumManager
 										managerlist={this.state.managerList}
+									/></Tab.Pane>
+								},
+								{ menuItem: 'Sân con', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+									<StadiumChild
+										stadiumChild={this.state.stadiumChild}
 									/></Tab.Pane>
 								},
 							]

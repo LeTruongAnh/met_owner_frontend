@@ -103,7 +103,7 @@ class BookingForm extends Component {
             <Grid style={style.marginTotal0px} className="stadium-grid">
                 <Grid.Row><h3 style={style.marginTotal14px}>Thông tin đặt sân</h3></Grid.Row>
                 <Grid.Row style={style.marginTotal14px} centered={true}>
-                    <Segment style={(this.props.isMobile)?style.fullWidth:style.none}>
+                    <Segment style={(this.props.isMobile)?style.fullWidth:style.width400px}>
                         <Form style={style.styleStadiumForm} loading={this.state.loading} className="format-form">
                             <Form.Field className="detail-form-booking" style={style.flexCenter}>
                                 <label style={style.styleInputBookingDetail}>Mã đặt sân</label>

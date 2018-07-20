@@ -73,11 +73,6 @@ button {
 	height: 100%;
 	margin: 0 !important;
 }
-.hover-image-stadium:hover {
-	z-index: 2;
-	transform: scale(1.5);
-	border: none;
-}
 .App .dashboard-grid .row {
 	padding: 0 !important;
 }
@@ -91,12 +86,6 @@ button {
 	width: 100%;
     padding: 14px 0;
 }
-/*.App .dashboard-grid .menu-column .item:hover {
-	color: rgb(255, 255, 255) !important;
-}
-.App .dashboard-grid .menu-column .active {
-	color: rgb(255, 255, 255) !important;
-}*/
 .menu-grid {
 	margin: 0 !important;
 }
@@ -164,13 +153,23 @@ button>i {
 .search .results .result {
 	cursor: default !important;
 }
-.icon-manager-hover:hover{
+.icon-manager-hover:hover {
 	background-color: rgba(0,0,0,0.1);
 	border-radius: .28571429rem;
 }
 .ui.search>.ui.icon.input {
 	width: 100%;
 }
+.sixteen.wide.column.content-column>.ui.grid.stadium-info>.ui.pointing.secondary.menu {
+	overflow-x: scroll !important;
+}
+::-webkit-scrollbar {
+    width: 3px !important;
+    height: 3px !important;
+}
+/*label {
+	font-weight: bold;
+}*/
 
 @media screen and (max-width: 767px) {
 	.format-form {

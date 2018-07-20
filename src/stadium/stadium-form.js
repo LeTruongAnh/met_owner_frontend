@@ -124,25 +124,54 @@ class StadiumForm extends Component {
 		this.setState({ styleIconChangeCover: style.changeImage })
 	}
 	render() {
+		let styleColLogoImage = Object.assign({}, style.styleColLogoImage)
+		styleColLogoImage.backgroundImage = `url('${this.state.logoImage}')`
+		let styleColBgImage = Object.assign({}, style.styleColBgImage)
+		styleColBgImage.backgroundImage = `url('${this.state.bgImage}')`
+		if (this.state.screenSize > 1024)
+			if (localStorage.getItem("isExpand") === "true") {
+				styleColLogoImage.height = "calc(((81.25vw - 224px) * 0.3) - 14px)"
+				styleColBgImage.height = "calc(((81.25vw - 224px) * 0.3) - 14px)"
+			}
+			else {
+				styleColLogoImage.height = "calc(((93.75vw - 224px) * 0.3) - 14px)"
+				styleColBgImage.height = "calc(((93.75vw - 224px) * 0.3) - 14px)"
+			}
+		else if (this.state.screenSize >= 768)
+			if (localStorage.getItem("isExpand") === "true") {
+				styleColLogoImage.height = "calc(((75vw - 224px) * 0.3) - 14px)"
+				styleColBgImage.height = "calc(((75vw - 224px) * 0.3) - 14px)"
+			}
+			else {
+				styleColLogoImage.height = "calc(((87.5vw - 224px) * 0.3) - 14px)"
+				styleColBgImage.height = "calc(((87.5vw - 224px) * 0.3) - 14px)"
+			}
 		return (
 			<Grid className="grid-form stadium-grid">
-				<Grid.Row style={style.marginTopBot} centered={true}>
+				<Grid.Row centered={true}>
 					{
 						(this.state.screenSize >= 768)?(
-							<Form style={style.styleStadiumForm} loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
-								<Form.Field style={style.positionRelative}>
-									<div onMouseOver={this.handleMouseOverIconLogo} onMouseOut={this.handleMouseOutIconLogo} style={this.state.styleIconChangeLogo} onClick={() => this.props.handleTabImage(1)}>
-										<Icon name="photo" size="large" />
+							<Form style={style.styleStadiumFormStadium} loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
+								<Form.Field>
+									<div style={style.width30}>
+										<div style={style.styleLabelDiv}><label>Logo sân</label></div>
+										<div style={styleColLogoImage}>
+											<div onMouseOver={this.handleMouseOverIconLogo} onMouseOut={this.handleMouseOutIconLogo}
+											style={this.state.styleIconChangeLogo}
+											onClick={() => this.props.handleTabImage(1)}>
+												<Icon name="photo" size="large" />
+											</div>
+										</div>
 									</div>
-									<label style={style.width30}>Logo sân</label>
-									<div style={style.width70}><Image style={{height: "260.4px"}} src={this.state.logoImage} fluid /></div>
-								</Form.Field>
-								<Form.Field style={style.positionRelative}>
-									<div onMouseOver={this.handleMouseOverIconCover} onMouseOut={this.handleMouseOutIconCover} style={this.state.styleIconChangeCover} onClick={() => this.props.handleTabImage(2)}>
-										<Icon name="photo" size="large" />
+									<div style={style.width70}>
+										<div style={style.styleLabelDiv}><label>Ảnh nền sân</label></div>
+										<div style={styleColBgImage}>
+											<div onMouseOver={this.handleMouseOverIconCover} onMouseOut={this.handleMouseOutIconCover}
+											style={this.state.styleIconChangeCover} onClick={() => this.props.handleTabImage(2)}>
+												<Icon name="photo" size="large" />
+											</div>
+										</div>
 									</div>
-									<label style={style.width30}>Ảnh nền sân</label>
-									<div style={style.width70}><Image style={{height: "260.4px"}} src={this.state.bgImage} fluid /></div>
 								</Form.Field>
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>
@@ -181,23 +210,25 @@ class StadiumForm extends Component {
 									</select>
 								</Form.Field>
 								<span className="err-span">{this.state.errManager}</span>
-							    <Form.Field>
-							    	<Button loading={this.state.loadingBut} className="form-but" type='submit'>Cập nhật</Button>
+							    <Form.Field style={style.flexCenter}>
+							    	<Button style={style.widthAuto} loading={this.state.loadingBut} className="form-but" type='submit'>Cập nhật</Button>
 							    </Form.Field>
 						  	</Form>
 						):(
 							<Form style={style.styleStadiumForm} loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
+								<label>Logo sân</label>
 								<Form.Field style={style.styleFieldLogoCoverChange}>
-									<div onMouseOver={this.handleMouseOverIconLogo} onMouseOut={this.handleMouseOutIconLogo} style={this.state.styleIconChangeLogo} onClick={() => this.props.handleTabImage(1)}>
+									<div style={this.state.styleIconChangeLogo} onClick={() => this.props.handleTabImage(1)}>
 										<Icon name="photo" size="large" />
 									</div>
-									<Image style={style.logoImage} src={this.state.logoImage} onClick={() => this.props.handleTabImage(1)} />
+									<Image src={this.state.logoImage} onClick={() => this.props.handleTabImage(1)} />
 								</Form.Field>
+								<label>Ảnh nền sân</label>
 								<Form.Field style={style.styleFieldLogoCoverChange}>
 									<div onMouseOver={this.handleMouseOverIconCover} onMouseOut={this.handleMouseOutIconCover} style={this.state.styleIconChangeCover} onClick={() => this.props.handleTabImage(2)}>
 										<Icon name="photo" size="large" />
 									</div>
-									<Image style={style.logoImage} src={this.state.bgImage} onClick={() => this.props.handleTabImage(2)} />
+									<Image src={this.state.bgImage} onClick={() => this.props.handleTabImage(2)} />
 								</Form.Field>
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>

@@ -96,7 +96,7 @@ module.exports = {
 		margin: "14px"
 	},
 	marginTotal0px: {
-		margin: "0 !important"
+		margin: "0"
 	},
 	marginBooking: {
 		margin: "0"
@@ -180,28 +180,6 @@ module.exports = {
 		position: "relative",
 		marginBottom: "28px"
 	},
-	styleIconChangeAvatar: {
-		color: "#000",
-		position: "absolute",
-		zIndex: 2,
-		cursor: "pointer",
-		opacity: "0.3",
-		padding: "4px 6px",
-		display: "flex",
-		justifyContent: "center",
-		borderRadius: "2px"
-	},
-	styleIconChangeAvatarHover: {
-		color: "#000",
-		position: "absolute",
-		zIndex: 2,
-		cursor: "pointer",
-		opacity: 1,
-		padding: "10px",
-		display: "flex",
-		justifyContent: "center",
-		borderRadius: "50%"
-	},
 	logoImageHover: {
 		height: "150px",
 		opacity: "0.5"
@@ -237,7 +215,13 @@ module.exports = {
 		justifyContent: "center"
 	},
 	styleStadiumForm: {
-		border: "none"
+		border: "none",
+		width: "100%"
+	},
+	styleStadiumFormStadium: {
+		border: "none",
+		width: "100%",
+		paddingTop: 0
 	},
 	width50: {
 		width: "50%"
@@ -264,12 +248,79 @@ module.exports = {
 		justifyContent: "space-between"
 	},
 	styleImageStadium: {
-		transition: "transform .2s",
 		boxSizing: "border-box",
 		padding: "0",
 		backgroundRepeat: "no-repeat",
 		backgroundSize: "cover",
 		backgroundPosition: "center",
 		height: "100%"
+	},
+	scrollX: {
+		overflowX: "scroll"
+	},
+	styleDropdown: {
+		margin: "14px",
+		minWidth: 0,
+		width: "100%"
+	},
+	styleDivAsButton: {
+		color: "#006838",
+		cursor: "pointer",
+		fontWeight: "bold"
+	},
+	styleExternalIconDivRT: {
+		position: "absolute",
+		top: 0,
+		right: "14px",
+		zIndex: 2,
+		cursor: "pointer",
+		opacity: 0.5
+	},
+	styleExternalIconDivCenter: {
+		position: "absolute",
+		top: 'calc(50% - 11px)',
+		right: 'calc(50% - 14px)',
+		zIndex: 2,
+		cursor: "pointer",
+		opacity: 0.5
+	},
+	marginAuto: {
+		margin: "auto"
+	},
+	widthAuto : {
+		width: "auto"
+	},
+	styleColLogoImage: {
+		margin: "0 28px 14px 0",
+		height: "auto",
+		width: "calc(100% - 28px)",
+		position: "relative",
+		backgroundRepeat: "no-repeat",
+		backgroundSize: "cover",
+		backgroundPosition: "center",
+	},
+	styleColBgImage: {
+		margin: " 0 0 14px 0",
+		height: "auto",
+		width: "100%",
+		position: "relative",
+		backgroundRepeat: "no-repeat",
+		backgroundSize: "cover",
+		backgroundPosition: "center",
+	},
+	width400px: {
+		width: "400px"
+	},
+	width33 : {
+		width: "calc(100% / 3)"
+	},
+	styleLabelDiv: {
+		height: "28px",
+		marginTop: "14px",
+		fontWeight: "bold"
+	},
+	styleClassInfo: {
+		width: "100%",
+		paddingTop: 0
 	}
 }

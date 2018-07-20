@@ -13,7 +13,8 @@ class StadiumImage extends Component {
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
 			imageList: props.imageList || [],
 			srcSelect: "",
-			loading: true
+			loading: true,
+			errAddImage: ""
 		}
 	}
 	componentDidMount = () => {
@@ -26,30 +27,46 @@ class StadiumImage extends Component {
 		document.getElementById('input-image').click()
 	}
 	handleAddImage = (selectorFiles) => {
-		this.setState( {loading: true} )
-		var file = selectorFiles[0]
-		var reader = new FileReader()
-		reader.readAsDataURL(file)
-		reader.onloadend = () => {
-			axios.post(`${config.apiBaseURL}/api/stadium/upload`, {
-				"image": reader.result,
-				"stadiumID": this.state.userInfo.default_stadium_id
-			}, {
-				'headers': {
-					'Authorization': this.state.userInfo.token,
-					'Content-Type': 'application/json'
-				}
-			})
-			.then((response) => {
-				let lst = [...this.state.imageList, response.data.url]
+		this.setState({
+			errAddImage: ""
+		})
+		if (selectorFiles.length > 0) {
+			if (selectorFiles[0].name.endsWith(".gif") || selectorFiles[0].name.endsWith(".jpg") || selectorFiles[0].name.endsWith(".jpeg") || selectorFiles[0].name.endsWith(".tiff") || selectorFiles[0].name.endsWith(".png")) {
 				this.setState({
-					imageList: lst,
-					loading: false
+					errAddImage: ""
 				})
-			})
-			.catch((error) => {
-				console.log(error)
-				this.setState( {loading: false} )
+				this.setState( {loading: true} )
+				var file = selectorFiles[0]
+				var reader = new FileReader()
+				reader.onloadend = () => {
+					axios.post(`${config.apiBaseURL}/api/stadium/upload`, {
+						"image": reader.result,
+						"stadiumID": this.state.userInfo.default_stadium_id
+					}, {
+						'headers': {
+							'Authorization': this.state.userInfo.token,
+							'Content-Type': 'application/json'
+						}
+					})
+					.then((response) => {
+						console.log(response.data)
+						let lst = [...this.state.imageList, response.data.url]
+						this.props.handleAddImage(lst)
+						this.setState({
+							imageList: lst,
+							loading: false,
+							errAddImage: ""
+						})
+					})
+					.catch((error) => {
+						console.log(error)
+						this.setState( {loading: false} )
+					})
+				}
+				reader.readAsDataURL(file)
+			}
+			else this.setState({
+				errAddImage: "*Vui lòng chọn tệp hình ảnh!"
 			})
 		}
 	}
@@ -69,6 +86,7 @@ class StadiumImage extends Component {
 		return (
 			<Grid>
 				<Loader active={this.state.loading} />
+				<span className="err-span">{this.state.errAddImage}</span>
 				<Grid.Row>
 					{
 						(this.props.numberImageChange === 0)?"":(<Button disabled={(this.state.srcSelect !== "")?false:true} style={style.styleImageStadiumButton} onClick={
@@ -85,7 +103,7 @@ class StadiumImage extends Component {
 					<Grid.Column style={{paddingBottom: "14px"}} onClick={this.handleClickAddImage}>
 						<div style={style.fullWidthHeight}>
 							<Button style={style.fullWidthHeight}>
-								<Icon name="add" size={(this.state.screenSize > 1024)?("large"):("small")}/>
+								<Icon name="add" size="large"/>
 							</Button>
 						</div>
 					</Grid.Column>
@@ -99,7 +117,7 @@ class StadiumImage extends Component {
 							}
 							if (this.state.screenSize > 1024)
 								if (localStorage.getItem("isExpand") === "true") styleCol.height = "calc((81.25vw - 224px) / 6)"
-								else styleCol.height = "calc((93.7vw - 224px) / 6)"
+								else styleCol.height = "calc((93.75vw - 224px) / 6)"
 							else if (this.state.screenSize >= 768)
 								if (localStorage.getItem("isExpand") === "true") styleCol.height = "calc((75vw - 224px) / 6)"
 								else styleCol.height = "calc((87.5vw - 224px) / 6)"
@@ -109,16 +127,16 @@ class StadiumImage extends Component {
 							styleImageStadiumSelect.border = `2px solid #006838`
 							return (
 								<Grid.Column style={styleCol} key={index}>
-									<Modal closeIcon={true} trigger={
-											<div style={{position: "absolute", top: 0, right: "14px", zIndex: 2, cursor: "pointer", opacity: 0.5}}>
-												<Icon style={{color: "#006838"}} name="external"/>
+									<Modal centered={false} closeIcon={true} trigger={
+											<div style={(this.props.numberImageChange !== 0)?style.styleExternalIconDivRT:style.styleExternalIconDivCenter}>
+												<Icon style={style.detailLink} size={(this.props.numberImageChange === 0)?"large":""} name="external"/>
 											</div>
 										}>
 										<Modal.Content>
-											<Image style={{margin: "auto"}} src={x} />
+											<Image style={style.marginAuto} src={x} />
 										</Modal.Content>
 									</Modal>
-									<div link={x} className="hover-image-stadium" onClick={this.handleClickImage}
+									<div link={x} onClick={this.handleClickImage}
 									style={(x === this.state.srcSelect)?styleImageStadiumSelect:styleImageStadium}></div>
 								</Grid.Column>
 							)

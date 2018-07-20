@@ -29,11 +29,11 @@ class StadiumManager extends Component {
 		value: ''
 	})
 	handleSearchChange = (e, { value }) => {
-		this.setState({ isLoading: true, value: value }, ()=> {
+		this.setState({ isLoading: true, value: value }, () => {
 			setTimeout(() => {
-				this.setState({searchValue: value}, ()=> {
+				this.setState({searchValue: value}, () => {
 					if (this.state.value.length < 1) 
-						return this.resetComponent()
+						this.resetComponent()
 					else if (this.state.searchValue === this.state.value) {
 						this.setState({
 							isLoading: true
@@ -63,7 +63,7 @@ class StadiumManager extends Component {
 							this.setState({
 								results: rs,
 								isLoading: false
-							}, () => console.log(this.state.results))
+							})
 						})
 						.catch((error) => {
 							console.log(error)
@@ -81,7 +81,6 @@ class StadiumManager extends Component {
 				})
 			}, 500)
 		})
-			
 	}
 	handleManagerRole = (number) => {
 		switch (number) {
@@ -228,7 +227,7 @@ class StadiumManager extends Component {
 											<Table.Cell>{`${x.first_name} ${x.last_name}`}</Table.Cell>
 											<Table.Cell>{x.phone}</Table.Cell>
 											<Table.Cell>{this.handleManagerRole(x.stadium_role)}</Table.Cell>
-											<Table.Cell style={style.flexCenter}>
+											<Table.Cell textAlign="center">
 												<div onClick={() => this.handleRemoveManager(x.id)} className="icon-manager-hover" style={{padding: "10px", cursor: "pointer"}}>
 													<Icon size="large" style={{color: "#ed1c24"}} name='close'/>
 												</div>

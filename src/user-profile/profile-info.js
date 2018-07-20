@@ -17,7 +17,8 @@ class ProfileInfo extends Component {
             userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
             loading: true,
             stadiumList: [],
-            imageList: []
+            imageList: [],
+            screenSize: window.screen.width
         }
     }
    handleTabImage = () => {
@@ -31,6 +32,9 @@ class ProfileInfo extends Component {
             activeIndex: 0,
             isImageChange: false
         })
+    }
+    handleAddImage = (lst) => {
+        this.setState({ imageList: lst})
     }
     handleAvatarChange = (url) => {
         if (url !== "") {
@@ -46,20 +50,6 @@ class ProfileInfo extends Component {
             activeIndex: data.activeIndex
         })
     }
-    // fetchData = () => {
-    //     axios.get(`${config.apiBaseURL}/api/stadium/list?page=1&limit=10`, {
-    //         'headers': {'Authorization': this.state.userInfo.token}
-    //     })
-    //     .then((response) => {
-    //         this.setState({
-    //             stadiumList: response.data.items,
-    //             loading: false
-    //         })
-    //     })
-    //     .catch((error) => {
-    //         console.log(error)
-    //     })
-    // }
     componentDidMount = () => {
         if (this.state.userInfo.token) {
             axios.get(`${config.apiBaseURL}/api/user/pictures?userID=${this.state.userInfo.id}&page=1&limit=12`, {
@@ -78,6 +68,10 @@ class ProfileInfo extends Component {
                 })
             })
         }
+        window.addEventListener('resize',this.detectScreenChange)
+    }
+    detectScreenChange = () => {
+        this.setState({ screenSize: window.screen.width })
     }
     render() {
         if (!localStorage.getItem('MET_userInfo'))
@@ -85,26 +79,24 @@ class ProfileInfo extends Component {
         else {
             if (!this.state.loading) {
                 return (
-                    <Grid style={{margin: "0"}} className="stadium-info">
-                        <Tab onTabChange={this.handleTabChange} activeIndex={this.state.activeIndex} style={style.fullWidth} menu={{ secondary: true, pointing: true }} 
+                    <Grid style={style.marginTotal0px} className="stadium-info">
+                        <Tab className="menu-tab" onTabChange={this.handleTabChange} activeIndex={this.state.activeIndex}
+                        style={style.styleClassInfo} menu={{ secondary: true, pointing: true }} 
                         panes={
                             [
-                                { menuItem: (window.screen.width >= 768)?'Thông tin chủ sân':'Thông tin', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+                                { menuItem: (this.state.screenSize >= 768)?'Thông tin chủ sân':'Thông tin', render: () => <Tab.Pane className="detail-stadium" attached={false}>
                                     <Profile
                                         userInfo={this.state.userInfo}
                                         handleTabImage={this.handleTabImage}
                                     /></Tab.Pane> },
-                                { menuItem: (window.screen.width >= 768)?'Hình ảnh chủ sân':'Hình ảnh', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+                                { menuItem: (this.state.screenSize >= 768)?'Hình ảnh chủ sân':'Hình ảnh', render: () => <Tab.Pane className="detail-stadium" attached={false}>
                                     <ImageProfile
+                                        handleAddImage={this.handleAddImage}
                                         handleAvatarChange={this.handleAvatarChange}
                                         isImageChange={this.state.isImageChange}
                                         handleTabForm={this.handleTabForm}
                                         imageList={this.state.imageList}
                                     /></Tab.Pane> },
-                                // { menuItem: (window.screen.width >= 768)?'Danh sách sân':'Danh sách', render: () => <Tab.Pane className="detail-stadium" attached={false}>
-                                //     <ListStadium
-                                //         stadiumList={this.state.stadiumList}
-                                //     /></Tab.Pane> }
                             ]
                         } />
                     </Grid>

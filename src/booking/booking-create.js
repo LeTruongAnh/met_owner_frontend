@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { Grid, Icon, Sidebar } from 'semantic-ui-react'
 import MenuApp from '../dashboard/menu-app.js'
 import style from '../dashboard/style'
-import BookingInfo from './booking-info.js'
+import BookingCreateInfo from './booking-create-info'
 
-class Booking extends Component {
+class BookingCreate extends Component {
 	constructor(props){
 		super(props)
 		this.state = {
@@ -65,7 +65,7 @@ class Booking extends Component {
 							<MenuApp handleMenuParent={this.handleMenuParent} content="booking"/>
 						</Grid.Column>
 						<Grid.Column className="content-column" width={this.state.contentWidth}>
-							<BookingInfo />
+							<BookingCreateInfo />
 						</Grid.Column>
 					</Grid.Row>
 				</Grid>
@@ -89,7 +89,7 @@ class Booking extends Component {
 										</div>
 										<h3 style={{margin: "auto", padding: "1em 0", color: "#fff"}}>MET</h3>
 									</Grid.Row>
-									<BookingInfo />
+									<BookingCreateInfo />
 								</Grid.Column>
 							</Sidebar.Pusher>
 						</Sidebar.Pushable>
@@ -100,4 +100,4 @@ class Booking extends Component {
 	}
 }
 
-export default Booking
+export default BookingCreate

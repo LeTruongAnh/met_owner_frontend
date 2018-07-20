@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Header, Table, Grid, Menu, Icon, Loader } from 'semantic-ui-react'
+import { Header, Table, Grid, Menu, Icon, Loader, Button } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import style from '../dashboard/style.js'
 import axios from 'axios'
@@ -110,6 +110,9 @@ class BookingInfo extends Component {
 			<Grid style={style.marginBooking}>
 				<Loader active={this.state.loading} />
 				<Header style={(this.state.screenSize >= 768)?style.margin0:style.marginTopBot} as="h1">Danh sách đặt sân</Header>
+				<Grid.Row style={style.marginTotal14px}>
+					<Link to="/booking/create"><Button>Đặt sân</Button></Link>
+				</Grid.Row>
 				{
 					(this.state.screenSize >= 768)?(
 						<Table style={style.marginTable} celled striped>
@@ -121,7 +124,7 @@ class BookingInfo extends Component {
 									<Table.HeaderCell>Ngày đá</Table.HeaderCell>
 									<Table.HeaderCell>Giờ đá</Table.HeaderCell>
 									<Table.HeaderCell>Trạng thái</Table.HeaderCell>
-									<Table.HeaderCell>Chi tiết</Table.HeaderCell>
+									<Table.HeaderCell textAlign="center">Chi tiết</Table.HeaderCell>
 								</Table.Row>
 							</Table.Header>
 							<Table.Body>
@@ -168,7 +171,7 @@ class BookingInfo extends Component {
 													}
 												})()}
 												</Table.Cell>
-												<Table.Cell style={style.flexCenter}><Link style={style.detailLink} to={`/booking/${x.id}`}><Icon name="info circle"></Icon></Link></Table.Cell>
+												<Table.Cell textAlign="center"><Link style={style.detailLink} to={`/booking/${x.id}`}><Icon name="info circle"></Icon></Link></Table.Cell>
 											</Table.Row>
 										)
 									})							

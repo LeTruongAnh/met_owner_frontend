@@ -5,6 +5,7 @@ import LoginForm from './login/login-form.js'
 import RegistForm from './regist/regist-form.js'
 import Stadium from './stadium/stadium.js'
 import Booking from './booking/booking.js'
+import BookingCreate from './booking/booking-create.js'
 import BookingDetail from './booking/booking-detail.js'
 import UserProfile from './user-profile/user-profile.js'
 import {
@@ -23,6 +24,7 @@ class App extends Component {
                         <Route path="/login" exact component={LoginForm} />
                         <Route path="/register" exact component={RegistForm} />
                         <Route path="/booking" exact component={Booking} />
+                        <Route path="/booking/create" exact component={BookingCreate} />
                         <Route path="/booking/:bookingID" exact children={
                             ( {match} ) => {
                                 return <BookingDetail bookingID={match.params.bookingID}/>
