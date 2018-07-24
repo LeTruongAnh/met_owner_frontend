@@ -12,12 +12,33 @@ class BookingCreateInfo extends Component {
 		super(props)
 		this.state = {
 			screenSize: window.screen.width,
-			loading: true
+			userInfo: (localStorage.getItem('MET_userInfo'))?JSON.parse(localStorage.getItem('MET_userInfo')):{},
+			loading: true,
+			stadiumChild: []
 		}
 	}
 	componentDidMount = () => {
-		this.setState({ loading: false })
+		this.setState({ loading: true })
 		window.addEventListener('resize',this.detectScreenChange)
+		axios.get(`${config.apiBaseURL}/api/stadium/child?stadiumID=${this.state.userInfo.default_stadium_id}`, {
+			'headers': {'Authorization': this.state.userInfo.token}
+		})
+		.then((response) => {
+			let temp = response.data.map(x => {
+				return {
+					value: x.id,
+					text: x.name
+				}
+			})
+			this.setState({
+				stadiumChild: temp,
+				loading: false
+			})
+		})
+		.catch((error) => {
+			console.log(error)
+			this.setState({ loading: false })
+		})
 	}
 	detectScreenChange = () => {
 		this.setState({ screenSize: window.screen.width })
@@ -32,11 +53,11 @@ class BookingCreateInfo extends Component {
 						<Tab style={style.styleClassInfo} menu={{ secondary: true, pointing: true }} 
 						panes={
 							[
-								{ menuItem: (this.state.screenSize >= 768)?'Đặt sân 1 lần':'Một lần', render: () => <Tab.Pane className="detail-stadium" attached={false}>
-									<BookingOnce
+								{ menuItem: 'Khách vãng lại', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+									<BookingOnce stadiumchild={this.state.stadiumChild}
 									/></Tab.Pane>
 								},
-								{ menuItem: (this.state.screenSize >= 768)?'Đặt sân nhiều':'Nhiều', render: () => <Tab.Pane className="detail-stadium" attached={false}>
+								{ menuItem: "Khách cố định", render: () => <Tab.Pane className="detail-stadium" attached={false}>
 									<BookingPermanent
 									/></Tab.Pane>
 								},

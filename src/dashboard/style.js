@@ -319,8 +319,39 @@ module.exports = {
 		marginTop: "14px",
 		fontWeight: "bold"
 	},
+	styleLabelDivMobile: {
+		height: "28px",
+		marginTop: "14px",
+		fontWeight: "bold",
+		textAlign: "left"
+	},
 	styleClassInfo: {
 		width: "100%",
 		paddingTop: 0
+	},
+	paddingTop0: {
+		paddingTop: 0
+	},
+	paddingTotal0: {
+		padding: 0
+	},
+	paddingLeftRight4: {
+		paddingLeft: "4px",
+		paddingRight: "4px"
+	},
+	displayInlineBlock: {
+		display: "inline-block"
+	},
+	styleStarDanger: {
+		display: "inline-block",
+		color: "#ed1c24"
+	},
+	styleErrNotification: {
+		paddingLeft: "28px",
+		fontWeight: "bold"
+	},
+	paddingTopBot0: {
+		paddingTop: 0,
+		paddingBottom: 0
 	}
 }

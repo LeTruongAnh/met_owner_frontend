@@ -173,7 +173,7 @@ class MenuApp extends Component {
 							<Grid.Row>
 								<div style={style.marginLeftText}><h3>Sân mặc định</h3></div>
 								<Dropdown style={style.styleDropdown} text={this.state.defaultStadium}
-									search selection options={this.state.stadiumList} onChange={this.handleChangeDefaulStadium}
+									selection options={this.state.stadiumList} onChange={this.handleChangeDefaulStadium}
 								/>
 								<Loader active={this.state.dropdownLoading} />
 							</Grid.Row>

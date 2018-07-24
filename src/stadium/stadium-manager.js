@@ -15,7 +15,7 @@ class StadiumManager extends Component {
 			isLoading: false,
 			results: [],
 			value: "",
-			searchValue: "",
+			searchValue: ""
 		}
 	}
 	componentDidMount = () => {
