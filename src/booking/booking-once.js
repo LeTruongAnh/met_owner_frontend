@@ -46,7 +46,7 @@ class BookingOnce extends Component {
 			errPhone: "",
 			errPhone2: "",
 			errPrice: "",
-			successNotification: "",
+			reponseNotification: "",
 			openErrModal: false,
 			loadingBut: false,
 			alreadyPaid: 0,
@@ -228,10 +228,12 @@ class BookingOnce extends Component {
 	handleTodayString = () => {
 		let today = new Date()
         let months = ['01','02','03','04','05','06','07','08','09','10','11','12']
+        let days = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy']
         let year = today.getFullYear()
         let month = months[today.getMonth()]
         let date = (today.getDate() < 10)?("0" + today.getDate()):today.getDate()
-        let time = "Ngày " + date + "/" + month + "/" + year
+        let day = days[today.getDay()]
+        let time = day + ", " + date + "/" + month + "/" + year
         return time
 	}
 	handleChangeStartDate = (date) => {
@@ -398,8 +400,7 @@ class BookingOnce extends Component {
 			})
 		}
 	}
-	handleOnSubmit = () => {
-		this.setState({ loadingBut: true })
+	checkErrorSubmit = () => {
 		let isOK = true
 		if (this.state.value1 === "") {
 			this.setState({
@@ -412,7 +413,7 @@ class BookingOnce extends Component {
 				errTeam1: ""
 			})
 		}
-		if (this.state.typeStadiumValue) {
+		if (this.state.typeStadiumValue === 1) {
 			if (this.state.value2 === "") {
 				this.setState({
 					errTeam2: "Vui lòng nhập tên đội bóng thứ 2"
@@ -453,11 +454,12 @@ class BookingOnce extends Component {
 		}
 		else {
 			let today = new Date()
-
-			if (this.state.startDateUp < today.getTime())
+			if (this.state.startDateUp < today.getTime()) {
 				this.setState({
 					errStartDate: "Thời điểm bắt đầu đã qua"
 				})
+				isOK = false
+			}
 			else
 				this.setState({
 					errStartDate: ""
@@ -539,33 +541,36 @@ class BookingOnce extends Component {
 					errPrice: ""
 				})
 		}
-
-		if (isOK) {
-			axios.post(`${config.apiBaseURL}/api/booking/create`, (this.state.typeStadium)?{
+		return isOK
+	}
+	handleOnSubmit = () => {
+		this.setState({ loadingBut: true })
+		if (this.checkErrorSubmit()) {
+			axios.post(`${config.apiBaseURL}/api/booking/create`, (this.state.typeStadium === 1)?{
 				"secondTeam": {
 					"phone": this.state.phone2,
 					"name": this.state.value2
 				},
 				"note": this.state.note,
 				"scID": this.state.stadiumChildValue,
-				"dateEnded": this.state.startDateUp,
+				"dateEnded": this.state.endDateUp,
 				"alreadyPaid": parseInt(this.state.alreadyPaid, 10),
 				"firstTeam": {
 					"phone": this.state.phone,
 					"name": this.state.value1
 				},
-				"dateStarted": this.state.endDateUp,
+				"dateStarted": this.state.startDateUp,
 				"price": parseInt(this.state.price, 10)
 			}:{
 				"note": this.state.note,
 				"scID": this.state.stadiumChildValue,
-				"dateEnded": this.state.startDateUp,
+				"dateEnded": this.state.endDateUp,
 				"alreadyPaid": parseInt(this.state.alreadyPaid, 10),
 				"firstTeam": {
 					"phone": this.state.phone,
 					"name": this.state.value1
 				},
-				"dateStarted": this.state.endDateUp,
+				"dateStarted": this.state.startDateUp,
 				"price": parseInt(this.state.price, 10)
 			}, {
 				'headers': {
@@ -577,7 +582,7 @@ class BookingOnce extends Component {
 				this.setState({
 					loadingBut: false,
 					openErrModal: true,
-					successNotification: "Đặt sân thành công!",
+					reponseNotification: "Đặt sân thành công!",
 					value1: "",
 					value2: "",
 					startDate: null,
@@ -585,37 +590,34 @@ class BookingOnce extends Component {
 					phone: "",
 					phone2: "",
 					price: 0,
+					startHour: 0,
+					startMinute: 0,
+					endHour: 0,
+					endMinute: 0
 				})
 			})
 			.catch((error) => {
-				console.log(error)
-				this.setState({ loadingBut: false })
+				this.setState({
+					loadingBut: false,
+					openErrModal: true,
+					reponseNotification: error.response.data.message
+				})
 			})
 		}
 		else {
 			this.setState({
 				openErrModal: true,
-				loadingBut: false
+				loadingBut: false 
 			})
 		}
 	}
 	handleCloseErrModal = () => {
 		this.setState({
 			openErrModal: false,
-			successNotification: ""
+			reponseNotification: ""
 		})
 	}
 	render() {
-		const typeStadium = [
-			{
-				value: 0,
-				text: "Nguyên sân"
-			},
-			{
-				value: 1,
-				text: "Cáp kèo"
-			}
-		]
 		return (
 			<Segment style={style.paddingTotal0}>
 				<Form style={style.fullWidth} onSubmit={this.handleOnSubmit}>
@@ -627,11 +629,8 @@ class BookingOnce extends Component {
 										<div style={style.displayInlineBlock}>Loại sân</div>
 									</div>
 									<select style={style.paddingLeftRight4} name="typeStadiumValue" value={this.state.typeStadiumValue} onChange={this.handleChangeSelect}>
-									{
-										typeStadium.map(x => {
-											return (<option key={x.value} value={x.value}>{x.text}</option>)
-										})
-									}
+										<option value={0}>Nguyên sân</option>
+										<option value={1}>Cáp kèo</option>
 									</select>
 								</Grid.Column>
 								<Grid.Column style={style.paddingTopBot0} width={16}>
@@ -840,7 +839,7 @@ class BookingOnce extends Component {
 													<p style={(!this.state.typeStadiumValue || (this.state.errPhone2 === ""))?style.displayNone:style.styleErrNotification}>{this.state.errPhone2}</p>
 													<p style={(this.state.errAlreadyPaid === "")?style.displayNone:style.styleErrNotification}>{this.state.errAlreadyPaid}</p>
 													<p style={(this.state.errPrice === "")?style.displayNone:style.styleErrNotification}>{this.state.errPrice}</p>
-													<p style={(this.state.successNotification === "")?style.displayNone:style.styleErrNotification}>{this.state.successNotification}</p>
+													<p style={(this.state.reponseNotification === "")?style.displayNone:style.styleErrNotification}>{this.state.reponseNotification}</p>
 												</Modal.Content>
 											</Modal>
 										</div>
@@ -856,11 +855,8 @@ class BookingOnce extends Component {
 												<div style={style.displayInlineBlock}>Loại sân</div>
 											</div>
 											<select style={style.paddingLeftRight4} name="typeStadiumValue" value={this.state.typeStadiumValue} onChange={this.handleChangeSelect}>
-											{
-												typeStadium.map(x => {
-													return (<option key={x.value} value={x.value}>{x.text}</option>)
-												})
-											}
+												<option value={0}>Nguyên sân</option>
+												<option value={1}>Cáp kèo</option>
 											</select>
 										</Grid.Column>
 										<Grid.Column style={style.paddingTop0} width={8}>
@@ -1075,7 +1071,7 @@ class BookingOnce extends Component {
 															<p style={(!this.state.typeStadiumValue || (this.state.errPhone2 === ""))?style.displayNone:style.styleErrNotification}>{this.state.errPhone2}</p>
 															<p style={(this.state.errAlreadyPaid === "")?style.displayNone:style.styleErrNotification}>{this.state.errAlreadyPaid}</p>
 															<p style={(this.state.errPrice === "")?style.displayNone:style.styleErrNotification}>{this.state.errPrice}</p>
-															<p style={(this.state.successNotification === "")?style.displayNone:style.styleErrNotification}>{this.state.successNotification}</p>
+															<p style={(this.state.reponseNotification === "")?style.displayNone:style.styleErrNotification}>{this.state.reponseNotification}</p>
 														</Modal.Content>
 													</Modal>
 												</div>

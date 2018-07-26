@@ -58,7 +58,7 @@ class BookingCreateInfo extends Component {
 									/></Tab.Pane>
 								},
 								{ menuItem: "Khách cố định", render: () => <Tab.Pane className="detail-stadium" attached={false}>
-									<BookingPermanent
+									<BookingPermanent stadiumchild={this.state.stadiumChild}
 									/></Tab.Pane>
 								},
 							]

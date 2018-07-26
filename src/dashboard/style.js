@@ -353,5 +353,9 @@ module.exports = {
 	paddingTopBot0: {
 		paddingTop: 0,
 		paddingBottom: 0
+	},
+	styleCheckboxMobile: {
+		textAlign: "left",
+		width: "100%"
 	}
 }
