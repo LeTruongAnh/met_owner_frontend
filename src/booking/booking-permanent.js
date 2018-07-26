@@ -141,19 +141,8 @@ class BookingPermanent extends Component {
 	}
 	handleGetPrice = (endDate) => {
 		console.log(this.state.dowUp, this.state.startDate, endDate)
-		let dowUp = [this.state.dowUp[0]]
-		for (let i = 1; i < this.state.dowUp.length; i++) {
-			let isHave = false
-			for (let j = 0; j < dowUp.length; j++) {
-				if (this.state.dowUp[i] === dowUp[j]) {
-					isHave = true
-					break
-				}
-				if (!isHave) dowUp.push(this.state.dowUp[i])
-			}
-		}
 		if ((this.state.dowUp.length > 0) && (this.state.startDate !== null) && (endDate !== null) && (this.state.startDateUp < endDate.getTime())) {
-			axios.get(`${config.apiBaseURL}/api/stadiumchild/price?dow=${JSON.stringify(dowUp)}&scID=${this.state.stadiumChildValue}&dateStarted=${this.state.startDateUp}&dateEnded=${endDate.getTime()}`, {
+			axios.get(`${config.apiBaseURL}/api/stadiumchild/price?dow=${JSON.stringify(this.state.dowUp)}&scID=${this.state.stadiumChildValue}&dateStarted=${this.state.startDateUp}&dateEnded=${endDate.getTime()}`, {
 				'headers': {'Authorization': this.state.userInfo.token}
 			})
 			.then((response) => {
@@ -196,6 +185,16 @@ class BookingPermanent extends Component {
 	}
 	handleCalEndDate = (startDate, weeks, dowUp, handleGetPrice) => {
 		if (this.state.startDate && (dowUp.length > 0)) {
+			for (let i = 1; i < this.state.dowUp.length; i++) {
+				let isHave = false
+				for (let j = 0; j < dowUp.length; j++) {
+					if (this.state.dowUp[i] === dowUp[j]) {
+						isHave = true
+						break
+					}
+					if (!isHave) dowUp.push(this.state.dowUp[i])
+				}
+			}
 			console.log("tính ngày hết")
 			let dayMax = dowUp[0]
 			let daysMore = 0
@@ -215,9 +214,9 @@ class BookingPermanent extends Component {
 			endDate.setMinutes(this.state.endMinute)
 			this.setState({
 				endDate: endDate,
-				endDateUp: endDate.getTime()
-			})
-			handleGetPrice(endDate)
+				endDateUp: endDate.getTime(),
+				dowUp: dowUp
+			}, () => handleGetPrice(endDate))
 		}
 		else console.log("Chưa đủ dữ liệu")
 	}
