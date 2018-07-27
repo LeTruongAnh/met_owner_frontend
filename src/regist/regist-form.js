@@ -169,9 +169,6 @@ class RegistForm extends Component {
 					loading: false,
 					modalOpen: true
 				})
-				setTimeout(() => {
-					this.setState({ modalOpen: false })
-				}, 3000)
 			})
 			.catch((error)=> {
 				if (!error.response.data)
@@ -184,6 +181,9 @@ class RegistForm extends Component {
 					})
 			})			
 		}
+	}
+	handleCloseModal = () => {
+		this.setState({ modalOpen: false })
 	}
 	render() {
 		if (this.state.userInfo) {
@@ -248,8 +248,18 @@ class RegistForm extends Component {
 							<Checkbox id="check-regist" label='Tôi đồng ý với các điều khoản và điều kiện' />						
 							<a href="https://www.google.com/?gws_rd=ssl" rel="noopener noreferrer" target="_blank">Điều khoản và điều kiện</a>
 						</Form.Field>
-						<Modal open={this.state.modalOpen} centered={false} size="large" closeIcon={true} trigger={<Button className="form-but" loading={this.state.loading} type='submit'>Đăng ký</Button>}>
-							<Header style={style.colorMassageAccept}>Chúc mừng bạn đã đăng ký thành công!</Header>
+						<Modal open={this.state.modalOpen} basic size="small" trigger={
+							<Button className="form-but" loading={this.state.loading} type='submit'>Đăng ký</Button>
+						}>
+							<Header icon='archive' content='Thông báo' />
+							<Modal.Content>
+								<p>Chúc mừng bạn đã đăng ký thành công</p>
+							</Modal.Content>
+							<Modal.Actions>
+								<Button basic color='red' inverted onClick={this.handleCloseModal}>
+									<Icon name='remove' /> Đóng
+								</Button>
+							</Modal.Actions>
 						</Modal>
 					</Form>
 				</Grid>

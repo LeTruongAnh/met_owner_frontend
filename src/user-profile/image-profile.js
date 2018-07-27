@@ -9,7 +9,7 @@ class StadiumImage extends Component {
 		super(props)
 		this.textInput = React.createRef()
 		this.state = {
-			screenSize: window.screen.width,
+			screenSize: window.innerWidth,
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
 			imageList: props.imageList || [],
 			srcSelect: "",

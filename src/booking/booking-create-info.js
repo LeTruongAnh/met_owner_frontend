@@ -11,7 +11,7 @@ class BookingCreateInfo extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			screenSize: window.screen.width,
+			screenSize: window.innerWidth,
 			userInfo: (localStorage.getItem('MET_userInfo'))?JSON.parse(localStorage.getItem('MET_userInfo')):{},
 			loading: true,
 			stadiumChild: []
@@ -41,7 +41,7 @@ class BookingCreateInfo extends Component {
 		})
 	}
 	detectScreenChange = () => {
-		this.setState({ screenSize: window.screen.width })
+		this.setState({ screenSize: window.innerWidth })
 	}
 	render() {
 		if (!localStorage.getItem('MET_userInfo'))

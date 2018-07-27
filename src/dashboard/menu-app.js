@@ -10,7 +10,7 @@ class MenuApp extends Component {
 		super(props)
 		this.state = {
 			isExpand: (
-				(window.screen.width) >= 768)?(
+				(window.innerWidth) >= 768)?(
 					localStorage.getItem('isExpand')?(
 						(localStorage.getItem('isExpand') === "true")?true:false
 					):(true)
@@ -28,7 +28,7 @@ class MenuApp extends Component {
 		activeItem: this.props.content
 	}
 	componentWillMount = () => {
-		localStorage.setItem('screenSize', window.screen.width.toString())
+		localStorage.setItem('screenSize', window.innerWidth.toString())
 		this.setState({
 			loading: false,
 			dropdownLoading: false
@@ -64,7 +64,7 @@ class MenuApp extends Component {
 			})
 	}
 	componentDidMount = () => {
-		localStorage.setItem('screenSize', window.screen.width.toString())
+		localStorage.setItem('screenSize', window.innerWidth.toString())
 		axios.get(`${config.apiBaseURL}/api/stadium/list?page=1&limit=10`, {
             'headers': {'Authorization': this.state.userInfo.token}
         })

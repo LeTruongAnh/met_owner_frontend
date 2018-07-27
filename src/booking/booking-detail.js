@@ -8,23 +8,23 @@ class BookingDetail extends Component {
     constructor(props){
         super(props)
         this.state = {
-            screenSize: window.screen.width,
-            menuWidth: (localStorage.getItem('isExpand') === "true")?((window.screen.width > 1024)?3:4):((window.screen.width > 1024)?1:2),
-            contentWidth: (localStorage.getItem('isExpand') === "true")?((window.screen.width > 1024)?13:12):((window.screen.width > 1024)?15:14),
+            screenSize: window.innerWidth,
+            menuWidth: (localStorage.getItem('isExpand') === "true")?((window.innerWidth > 1024)?3:4):((window.innerWidth > 1024)?1:2),
+            contentWidth: (localStorage.getItem('isExpand') === "true")?((window.innerWidth > 1024)?13:12):((window.innerWidth > 1024)?15:14),
             isOn: false,
             visible: false
         }
     }
     detectScreenChange = () => {
         this.setState({
-            screenSize: window.screen.width,
-            menuWidth: (localStorage.getItem('isExpand') === "true")?((window.screen.width > 1024)?3:4):((window.screen.width > 1024)?1:2),
-            contentWidth: (localStorage.getItem('isExpand') === "true")?((window.screen.width > 1024)?13:12):((window.screen.width > 1024)?15:14)
+            screenSize: window.innerWidth,
+            menuWidth: (localStorage.getItem('isExpand') === "true")?((window.innerWidth > 1024)?3:4):((window.innerWidth > 1024)?1:2),
+            contentWidth: (localStorage.getItem('isExpand') === "true")?((window.innerWidth > 1024)?13:12):((window.innerWidth > 1024)?15:14)
         })
     }
     handleMenuParent = (param) => {
         if (param === true) {
-            if (window.screen.width > 1024) {
+            if (window.innerWidth > 1024) {
                 this.setState({
                     menuWidth: 3,
                     contentWidth: 13
@@ -36,7 +36,7 @@ class BookingDetail extends Component {
                 })
         }
         else {
-            if (window.screen.width > 1024) {
+            if (window.innerWidth > 1024) {
                 this.setState({
                     menuWidth: 1,
                     contentWidth: 15

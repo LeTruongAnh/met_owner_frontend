@@ -14,7 +14,7 @@ class BookingInfo extends Component {
 			currentPagi: 1,
 			loading: false,
 			token: (localStorage.getItem('MET_userInfo'))?JSON.parse(localStorage.getItem('MET_userInfo')).token:"",
-			screenSize: window.screen.width
+			screenSize: window.innerWidth
 		}
 	}
 	componentDidMount = () => {
@@ -102,7 +102,7 @@ class BookingInfo extends Component {
 	}
 	detectScreenChange = () => {
 		this.setState({
-			screenSize: window.screen.width
+			screenSize: window.innerWidth
 		})
 	}
 	render() {

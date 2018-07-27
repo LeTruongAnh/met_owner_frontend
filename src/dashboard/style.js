@@ -357,5 +357,21 @@ module.exports = {
 	styleCheckboxMobile: {
 		textAlign: "left",
 		width: "100%"
+	},
+	styleAddDivAsButtonStManager: {
+		position: "absolute",
+		right: "-1em",
+		padding: "10px",
+		cursor: "pointer"
+	},
+	styleCheckDivIconStManager: {
+		position: "absolute",
+		right: "-1em",
+		padding: "10px",
+		cursor: "default"
+	},
+	styleCloseDivAsButtonStManager: {
+		padding: "10px",
+		cursor: "pointer"
 	}
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Table, Search, Loader, Icon, Image } from 'semantic-ui-react'
+import { Grid, Table, Search, Loader, Icon, Image, Modal, Header, Button } from 'semantic-ui-react'
 import style from '../dashboard/style.js'
 import axios from 'axios'
 import config from '../config.js'
@@ -8,14 +8,16 @@ class StadiumManager extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			screenSize: window.screen.width,
+			screenSize: window.innerWidth,
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
 			managerList: props.managerlist,
 			loading: false,
 			isLoading: false,
 			results: [],
 			value: "",
-			searchValue: ""
+			searchValue: "",
+			notificationMessage: "",
+			openModal: false
 		}
 	}
 	componentDidMount = () => {
@@ -97,19 +99,30 @@ class StadiumManager extends Component {
 			<div style={{display: "flex", position: "relative", alignItems: "center"}} className="content">
 				<Image style={{width: "3em", marginRight: '14px'}} avatar src={presentResults.avatar} />
 				<div style={{width: "10em", fontFamily: "roboto"}} className="title">{presentResults.title}</div>
-				<div className={(presentResults.ismanager === 0)?"icon-manager-hover":""} onClick={() => {
-						if (presentResults.ismanager === 0)
-							this.handleAddManager(presentResults.phone)
-					}}
-					style={
-						(presentResults.ismanager === 0)?{
-							position: "absolute", right: "-1em", padding: "10px", cursor: "pointer"
-						}:{
-							position: "absolute", right: "-1em", padding: "10px", cursor: "default"
-						}
-					}>
-					<Icon style={(presentResults.ismanager === 1)?{color: "#006838"}:style.none} name={(presentResults.ismanager === 0)?"add":"check"} />
-				</div>
+				{
+					(presentResults.ismanager === 0)?(
+						<Modal open={this.state.openModal} basic size="small" trigger={
+							<div className="icon-manager-hover" onClick={() => this.handleAddManager(presentResults.phone)}
+							style={style.styleAddDivAsButtonStManager}>
+								<Icon name="add" />
+							</div>
+						}>
+							<Header icon='archive' content='Thông báo' />
+							<Modal.Actions>
+								<Button basic color='red' inverted onClick={this.handleCloseModal}>
+									<Icon name='remove' /> Đóng
+								</Button>
+							</Modal.Actions>
+							<Modal.Content>
+								<p>{this.state.notificationMessage}</p>
+							</Modal.Content>
+						</Modal>
+					):(
+						<div style={style.styleCheckDivIconStManager}>
+							<Icon style={style.detailLink} name="check" />
+						</div>
+					)
+				}	
 			</div>
 		)
 	}
@@ -138,7 +151,9 @@ class StadiumManager extends Component {
 				this.setState({
 					results: results,
 					managerList: response.data.items,
-					loading: false
+					loading: false,
+					openModal: true,
+					notificationMessage: "Đã thêm thành công"
 				})
 			})
 			.catch((error) => {
@@ -149,9 +164,10 @@ class StadiumManager extends Component {
 			})
 		})
 		.catch((error) => {
-			console.log(error.response.data)
 			this.setState({
-				loading: false
+				loading: false,
+				openModal: true,
+				notificationMessage: error.response.data.message
 			})
 		})
 	}
@@ -177,7 +193,9 @@ class StadiumManager extends Component {
 				this.setState({
 					results: results,
 					managerList: response.data.items,
-					loading: false
+					loading: false,
+					openModal: true,
+					notificationMessage: "Đã xóa thành công"
 				})
 			})
 			.catch((error) => {
@@ -188,26 +206,31 @@ class StadiumManager extends Component {
 			})
 		})
 		.catch((error) => {
-			console.log(error.response.data)
 			this.setState({
-				loading: false
+				loading: false,
+				openModal: true,
+				notificationMessage: error.response.data.message
 			})
 		})
 	}
 	detectScreenChange = () => {
 		this.setState({
-			screenSize: window.screen.width
+			screenSize: window.innerWidth
 		})
+	}
+	handleCloseModal = () => {
+		this.setState({ openModal: false })
 	}
 	render() {
 		return (
 			<Grid>
 				<Grid.Row style={style.marginTopBot}>
-					<Search style={(this.state.screenSize >= 768)?style.none:style.fullWidth} resultRenderer={this.handlePresentResults} loading={this.state.isLoading}
+					<Search style={(this.state.screenSize >= 768)?style.none:style.fullWidth}
+					resultRenderer={this.handlePresentResults} loading={this.state.isLoading}
 					onSearchChange={this.handleSearchChange} noResultsMessage="Không tìm thấy"
 					results={this.state.results} value={this.state.value} {...this.props} />
 				</Grid.Row>
-				<Grid.Row style={(this.state.screenSize >= 768)?style.none:{overflowX: "scroll"}}>
+				<Grid.Row style={(this.state.screenSize >= 768)?style.none:style.scrollX}>
 					<Table celled striped unstackable={true}>
 						<Table.Header>
 							<Table.Row>
@@ -215,7 +238,7 @@ class StadiumManager extends Component {
 								<Table.HeaderCell>Tên</Table.HeaderCell>
 								<Table.HeaderCell>Số điện thoại</Table.HeaderCell>
 								<Table.HeaderCell>Vai trò</Table.HeaderCell>
-								<Table.HeaderCell></Table.HeaderCell>
+								<Table.HeaderCell textAlign="center"></Table.HeaderCell>
 							</Table.Row>
 						</Table.Header>
 						<Table.Body>
@@ -228,9 +251,23 @@ class StadiumManager extends Component {
 											<Table.Cell>{x.phone}</Table.Cell>
 											<Table.Cell>{this.handleManagerRole(x.stadium_role)}</Table.Cell>
 											<Table.Cell textAlign="center">
-												<div onClick={() => this.handleRemoveManager(x.id)} className="icon-manager-hover" style={{padding: "10px", cursor: "pointer"}}>
-													<Icon size="large" style={{color: "#ed1c24"}} name='close'/>
-												</div>
+												<Modal open={this.state.openModal} basic size="small" trigger={
+													<div onClick={() => this.handleRemoveManager(x.id)} className="icon-manager-hover"
+													style={(this.state.screenSize >= 768)?style.styleCloseDivAsButtonStManager:style.none}>
+														<Icon size="large" style={{color: "#ed1c24"}} name='close'/>
+													</div>
+												}>
+													<Header icon='archive' content='Thông báo' />
+													<Modal.Actions>
+														<Button basic color='red' inverted onClick={this.handleCloseModal}>
+															<Icon name='remove' /> Đóng
+														</Button>
+													</Modal.Actions>
+													<Modal.Content>
+														<p>{this.state.notificationMessage}</p>
+													</Modal.Content>
+												</Modal>
+													
 											</Table.Cell>
 										</Table.Row>
 									)

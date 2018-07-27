@@ -12,7 +12,7 @@ class StadiumForm extends Component {
 		super(props)
 		this.textInput = React.createRef()
 		this.state = {
-			screenSize: window.screen.width,
+			screenSize: window.innerWidth,
 			token: JSON.parse(localStorage.getItem('MET_userInfo')).token,
 			avatar: props.userInfo.avatar || "",
 			phone: props.userInfo.country_code + props.userInfo.phone || "" ,
@@ -75,6 +75,7 @@ class StadiumForm extends Component {
 					loadingBut: false
 				}, () => {
 					localStorage.setItem('MET_userInfo', JSON.stringify(response.data))
+					window.location.reload()
 				})
 			})
 			.catch((error) => {
@@ -83,7 +84,7 @@ class StadiumForm extends Component {
 		}
 	}
 	handleChange = (e) => this.setState({ [e.target.name]: e.target.value })
-	detectScreenChange = () => this.setState({ screenSize: window.screen.width })
+	detectScreenChange = () => this.setState({ screenSize: window.innerWidth })
 	componentDidMount = () => {
 		window.addEventListener('resize', this.detectScreenChange)
 	}

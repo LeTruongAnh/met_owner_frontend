@@ -12,7 +12,7 @@ class BookingOnce extends Component {
 		super(props)
 		let timeNow = new Date()
 		this.state = {
-			screenSize: window.screen.width,
+			screenSize: window.innerWidth,
 			userInfo: (localStorage.getItem('MET_userInfo'))?JSON.parse(localStorage.getItem('MET_userInfo')):{},
 			loading: true,
 			isLoading1: false,
@@ -61,7 +61,7 @@ class BookingOnce extends Component {
 		window.addEventListener('resize',this.detectScreenChange)
 	}
 	detectScreenChange = () => {
-		this.setState({ screenSize: window.screen.width })
+		this.setState({ screenSize: window.innerWidth })
 	}
 	handleStyleStatusBooking = (number) => {
 		switch(number) {

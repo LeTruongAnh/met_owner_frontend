@@ -9,7 +9,7 @@ class StadiumForm extends Component {
 		super(props)
 		this.textInput = React.createRef()
 		this.state = {
-			screenSize: window.screen.width,
+			screenSize: window.innerWidth,
 			cityList: props.cityList || [],
 			stadiumData: props.stadiumData || {},
 			logoImage: props.stadiumData.image || "",
@@ -97,7 +97,7 @@ class StadiumForm extends Component {
 			district: parseInt(e.target.value, 10)
 		})
 	}
-	detectScreenChange = () => this.setState({ screenSize: window.screen.width })
+	detectScreenChange = () => this.setState({ screenSize: window.innerWidth })
 	componentDidMount = () => {
 		window.addEventListener('resize', this.detectScreenChange)
 		axios.get(`${config.apiBaseURL}/api/region/district?region=` + this.state.stadiumData.region)

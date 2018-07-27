@@ -22,7 +22,7 @@ class StadiumInfo extends Component {
 			loading: true,
 			managerList: [],
 			stadiumChild: [],
-			screenSize: window.screen.width
+			screenSize: window.innerWidth
 		}
 	}
 	handleTabImage = (number) => {
@@ -128,7 +128,7 @@ class StadiumInfo extends Component {
 		window.addEventListener('resize',this.detectScreenChange)
 	}
 	detectScreenChange = () => {
-		this.setState({ screenSize: window.screen.width })
+		this.setState({ screenSize: window.innerWidth })
 	}
 	render() {
 		if (!localStorage.getItem('MET_userInfo'))
