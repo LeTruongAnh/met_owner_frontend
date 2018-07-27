@@ -10,6 +10,7 @@ import style from '../dashboard/style.js'
 class BookingPermanent extends Component {
 	constructor(props) {
 		super(props)
+		let timeNow = new Date()
 		this.state = {
 			screenSize: window.screen.width,
 			userInfo: (localStorage.getItem('MET_userInfo'))?JSON.parse(localStorage.getItem('MET_userInfo')):{},
@@ -22,13 +23,12 @@ class BookingPermanent extends Component {
 			stadiumChild: props.stadiumchild,
 			stadiumChildValue: (props.stadiumchild.length > 0)?props.stadiumchild[0].value:0,
 			bookingObject1: 0,
-			bookingObject2: 0,
 			startDate: null,
 			endDate: null,
 			startDateUp: 0,
 			endDateUp: 0,
-			startHour: 0,
-			endHour: 0,
+			startHour: timeNow.getHours() + 1,
+			endHour: timeNow.getHours() + 2,
 			startMinute: 0,
 			endMinute: 0,
 			price: 0,
@@ -36,7 +36,6 @@ class BookingPermanent extends Component {
 			note: "",
 			errTeam1: "",
 			errStartDate: "",
-			errEndDate: "",
 			errPhone: "",
 			errPrice: "",
 			reponseNotification: "",
@@ -45,8 +44,8 @@ class BookingPermanent extends Component {
 			alreadyPaid: 0,
 			errAlreadyPaid: "",
 			dow: [false,false,false,false,false,false,false],
-			dowUp: [],
 			errDowUp: "",
+			errWeeks: "",
 			weeks: 1,
 			loadingCheckBox: false
 		}
@@ -139,28 +138,38 @@ class BookingPermanent extends Component {
 	handleChangeSelect = (e) => {
 		this.setState({ [e.target.name]: parseInt(e.target.value, 10) })
 	}
-	handleGetPrice = (endDate) => {
-		console.log(this.state.dowUp, this.state.startDate, endDate)
-		if ((this.state.dowUp.length > 0) && (this.state.startDate !== null) && (endDate !== null) && (this.state.startDateUp < endDate.getTime())) {
-			axios.get(`${config.apiBaseURL}/api/stadiumchild/price?dow=${JSON.stringify(this.state.dowUp)}&scID=${this.state.stadiumChildValue}&dateStarted=${this.state.startDateUp}&dateEnded=${endDate.getTime()}`, {
+	handleCalDowUp = (dow) => {
+		let dowUp = []
+		for (let i = 0; i < 7; i++) {
+			if (dow[i]) dowUp.push(i) 
+		}
+		return dowUp
+	}
+	handleGetPrice = () => {
+		this.setState({ loading: true })
+		let dowUp = this.handleCalDowUp(this.state.dow)
+		if ((dowUp.length > 0) && (this.state.startDate !== null) && (this.state.endDate !== null) && (this.state.startDateUp < this.state.endDate.getTime())) {
+			axios.get(`${config.apiBaseURL}/api/stadiumchild/price?dow=${JSON.stringify(dowUp)}&scID=${this.state.stadiumChildValue}&dateStarted=${this.state.startDateUp}&dateEnded=${this.state.endDate.getTime()}`, {
 				'headers': {'Authorization': this.state.userInfo.token}
 			})
 			.then((response) => {
 				this.setState({
-					price: response.data.price
-				}, ()=>console.log(this.state.price))
+					price: response.data.price,
+					loading: false
+				})
 			})
 			.catch((error) => {
 				console.log(error)
+				this.setState({ loading: false })
 			})
 		}
-		else console.log("get price fail")
+		else this.setState({ loading: false })
 	}
 	handleChangeSelectChildStadium = (e) => {
 		let num = parseInt(e.target.value, 10)
 		this.setState({
 			stadiumChildValue: num
-		}, () => this.handleGetPrice(this.state.endDate))
+		}, () => this.handleGetPrice())
 	}
 	handleCreateNumberList = (number) => {
 		let lst = []
@@ -183,42 +192,38 @@ class BookingPermanent extends Component {
         let time = day + ", " + date + "/" + month + "/" + year
         return time
 	}
-	handleCalEndDate = (startDate, weeks, dowUp, handleGetPrice) => {
+	handleCalEndDate = () => {
+		let weeks = (isNaN(this.state.weeks))?0:parseInt(this.state.weeks, 10)
+		let dowUp = this.handleCalDowUp(this.state.dow)
 		if (this.state.startDate && (dowUp.length > 0)) {
-			for (let i = 1; i < this.state.dowUp.length; i++) {
-				let isHave = false
-				for (let j = 0; j < dowUp.length; j++) {
-					if (this.state.dowUp[i] === dowUp[j]) {
-						isHave = true
-						break
-					}
-					if (!isHave) dowUp.push(this.state.dowUp[i])
-				}
-			}
-			console.log("tính ngày hết")
 			let dayMax = dowUp[0]
 			let daysMore = 0
 			if (dowUp.length > 1) for (let i = 1; i < dowUp.length; i++) {
 				if (dowUp[i] > dayMax) dayMax = dowUp[i]
 			}
 			let now = new Date()
-			if ((dayMax >= startDate._d.getDay()) && (startDate._d.getTime() >= now.getTime())) {
-				daysMore = (dayMax - startDate._d.getDay()) + ((weeks - 1) * 7)
+			if (weeks !== 0) {
+				if ((dayMax >= this.state.startDate._d.getDay()) && (this.state.startDate._d.getTime() >= now.getTime())) {
+					daysMore = (dayMax - this.state.startDate._d.getDay()) + ((weeks - 1) * 7)
+				}
+				else  {
+					daysMore = weeks * 7
+				}
+				let endDateUp = this.state.startDate._d.getTime() + (daysMore * 86400000)
+				let endDate = new Date(endDateUp)
+				endDate.setHours(this.state.endHour)
+				endDate.setMinutes(this.state.endMinute)
+				this.setState({
+					endDate: endDate,
+					endDateUp: endDate.getTime()
+				}, () => this.handleGetPrice())
 			}
-			else  {
-				daysMore = weeks * 7
-			}
-			let endDateUp = startDate._d.getTime() + (daysMore * 86400000)
-			let endDate = new Date(endDateUp)
-			endDate.setHours(this.state.endHour)
-			endDate.setMinutes(this.state.endMinute)
-			this.setState({
-				endDate: endDate,
-				endDateUp: endDate.getTime(),
-				dowUp: dowUp
-			}, () => handleGetPrice(endDate))
+			else this.setState({
+				endDate: null,
+				endDateUp: 0,
+				price: 0
+			})
 		}
-		else console.log("Chưa đủ dữ liệu")
 	}
 	handleChangeStartDate = (date) => {
 		if (date) {
@@ -227,19 +232,18 @@ class BookingPermanent extends Component {
 			this.setState({
 				startDate: date,
 				startDateUp: moment(date).valueOf(),
-			}, () => this.handleCalEndDate(date, this.state.weeks, this.state.dowUp, this.handleGetPrice))
+			}, () => this.handleCalEndDate())
 		}
 	}
 	handleChangeWeeks = (e) => {
+		let value = e.target.value
 		if (!this.state.startDate) {
-			this.setState({ weeks: e.target.value })
+			this.setState({ weeks: value })
 		}
 		else {
-			let weeks = (isNaN(e.target.value))?1:parseInt(e.target.value, 10)
-			this.handleCalEndDate(this.state.startDate, weeks, this.state.dowUp, this.handleGetPrice)
 			this.setState({
-				weeks: e.target.value
-			})
+				weeks: value
+			}, () => this.handleCalEndDate())
 		}
 	}
 	handleChangeSelectStartHour = (e) => {
@@ -254,7 +258,7 @@ class BookingPermanent extends Component {
 				startHour: startHour,
 				startDate: date,
 				startDateUp: moment(date).valueOf()
-			}, () => this.handleGetPrice(this.state.endDate))
+			}, () => this.handleGetPrice())
 		}
 	}
 	handleChangeSelectStartMinute = (e) => {
@@ -269,14 +273,13 @@ class BookingPermanent extends Component {
 				startMinute: startMinute,
 				startDate: date,
 				startDateUp: moment(date).valueOf()
-			}, () => this.handleGetPrice(this.state.endDate))
+			}, () => this.handleGetPrice())
 		}
 	}
 	handleChangeSelectEndHour = (e) => {
 		let endHour = parseInt(e.target.value, 10)
 		if (!this.state.endDate) {
 			this.setState({ endHour: endHour })
-			console.log("khong co endDate")
 		}
 		else {
 			let date = this.state.endDate
@@ -285,7 +288,7 @@ class BookingPermanent extends Component {
 				endHour: endHour,
 				endDate: date,
 				endDateUp: date.getTime()
-			}, () => this.handleGetPrice(this.state.endDate))
+			}, () => this.handleGetPrice())
 		}
 	}
 	handleChangeSelectEndMinute = (e) => {
@@ -300,35 +303,17 @@ class BookingPermanent extends Component {
 				endMinute: endMinute,
 				endDate: date,
 				endDateUp: date.getTime()
-			}, () => this.handleGetPrice(this.state.endDate))
+			}, () => this.handleGetPrice())
 		}
 	}
 	handleChangeCheckbox = (num) => {
 		this.setState({ loadingCheckBox: true})
 		let dow = this.state.dow
-		let dowUp = this.state.dowUp
 		dow[num] = !this.state.dow[num]
-		if (this.state.dow[num]) {
-			dowUp.push(num)
-			this.setState({
-				dow: dow,
-				dowUp: dowUp,
-				loadingCheckBox: false
-			})
-		}
-		else {
-			for (let i = num; i < dowUp.length; i++) {
-				if (dowUp[i] === num) {
-					dowUp.splice(i, 1)
-					this.setState({
-						dow: dow,
-						dowUp: dowUp,
-						loadingCheckBox: false
-					})
-				}
-			}
-		}
-		this.handleCalEndDate(this.state.startDate, this.state.weeks, dowUp, this.handleGetPrice)
+		this.setState({
+			dow: dow,
+			loadingCheckBox: false
+		}, () => this.handleCalEndDate())
 	}
 	checkErrorSubmit = () => {
 		let isOK = true
@@ -360,24 +345,6 @@ class BookingPermanent extends Component {
 			else
 				this.setState({
 					errStartDate: ""
-				})
-		}
-		if (!this.state.endDate) {
-			this.setState({
-				errEndDate: "Vui lòng chọn ngày kết thúc"
-			})
-			isOK = false
-		}
-		else {
-			if (this.state.endDateUp < this.state.startDateUp) {
-				this.setState({
-					errEndDate: "Thời điểm kết thúc trước thời điểm bắt đầu"
-				})
-				isOK = false
-			}
-			else 
-				this.setState({
-					errEndDate: ""
 				})
 		}
 		if (this.state.phone === "") {
@@ -438,7 +405,8 @@ class BookingPermanent extends Component {
 					errPrice: ""
 				})
 		}
-		if (this.state.dowUp.length === 0) {
+		let dowUp = this.handleCalDowUp(this.state.dow)
+		if (dowUp.length === 0) {
 			this.setState({
 				errDowUp: "Vui lòng chọn ít nhất một ngày trong tuần"
 			})
@@ -447,11 +415,22 @@ class BookingPermanent extends Component {
 		else this.setState({
 				errDowUp: ""
 			})
+		let weeks = (isNaN(this.state.weeks))?0:parseInt(this.state.weeks, 10)
+		if (weeks === 0) {
+			this.setState({
+				errWeeks: "Vui lòng nhập số tuần lớn hơn 0"
+			})
+			isOK = false
+		}
+		else this.setState({
+				errWeeks: ""
+			})
 		return isOK
 	}
 	handleOnSubmit = () => {
 		this.setState({ loadingBut: true })
 		if (this.checkErrorSubmit()) {
+			let dowUp = this.handleCalDowUp(this.state.dow)
 			axios.post(`${config.apiBaseURL}/api/booking/create`, {
 				"note": this.state.note,
 				"scID": this.state.stadiumChildValue,
@@ -462,7 +441,8 @@ class BookingPermanent extends Component {
 					"name": this.state.value1
 				},
 				"dateStarted": this.state.startDateUp,
-				"price": parseInt(this.state.price, 10)
+				"price": parseInt(this.state.price, 10),
+				"dow": dowUp
 			}, {
 				'headers': {
 	                'Authorization': this.state.userInfo.token,
@@ -470,19 +450,27 @@ class BookingPermanent extends Component {
 	            }
 			})
 			.then((response) => {
+				let now = new Date()
 				this.setState({
+					startDate: null,
+					endDate: null,
+					startDateUp: 0,
+					endDateUp: 0,
+					startHour: now.getHours() + 1,
+					endHour: now.getHours() + 2,
+					startMinute: 0,
+					endMinute: 0,
+					price: 0,
+					phone: "",
+					note: "",
 					loadingBut: false,
 					openErrModal: true,
 					reponseNotification: "Đặt sân thành công!",
+					isLoading1: false,
+					results1: [],
 					value1: "",
-					startDate: null,
-					endDate: null,
-					phone: "",
-					price: 0,
-					startHour: 0,
-					startMinute: 0,
-					endHour: 0,
-					endMinute: 0
+					searchValue1: "",
+					dow: [false,false,false,false,false,false,false],
 				})
 			})
 			.catch((error) => {
@@ -508,7 +496,8 @@ class BookingPermanent extends Component {
 	}
 	render() {
 		return (
-			<Segment style={style.paddingTotal0}>
+			<Segment disabled={this.state.loading} style={style.paddingTotal0}>
+				<Loader active={this.state.loading} />
 				<Form style={style.fullWidth} onSubmit={this.handleOnSubmit}>
 					{
 						(this.state.screenSize < 768)?(
@@ -709,8 +698,8 @@ class BookingPermanent extends Component {
 												<Modal.Content>
 													<p style={(this.state.errTeam1 === "")?style.displayNone:style.styleErrNotification}>{this.state.errTeam1}</p>
 													<p style={(this.state.errStartDate === "")?style.displayNone:style.styleErrNotification}>{this.state.errStartDate}</p>
-													<p style={(this.state.errEndDate === "")?style.displayNone:style.styleErrNotification}>{this.state.errEndDate}</p>
 													<p style={(this.state.errDowUp === "")?style.displayNone:style.styleErrNotification}>{this.state.errDowUp}</p>
+													<p style={(this.state.errWeeks === "")?style.displayNone:style.styleErrNotification}>{this.state.errWeeks}</p>
 													<p style={(this.state.errPhone === "")?style.displayNone:style.styleErrNotification}>{this.state.errPhone}</p>
 													<p style={(this.state.errAlreadyPaid === "")?style.displayNone:style.styleErrNotification}>{this.state.errAlreadyPaid}</p>
 													<p style={(this.state.errPrice === "")?style.displayNone:style.styleErrNotification}>{this.state.errPrice}</p>
@@ -925,8 +914,8 @@ class BookingPermanent extends Component {
 														<Modal.Content>
 															<p style={(this.state.errTeam1 === "")?style.displayNone:style.styleErrNotification}>{this.state.errTeam1}</p>
 															<p style={(this.state.errStartDate === "")?style.displayNone:style.styleErrNotification}>{this.state.errStartDate}</p>
-															<p style={(this.state.errEndDate === "")?style.displayNone:style.styleErrNotification}>{this.state.errEndDate}</p>
 															<p style={(this.state.errDowUp === "")?style.displayNone:style.styleErrNotification}>{this.state.errDowUp}</p>
+															<p style={(this.state.errWeeks === "")?style.displayNone:style.styleErrNotification}>{this.state.errWeeks}</p>
 															<p style={(this.state.errPhone === "")?style.displayNone:style.styleErrNotification}>{this.state.errPhone}</p>
 															<p style={(this.state.errAlreadyPaid === "")?style.displayNone:style.styleErrNotification}>{this.state.errAlreadyPaid}</p>
 															<p style={(this.state.errPrice === "")?style.displayNone:style.styleErrNotification}>{this.state.errPrice}</p>

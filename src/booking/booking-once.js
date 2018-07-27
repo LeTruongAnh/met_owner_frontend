@@ -10,6 +10,7 @@ import style from '../dashboard/style.js'
 class BookingOnce extends Component {
 	constructor(props) {
 		super(props)
+		let timeNow = new Date()
 		this.state = {
 			screenSize: window.screen.width,
 			userInfo: (localStorage.getItem('MET_userInfo'))?JSON.parse(localStorage.getItem('MET_userInfo')):{},
@@ -31,8 +32,8 @@ class BookingOnce extends Component {
 			endDate: null,
 			startDateUp: 0,
 			endDateUp: 0,
-			startHour: 0,
-			endHour: 0,
+			startHour: timeNow.getHours() + 1,
+			endHour: timeNow.getHours() + 2,
 			startMinute: 0,
 			endMinute: 0,
 			price: 0,
@@ -189,6 +190,25 @@ class BookingOnce extends Component {
 			</div>
 		)
 	}
+	handleGetPrice = () => {
+		this.setState({ loading: true })
+		if (this.state.startDate && this.state.endDate && (this.state.startDate < this.state.endDate)) {
+			axios.get(`${config.apiBaseURL}/api/stadiumchild/price?scID=${this.state.stadiumChildValue}&dateStarted=${this.state.startDateUp}&dateEnded=${this.state.endDateUp}`, {
+				'headers': {'Authorization': this.state.userInfo.token}
+			})
+			.then((response) => {
+				this.setState({
+					price: response.data.price,
+					loading: false
+				}, () => console.log(this.state.price))
+			})
+			.catch((error) => {
+				console.log(error)
+				this.setState({ loading: true })
+			})
+		}
+		else this.setState({ loading: false })
+	}
 	handleChange = (e) => {
 		this.setState({ [e.target.name]: e.target.value })
 	}
@@ -199,21 +219,7 @@ class BookingOnce extends Component {
 		let num = parseInt(e.target.value, 10)
 		this.setState({
 			stadiumChildValue: num
-		}, () => {
-			if (this.state.startDate && this.state.endDate && (this.state.startDate < this.state.endDate)) {
-				axios.get(`${config.apiBaseURL}/api/stadiumchild/price?scID=${this.state.stadiumChildValue}&dateStarted=${this.state.startDateUp}&dateEnded=${this.state.endDateUp}`, {
-					'headers': {'Authorization': this.state.userInfo.token}
-				})
-				.then((response) => {
-					this.setState({
-						price: response.data.price
-					})
-				})
-				.catch((error) => {
-					console.log(error)
-				})
-			}
-		})
+		}, () => this.handleGetPrice())
 	}
 	handleCreateNumberList = (number) => {
 		let lst = []
@@ -243,21 +249,7 @@ class BookingOnce extends Component {
 			this.setState({
 				startDate: date,
 				startDateUp: moment(date).valueOf()
-			}, () => {
-				if (this.state.startDate && this.state.endDate && (this.state.startDate < this.state.endDate)) {
-					axios.get(`${config.apiBaseURL}/api/stadiumchild/price?scID=${this.state.stadiumChildValue}&dateStarted=${this.state.startDateUp}&dateEnded=${this.state.endDateUp}`, {
-						'headers': {'Authorization': this.state.userInfo.token}
-					})
-					.then((response) => {
-						this.setState({
-							price: response.data.price
-						})
-					})
-					.catch((error) => {
-						console.log(error)
-					})
-				}
-			})
+			}, () => this.handleGetPrice())
 		}
 	}
 	handleChangeEndDate = (date) => {
@@ -267,21 +259,7 @@ class BookingOnce extends Component {
 			this.setState({
 				endDate: date,
 				endDateUp: moment(date).valueOf()
-			}, () => {
-				if (this.state.startDate && this.state.endDate && (this.state.startDate < this.state.endDate)) {
-					axios.get(`${config.apiBaseURL}/api/stadiumchild/price?scID=${this.state.stadiumChildValue}&dateStarted=${this.state.startDateUp}&dateEnded=${this.state.endDateUp}`, {
-						'headers': {'Authorization': this.state.userInfo.token}
-					})
-					.then((response) => {
-						this.setState({
-							price: response.data.price
-						})
-					})
-					.catch((error) => {
-						console.log(error)
-					})
-				}
-			})
+			}, () => this.handleGetPrice())
 		}
 	}
 	handleChangeSelectStartHour = (e) => {
@@ -296,21 +274,7 @@ class BookingOnce extends Component {
 				startHour: startHour,
 				startDate: date,
 				startDateUp: moment(date).valueOf()
-			}, () => {
-				if (this.state.startDate && this.state.endDate && (this.state.startDate < this.state.endDate)) {
-					axios.get(`${config.apiBaseURL}/api/stadiumchild/price?scID=${this.state.stadiumChildValue}&dateStarted=${this.state.startDateUp}&dateEnded=${this.state.endDateUp}`, {
-						'headers': {'Authorization': this.state.userInfo.token}
-					})
-					.then((response) => {
-						this.setState({
-							price: response.data.price
-						})
-					})
-					.catch((error) => {
-						console.log(error)
-					})
-				}
-			})
+			}, () => this.handleGetPrice())
 		}
 	}
 	handleChangeSelectStartMinute = (e) => {
@@ -325,21 +289,7 @@ class BookingOnce extends Component {
 				startMinute: startMinute,
 				startDate: date,
 				startDateUp: moment(date).valueOf()
-			}, () => {
-				if (this.state.startDate && this.state.endDate && (this.state.startDate < this.state.endDate)) {
-					axios.get(`${config.apiBaseURL}/api/stadiumchild/price?scID=${this.state.stadiumChildValue}&dateStarted=${this.state.startDateUp}&dateEnded=${this.state.endDateUp}`, {
-						'headers': {'Authorization': this.state.userInfo.token}
-					})
-					.then((response) => {
-						this.setState({
-							price: response.data.price
-						})
-					})
-					.catch((error) => {
-						console.log(error)
-					})
-				}
-			})
+			}, () => this.handleGetPrice())
 		}
 	}
 	handleChangeSelectEndHour = (e) => {
@@ -354,21 +304,7 @@ class BookingOnce extends Component {
 				endHour: endHour,
 				endDate: date,
 				endDateUp: moment(date).valueOf()
-			}, () => {
-				if (this.state.startDate && this.state.endDate && (this.state.startDate < this.state.endDate)) {
-					axios.get(`${config.apiBaseURL}/api/stadiumchild/price?scID=${this.state.stadiumChildValue}&dateStarted=${this.state.startDateUp}&dateEnded=${this.state.endDateUp}`, {
-						'headers': {'Authorization': this.state.userInfo.token}
-					})
-					.then((response) => {
-						this.setState({
-							price: response.data.price
-						})
-					})
-					.catch((error) => {
-						console.log(error)
-					})
-				}
-			})
+			}, () => this.handleGetPrice())
 		}
 	}
 	handleChangeSelectEndMinute = (e) => {
@@ -383,21 +319,7 @@ class BookingOnce extends Component {
 				endMinute: endMinute,
 				endDate: date,
 				endDateUp: moment(date).valueOf()
-			}, () => {
-				if (this.state.startDate && this.state.endDate && (this.state.startDate < this.state.endDate)) {
-					axios.get(`${config.apiBaseURL}/api/stadiumchild/price?scID=${this.state.stadiumChildValue}&dateStarted=${this.state.startDateUp}&dateEnded=${this.state.endDateUp}`, {
-						'headers': {'Authorization': this.state.userInfo.token}
-					})
-					.then((response) => {
-						this.setState({
-							price: response.data.price
-						})
-					})
-					.catch((error) => {
-						console.log(error)
-					})
-				}
-			})
+			}, () => this.handleGetPrice())
 		}
 	}
 	checkErrorSubmit = () => {
