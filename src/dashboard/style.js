@@ -114,7 +114,7 @@ module.exports = {
 		padding: "14px"
 	},
 	styleTimerCountDown: {
-		padding: "14px",
+		padding: "12px",
 	    backgroundColor: "#ed1c24",
 	    width: "70px",
 	    color: "white",
@@ -217,6 +217,11 @@ module.exports = {
 	styleStadiumForm: {
 		border: "none",
 		width: "100%"
+	},
+	styleBookingForm: {
+		border: "none",
+		width: "100%",
+		padding: 0
 	},
 	styleStadiumFormStadium: {
 		border: "none",
@@ -373,5 +378,111 @@ module.exports = {
 	styleCloseDivAsButtonStManager: {
 		padding: "10px",
 		cursor: "pointer"
+	},
+	fontWeightBold: {
+		fontWeight: "bold"
+	},
+	styleTimeDivBooking: {
+		margin: 0,
+		padding: 0
+	},
+	marginTopBot0: {
+		marginTop: 0,
+		marginBottom: 0
+	},
+	marginTop14: {
+		marginTop: "14px"
+	},
+	marginLeft14: {
+		marginLeft: "14px"
+	},
+	paddingBot0: {
+		paddingBottom: 0
+	},
+	styleSegmentAsPriceTable: {
+		margin: "14px 0",
+		backgroundColor: "rgba(0, 104, 56, 0.8)",
+		color: "#fff",
+		padding: 0
+	},
+	paddingTopBot14: {
+		padding: "14px 0"
+	},
+	paddingLeftRight14: {
+		padding: "0 14px"
+	},
+	styleTitleSegmentAsPriceTable: {
+		backgroundColor: "rgba(0, 104, 56, 0.9)",
+		padding: "14px"
+	},
+	marginBotLeft14: {
+		marginBottom: "14px",
+		marginLeft: "14px"
+	},
+	styleMobileHeader: {
+		backgroundColor: "#006838",
+		position: "relative",
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center"
+	},
+	styleMobileHeaderButton: {
+		position: "absolute",
+		left: "1em"
+	},
+	styleMobileHeaderTitle: {
+		margin: "auto",
+		padding: "1em 0",
+		color: "#fff"
+	},
+	marginRight14: {
+		marginRight: "14px"
+	},
+	styleResponseNotification: {
+		position: "absolute",
+		backgroundColor: "#006838",
+		right: "2px",
+		bottom: "2px",
+		color: "#fff",
+		width: "auto",
+		margin: 0
+	},
+	styleResponseNotificationMobile: {
+		backgroundColor: "#006838",
+		color: "#fff",
+		width: "calc(100% - 28px)",
+		margin: "0 14px 14px 14px"
+	},
+	styleResponseNotificationLoginMobile: {
+		backgroundColor: "#006838",
+		color: "#fff",
+		width: "100%",
+		margin: 0
+	},
+	styleRTCloseIcon: {
+		position: "absolute",
+		top: "4px",
+		right: "4px",
+		color: "#ed1c24",
+		cursor: "pointer"
+	},
+	styleLinkBreadcrumb: {
+		color: "#006838",
+		fontWeight: "bold"
+	},
+	styleButtonPay: {
+		backgroundColor: "#e2e2e2 !important",
+		color: "#000 !important"
+	},
+	stylePayMessage: {
+		position: "relative",
+		fontSize: "10px",
+		fontWeight: "bold",
+		color: "#ed1c24",
+		top: 0,
+		left: 0
+	},
+	styleHeaderBreadcrumb: {
+		backgroundColor: "#f2f2f2"
 	}
 }

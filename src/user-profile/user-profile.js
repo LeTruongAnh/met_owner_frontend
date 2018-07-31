@@ -61,7 +61,7 @@ class UserProfile extends Component {
 						<Grid.Column className="menu-column" width={this.state.menuWidth}>
 							<MenuApp handleMenuParent={this.handleMenuParent}/>
 						</Grid.Column>
-						<Grid.Column className="content-column" width={this.state.contentWidth}>
+						<Grid.Column style={style.paddingTotal0} className="content-column" width={this.state.contentWidth}>
 							<ProfileInfo />
 						</Grid.Column>
 					</Grid.Row>
@@ -80,13 +80,12 @@ class UserProfile extends Component {
 									):""
 								}
 								<Grid.Column className="content-column" width={16}>
-									<Grid.Row style={{backgroundColor: "#006838", position: "relative", display: "flex", alignItems: "center", justifyContent: "center"}}>
-										<div style={{position: "absolute", left: "1em"}} onClick={this.handleButtonClick}>
+									<Grid.Row style={style.styleMobileHeader}>
+										<div style={style.styleMobileHeaderButton} onClick={this.handleButtonClick}>
 											<Icon size="large" style={{color: "#fff"}} name="bars"/>
 										</div>
-										<h3 style={{margin: "auto", padding: "1em 0", color: "#fff"}}>MET</h3>
+										<h3 style={style.styleMobileHeaderTitle}>MET</h3>
 									</Grid.Row>
-									<Grid.Row style={style.marginTopBot}><h1>Thông tin chủ sân</h1></Grid.Row>
 									<ProfileInfo />
 								</Grid.Column>
 							</Sidebar.Pusher>

@@ -130,21 +130,21 @@ class StadiumForm extends Component {
 		styleColBgImage.backgroundImage = `url('${this.state.bgImage}')`
 		if (this.state.screenSize > 1024)
 			if (localStorage.getItem("isExpand") === "true") {
-				styleColLogoImage.height = "calc(((81.25vw - 224px) * 0.3) - 14px)"
-				styleColBgImage.height = "calc(((81.25vw - 224px) * 0.3) - 14px)"
+				styleColLogoImage.height = "calc((81.25vw - 182px) * 0.3)"
+				styleColBgImage.height = "calc((81.25vw - 182px) * 0.3)"
 			}
 			else {
-				styleColLogoImage.height = "calc(((93.75vw - 224px) * 0.3) - 14px)"
-				styleColBgImage.height = "calc(((93.75vw - 224px) * 0.3) - 14px)"
+				styleColLogoImage.height = "calc((93.75vw - 182px) * 0.3)"
+				styleColBgImage.height = "calc((93.75vw - 182px) * 0.3)"
 			}
 		else if (this.state.screenSize >= 768)
 			if (localStorage.getItem("isExpand") === "true") {
-				styleColLogoImage.height = "calc(((75vw - 224px) * 0.3) - 14px)"
-				styleColBgImage.height = "calc(((75vw - 224px) * 0.3) - 14px)"
+				styleColLogoImage.height = "calc((75vw - 182px) * 0.3)"
+				styleColBgImage.height = "calc((75vw - 182px) * 0.3)"
 			}
 			else {
-				styleColLogoImage.height = "calc(((87.5vw - 224px) * 0.3) - 14px)"
-				styleColBgImage.height = "calc(((87.5vw - 224px) * 0.3) - 14px)"
+				styleColLogoImage.height = "calc((87.5vw - 182px) * 0.3)"
+				styleColBgImage.height = "calc((87.5vw - 182px) * 0.3)"
 			}
 		return (
 			<Grid className="grid-form stadium-grid">
@@ -175,7 +175,7 @@ class StadiumForm extends Component {
 								</Form.Field>
 								<span className="err-span">{this.state.errName}</span>
 								<Form.Field>
-									<label style={style.width30}>Tên</label>
+									<label style={style.width30}>Tên sân</label>
 							      	<input style={style.width70} value={this.state.name} name="name" onChange={this.handleChange} />
 							    </Form.Field>
 								<span className="err-span">{this.state.errAddress}</span>
@@ -216,28 +216,31 @@ class StadiumForm extends Component {
 						  	</Form>
 						):(
 							<Form style={style.styleStadiumForm} loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
-								<label>Logo sân</label>
+								<label style={style.styleLabelDivMobile}>Logo sân</label>
 								<Form.Field style={style.styleFieldLogoCoverChange}>
 									<div style={this.state.styleIconChangeLogo} onClick={() => this.props.handleTabImage(1)}>
 										<Icon name="photo" size="large" />
 									</div>
 									<Image src={this.state.logoImage} onClick={() => this.props.handleTabImage(1)} />
 								</Form.Field>
-								<label>Ảnh nền sân</label>
+								<label style={style.styleLabelDivMobile}>Ảnh nền sân</label>
 								<Form.Field style={style.styleFieldLogoCoverChange}>
 									<div onMouseOver={this.handleMouseOverIconCover} onMouseOut={this.handleMouseOutIconCover} style={this.state.styleIconChangeCover} onClick={() => this.props.handleTabImage(2)}>
 										<Icon name="photo" size="large" />
 									</div>
 									<Image src={this.state.bgImage} onClick={() => this.props.handleTabImage(2)} />
 								</Form.Field>
-								<span className="err-span">{this.state.errName}</span>
+								<label style={style.styleLabelDivMobile}>Tên sân</label>
+								<div className="err-span">{this.state.errName}</div>
 								<Form.Field>
-							      	<input style={style.width70} value={this.state.name} placeholder="Tên" name="name" onChange={this.handleChange} />
+							      	<input style={style.width70} value={this.state.name} placeholder="Tên sân" name="name" onChange={this.handleChange} />
 							    </Form.Field>
-								<span className="err-span">{this.state.errAddress}</span>
+							    <label style={style.styleLabelDivMobile}>Địa chỉ</label>
+								<div className="err-span">{this.state.errAddress}</div>
 								<Form.Field>
 							      	<input style={style.width70} value={this.state.address} placeholder="Địa chỉ" name="address" onChange={this.handleChange} />
 							    </Form.Field>
+							    <label style={style.styleLabelDivMobile}>Tỉnh/Thành</label>
 								<Form.Field className="region-select" value={this.state.city} placeholder="Tỉnh/Thành" control="select" onChange={this.handleChangeCity}>
 									<option value={0}>Chọn tỉnh/thành</option>
 									{
@@ -248,6 +251,7 @@ class StadiumForm extends Component {
 										})
 									}
 								</Form.Field>
+								<label style={style.styleLabelDivMobile}>Quận/Huyện</label>
 								<Form.Field className="region-select" value={this.state.district} placeholder="Quận/Huyện" onChange={this.handleChangeDistrict} control="select" disabled={this.state.disabled}>
 									{
 										this.state.districtList.map(x => {
@@ -257,7 +261,6 @@ class StadiumForm extends Component {
 										})
 									}
 								</Form.Field>
-								<span className="err-span">{this.state.errManager}</span>
 							    <Form.Field>
 							    	<Button loading={this.state.loadingBut} className="form-but" type='submit'>Cập nhật</Button>
 							    </Form.Field>

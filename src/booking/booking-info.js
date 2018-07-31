@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Header, Table, Grid, Menu, Icon, Loader, Button } from 'semantic-ui-react'
+import { Table, Grid, Menu, Icon, Loader, Button, Breadcrumb } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import style from '../dashboard/style.js'
 import axios from 'axios'
@@ -109,9 +109,13 @@ class BookingInfo extends Component {
 		return (
 			<Grid style={style.marginBooking}>
 				<Loader active={this.state.loading} />
-				<Header style={(this.state.screenSize >= 768)?style.margin0:style.marginTopBot} as="h1">Danh sách đặt sân</Header>
+				<Grid.Column style={style.styleHeaderBreadcrumb} textAlign="left" width={16}>
+					<Breadcrumb size="small">
+						<Breadcrumb.Section active>Quản lý đặt sân</Breadcrumb.Section>
+					</Breadcrumb>
+				</Grid.Column>
 				<Grid.Row style={style.marginTotal14px}>
-					<Link to="/booking/create"><Button>Đặt sân</Button></Link>
+					<Link to="/booking/create"><Button style={style.colorMassageAccept}>Đặt sân</Button></Link>
 				</Grid.Row>
 				{
 					(this.state.screenSize >= 768)?(
@@ -120,7 +124,6 @@ class BookingInfo extends Component {
 								<Table.Row>
 									<Table.HeaderCell>Mã đặt sân</Table.HeaderCell>
 									<Table.HeaderCell>Số điện thoại</Table.HeaderCell>
-									<Table.HeaderCell>Sân con</Table.HeaderCell>
 									<Table.HeaderCell>Ngày đá</Table.HeaderCell>
 									<Table.HeaderCell>Giờ đá</Table.HeaderCell>
 									<Table.HeaderCell>Trạng thái</Table.HeaderCell>
@@ -134,7 +137,6 @@ class BookingInfo extends Component {
 											<Table.Row key={index}>
 												<Table.Cell>{x.id}</Table.Cell>
 												<Table.Cell>{(x.match_id === 0)?x.first_team.phone:x.match.first_team.phone}</Table.Cell>
-												<Table.Cell></Table.Cell>
 												<Table.Cell>{this.dateConverter(x.date_started)}</Table.Cell>
 												<Table.Cell>{this.timeConverter(x.date_started,x.date_ended)}</Table.Cell>
 												<Table.Cell style={(() => {
@@ -179,7 +181,7 @@ class BookingInfo extends Component {
 							</Table.Body>
 							<Table.Footer>
 								<Table.Row>
-									<Table.HeaderCell colSpan='7'>
+									<Table.HeaderCell colSpan='6'>
 										<Menu floated='right' pagination>
 											<Menu.Item onClick={() => this.handlePagination(this.state.currentPagi - 1)} as='a' icon>
 												<Icon name='chevron left' />

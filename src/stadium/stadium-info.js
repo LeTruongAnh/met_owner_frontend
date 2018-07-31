@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Tab, Loader } from 'semantic-ui-react'
+import { Grid, Tab, Loader, Breadcrumb } from 'semantic-ui-react'
 import { Redirect } from 'react-router-dom'
 import StadiumForm from './stadium-form'
 import StadiumImage from './stadium-image'
@@ -137,6 +137,11 @@ class StadiumInfo extends Component {
 			if (!this.state.loading) {
 				return (
 					<Grid style={style.marginTotal0px} className="stadium-info">
+						<Grid.Column textAlign="left" style={style.styleHeaderBreadcrumb} width={16}>
+							<Breadcrumb size="small">
+								<Breadcrumb.Section active>Quản lý sân</Breadcrumb.Section>
+							</Breadcrumb>
+						</Grid.Column>
 						<Tab style={style.styleClassInfo} onTabChange={this.handleTabChange} activeIndex={this.state.activeIndex}
 						menu={{ secondary: true, pointing: true, style: (this.state.screenSize >= 377)?style.none:style.scrollX }} 
 						panes={

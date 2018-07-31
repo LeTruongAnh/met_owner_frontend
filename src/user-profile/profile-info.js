@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { Grid, Tab, Loader } from 'semantic-ui-react'
+import { Grid, Tab, Loader, Breadcrumb } from 'semantic-ui-react'
 import { Redirect } from 'react-router-dom'
 import Profile from './profile'
 import ImageProfile from './image-profile'
-//import ListStadium from './list-stadium'
 import style from '../dashboard/style.js'
 import axios from 'axios'
 import config from '../config'
@@ -80,6 +79,11 @@ class ProfileInfo extends Component {
             if (!this.state.loading) {
                 return (
                     <Grid style={style.marginTotal0px} className="stadium-info">
+                        <Grid.Column width={16} style={style.styleHeaderBreadcrumb}>
+                            <Breadcrumb size="small">
+                                <Breadcrumb.Section active>Thông tin chủ sân</Breadcrumb.Section>
+                            </Breadcrumb>
+                        </Grid.Column>
                         <Tab className="menu-tab" onTabChange={this.handleTabChange} activeIndex={this.state.activeIndex}
                         style={style.styleClassInfo} menu={{ secondary: true, pointing: true }} 
                         panes={

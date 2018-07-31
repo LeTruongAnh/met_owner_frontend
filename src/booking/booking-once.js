@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Form, TextArea, Segment, Button, Image, Search, Modal, Header, Icon } from 'semantic-ui-react'
+import { Grid, Form, TextArea, Segment, Button, Image, Search, Icon } from 'semantic-ui-react'
 import moment from 'moment'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -47,8 +47,8 @@ class BookingOnce extends Component {
 			errPhone: "",
 			errPhone2: "",
 			errPrice: "",
-			reponseNotification: "",
-			openErrModal: false,
+			responseNotification: "",
+			openMessage: false,
 			loadingBut: false,
 			alreadyPaid: 0,
 			errAlreadyPaid: ""
@@ -200,7 +200,7 @@ class BookingOnce extends Component {
 				this.setState({
 					price: response.data.price,
 					loading: false
-				}, () => console.log(this.state.price))
+				})
 			})
 			.catch((error) => {
 				console.log(error)
@@ -326,7 +326,7 @@ class BookingOnce extends Component {
 		let isOK = true
 		if (this.state.value1 === "") {
 			this.setState({
-				errTeam1: "Vui lòng nhập tên đội bóng"
+				errTeam1: "Nhập tên đội bóng"
 			})
 			isOK = false
 		}
@@ -338,7 +338,7 @@ class BookingOnce extends Component {
 		if (this.state.typeStadiumValue === 1) {
 			if (this.state.value2 === "") {
 				this.setState({
-					errTeam2: "Vui lòng nhập tên đội bóng thứ 2"
+					errTeam2: "Nnhập tên đội bóng"
 				})
 				isOK = false
 			}
@@ -349,7 +349,7 @@ class BookingOnce extends Component {
 			}
 			if (this.state.phone2 === "") {
 				this.setState({
-					errPhone2: "Vui lòng nhập số điện thoại đội bóng thứ 2"
+					errPhone2: "Nhập số điện thoại"
 				})
 				isOK = false
 			}
@@ -358,7 +358,7 @@ class BookingOnce extends Component {
 				let regBoolPhone = this.state.phone2.match(regPhone);
 				if (!regBoolPhone) {
 					this.setState({
-						errPhone2: "SĐT đội bóng thứ 2 không đúng định dạng"
+						errPhone2: "SĐT không đúng định dạng"
 					})
 					isOK = false
 				}
@@ -370,7 +370,7 @@ class BookingOnce extends Component {
 		}
 		if (!this.state.startDate) {
 			this.setState({
-				errStartDate: "Vui lòng chọn ngày bắt đầu"
+				errStartDate: "Chọn ngày bắt đầu"
 			})
 			isOK = false
 		}
@@ -389,14 +389,14 @@ class BookingOnce extends Component {
 		}
 		if (!this.state.endDate) {
 			this.setState({
-				errEndDate: "Vui lòng chọn ngày kết thúc"
+				errEndDate: "Chọn ngày kết thúc"
 			})
 			isOK = false
 		}
 		else {
 			if (this.state.endDateUp < this.state.startDateUp) {
 				this.setState({
-					errEndDate: "Thời điểm kết thúc trước thời điểm bắt đầu"
+					errEndDate: "Thời gian quá ít"
 				})
 				isOK = false
 			}
@@ -407,7 +407,7 @@ class BookingOnce extends Component {
 		}
 		if (this.state.phone === "") {
 			this.setState({
-				errPhone: "Vui lòng nhập số điện thoại đội bóng"
+				errPhone: "Nhập số điện thoại"
 			})
 			isOK = false
 		}
@@ -427,15 +427,14 @@ class BookingOnce extends Component {
 		}
 		if (this.state.alreadyPaid === "") {
 			this.setState({
-				errAlreadyPaid: "Vui lòng nhập số tiền đặt cọc"
+				alreadyPaid: 0
 			})
-			isOK = false
 		}
 		else {
-			let boolRegNum = isNaN(this.state.alreadyPaid)
-			if (boolRegNum) {
+			let alreadyPaid = (isNaN(this.state.alreadyPaid)?0:parseInt(this.state.alreadyPaid, 10))
+			if (alreadyPaid < 0) {
 				this.setState({
-					errAlreadyPaid: "Vui lòng nhập số vào mục tiền cọc"
+					errAlreadyPaid: "Tiền cọc không âm"
 				})
 				isOK = false
 			}
@@ -446,15 +445,15 @@ class BookingOnce extends Component {
 		}
 		if (this.state.price === "") {
 			this.setState({
-				errPrice: "Vui lòng nhập số tiền đặt sân"
+				errPrice: "Nhập số tiền đặt sân"
 			})
 			isOK = false
 		}
 		else {
-			let boolRegNum = isNaN(this.state.price)
-			if (boolRegNum) {
+			let price = (isNaN(this.state.price)?0:parseInt(this.state.price, 10))
+			if (price <= 0) {
 				this.setState({
-					errPrice: "Vui lòng nhập số vào mục tiền sân"
+					errPrice: "Tiền sân phải lớn hơn 0"
 				})
 				isOK = false
 			}
@@ -503,8 +502,8 @@ class BookingOnce extends Component {
 			.then((response) => {
 				this.setState({
 					loadingBut: false,
-					openErrModal: true,
-					reponseNotification: "Đặt sân thành công!",
+					openMessage: true,
+					responseNotification: "Đặt sân thành công!",
 					value1: "",
 					value2: "",
 					startDate: null,
@@ -516,27 +515,26 @@ class BookingOnce extends Component {
 					startMinute: 0,
 					endHour: 0,
 					endMinute: 0
-				})
+				}, () => setTimeout(() => this.handleCloseMessage(), 3000))
 			})
 			.catch((error) => {
 				this.setState({
 					loadingBut: false,
-					openErrModal: true,
-					reponseNotification: error.response.data.message
-				})
+					openMessage: true,
+					responseNotification: error.response.data.message
+				}, () => setTimeout(() => this.handleCloseMessage(), 3000))
 			})
 		}
 		else {
 			this.setState({
-				openErrModal: true,
 				loadingBut: false 
 			})
 		}
 	}
-	handleCloseErrModal = () => {
+	handleCloseMessage = () => {
 		this.setState({
-			openErrModal: false,
-			reponseNotification: ""
+			openMessage: false,
+			responseNotification: ""
 		})
 	}
 	render() {
@@ -584,6 +582,7 @@ class BookingOnce extends Component {
 									</select>
 								</Grid.Column>
 								<Grid.Column style={style.paddingTopBot0} width={16}>
+									<div className="err-span">{this.state.errTeam1}</div>
 									<div style={style.styleLabelDivMobile}>
 										<div style={style.displayInlineBlock}>Đội bóng</div>
 										<div style={style.styleStarDanger}>*</div>
@@ -599,6 +598,14 @@ class BookingOnce extends Component {
 											<input style={style.paddingLeftRight4} name="value1" value={this.state.value1} onChange={this.handleChange}/>
 										)
 									}
+								</Grid.Column>
+								<Grid.Column style={style.paddingTopBot0} width={16}>
+									<div className="err-span">{this.state.errPhone}</div>
+									<div style={style.styleLabelDivMobile}>
+										<div style={style.displayInlineBlock}>Điện thoại liên hệ</div>
+										<div style={style.styleStarDanger}>*</div>
+									</div>
+									<input style={style.paddingLeftRight4} name="phone" value={this.state.phone} onChange={this.handleChange} />
 								</Grid.Column>
 								{
 									(!this.state.typeStadiumValue)?"":(
@@ -616,6 +623,7 @@ class BookingOnce extends Component {
 								{
 									(!this.state.typeStadiumValue)?"":(
 										<Grid.Column style={style.paddingTopBot0} width={16}>
+											<div className="err-span">{this.state.errTeam2}</div>
 											<div style={style.styleLabelDivMobile}>
 												<div style={style.displayInlineBlock}>Đội bóng thứ 2</div>
 												<div style={style.styleStarDanger}>*</div>
@@ -633,8 +641,21 @@ class BookingOnce extends Component {
 											}
 										</Grid.Column>
 									)
+								}
+								{
+									(!this.state.typeStadiumValue)?"":(
+										<Grid.Column style={style.paddingTopBot0} width={16}>
+											<div className="err-span">{this.state.errPhone2}</div>
+											<div style={style.styleLabelDivMobile}>
+												<div style={style.displayInlineBlock}>Điện thoại đội thứ 2</div>
+												<div style={style.styleStarDanger}>*</div>
+											</div>
+											<input style={style.paddingLeftRight4} name="phone2" value={this.state.phone2} onChange={this.handleChange} />
+										</Grid.Column>
+									)
 								}	
 								<Grid.Column style={style.paddingTopBot0} width={16}>
+									<div className="err-span">{this.state.errStartDate}</div>
 									<div style={style.styleLabelDivMobile}>
 										<div style={style.displayInlineBlock}>Ngày bắt đầu</div>
 										<div style={style.styleStarDanger}>*</div>
@@ -670,6 +691,7 @@ class BookingOnce extends Component {
 									</Grid>
 								</Grid.Column>
 								<Grid.Column style={style.paddingTopBot0} width={16}>
+									<div className="err-span">{this.state.errEndDate}</div>
 									<div style={style.styleLabelDivMobile}>
 										<div style={style.displayInlineBlock}>Ngày kết thúc</div>
 										<div style={style.styleStarDanger}>*</div>
@@ -703,307 +725,277 @@ class BookingOnce extends Component {
 											</select>
 										</Grid.Column>
 									</Grid>
-								</Grid.Column>
-								<Grid.Column style={style.paddingTopBot0} width={16}>
-									<div style={style.styleLabelDivMobile}>
-										<div style={style.displayInlineBlock}>Điện thoại liên hệ</div>
-										<div style={style.styleStarDanger}>*</div>
-									</div>
-									<input style={style.paddingLeftRight4} name="phone" value={this.state.phone} onChange={this.handleChange} />
-								</Grid.Column>
-								{
-									(!this.state.typeStadiumValue)?"":(
-										<Grid.Column style={style.paddingTopBot0} width={16}>
-											<div style={style.styleLabelDivMobile}>
-												<div style={style.displayInlineBlock}>Điện thoại đội thứ 2</div>
-												<div style={style.styleStarDanger}>*</div>
-											</div>
-											<input style={style.paddingLeftRight4} name="phone2" value={this.state.phone2} onChange={this.handleChange} />
-										</Grid.Column>
-									)
-								}	
+								</Grid.Column>	
 								<Grid.Column style={style.paddingTopBot0} width={16}>
 									<div style={style.styleLabelDivMobile}>
 										<div style={style.displayInlineBlock}>Ghi chú</div>
 									</div>
 									<TextArea name="note" value={this.state.note} onChange={this.handleChange} />
 								</Grid.Column>
-								<Grid.Column width={16}>
-									<Segment style={{backgroundColor: "rgba(0, 104, 56, 0.8)", color: "#fff", padding: 0}}>
-										<div style={{backgroundColor: "rgba(0, 104, 56, 0.9)", padding: "14px"}}>{this.handleTodayString()}</div>
-										<div style={{padding: "0 14px"}}>
-											<div style={style.styleLabelDivMobile}>
-												<div style={style.displayInlineBlock}>Tiền đặt cọc</div>
-												<div style={style.styleStarDanger}>*</div>
-											</div>
-											<input name="alreadyPaid" style={style.paddingLeftRight4} value={this.state.alreadyPaid} onChange={this.handleChange} />
-											<div style={style.styleLabelDivMobile}>
-												<div style={style.displayInlineBlock}>Tiền sân</div>
-												<div style={style.styleStarDanger}>*</div>
-											</div>
-											<input name="price" style={style.paddingLeftRight4} value={this.state.price} onChange={this.handleChange} />
-										</div>
+								<Grid.Column style={style.paddingTopBot0} width={16}>
+									<Segment style={style.styleSegmentAsPriceTable}>
+										<div style={style.styleTitleSegmentAsPriceTable}>{this.handleTodayString()}</div>
+										<Grid style={style.margin0}>
+											<Grid.Column style={style.paddingTopBot0} width={16}>
+												<div className="err-span">{this.state.errAlreadyPaid}</div>
+												<div style={style.styleLabelDivMobile}>
+													<div style={style.displayInlineBlock}>Tiền đặt cọc</div>
+												</div>
+												<input type="number" name="alreadyPaid" style={style.paddingLeftRight4} value={this.state.alreadyPaid} onChange={this.handleChange} />
+											</Grid.Column>
+											<Grid.Column style={style.paddingTopBot0} width={16}>
+												<div className="err-span">{this.state.errPrice}</div>
+												<div style={style.styleLabelDivMobile}>
+													<div style={style.displayInlineBlock}>Tiền sân</div>
+													<div style={style.styleStarDanger}>*</div>
+												</div>
+												<input type="number" name="price" style={style.paddingLeftRight4} value={this.state.price} onChange={this.handleChange} />
+											</Grid.Column>
+										</Grid>
 										<div style={{width: "100%", padding: "14px", textAlign: "center"}}>
-											<Modal trigger={<Button loading={this.state.loadingBut} onClick={() => this.handleOnSubmit}>Đặt sân</Button>}
-											open={this.state.openErrModal} basic size='small'>
-												<Header icon='archive' content='Thông báo' />
-												<Modal.Actions>
-													<Button onClick={this.handleCloseErrModal} basic color='red' inverted>
-														<Icon name='remove' /> Đóng
-													</Button>
-												</Modal.Actions>
-												<Modal.Content>
-													<p style={(this.state.errTeam1 === "")?style.displayNone:style.styleErrNotification}>{this.state.errTeam1}</p>
-													<p style={(!this.state.typeStadiumValue || (this.state.errTeam2 === ""))?style.displayNone:style.styleErrNotification}>{this.state.errTeam2}</p>
-													<p style={(this.state.errStartDate === "")?style.displayNone:style.styleErrNotification}>{this.state.errStartDate}</p>
-													<p style={(this.state.errEndDate === "")?style.displayNone:style.styleErrNotification}>{this.state.errEndDate}</p>
-													<p style={(this.state.errPhone === "")?style.displayNone:style.styleErrNotification}>{this.state.errPhone}</p>
-													<p style={(!this.state.typeStadiumValue || (this.state.errPhone2 === ""))?style.displayNone:style.styleErrNotification}>{this.state.errPhone2}</p>
-													<p style={(this.state.errAlreadyPaid === "")?style.displayNone:style.styleErrNotification}>{this.state.errAlreadyPaid}</p>
-													<p style={(this.state.errPrice === "")?style.displayNone:style.styleErrNotification}>{this.state.errPrice}</p>
-													<p style={(this.state.reponseNotification === "")?style.displayNone:style.styleErrNotification}>{this.state.reponseNotification}</p>
-												</Modal.Content>
-											</Modal>
+											<Button loading={this.state.loadingBut} onClick={() => this.handleOnSubmit}>Đặt sân</Button>
 										</div>
 									</Segment>
 								</Grid.Column>
+								{
+									(this.state.openMessage)?(
+										<Segment textAlign="right" style={style.styleResponseNotificationMobile}>
+											<div style={style.marginRight14}>{this.state.responseNotification}</div>
+											<Icon style={style.styleRTCloseIcon} name="close" size="small" onClick={this.handleCloseMessage}/>
+										</Segment>
+									):""
+								}
 							</Grid>
 						):(
-							<Grid style={style.margin0} columns={2}>
-								<Grid.Column width={10}>
-									<Grid columns={2}>
-										<Grid.Column style={style.paddingTop0} width={8}>
-											<div style={style.styleLabelDiv}>
-												<div style={style.displayInlineBlock}>Loại sân</div>
-											</div>
-											<select style={style.paddingLeftRight4} name="typeStadiumValue" value={this.state.typeStadiumValue} onChange={this.handleChangeSelect}>
-												<option value={0}>Nguyên sân</option>
-												<option value={1}>Cáp kèo</option>
-											</select>
-										</Grid.Column>
-										<Grid.Column style={style.paddingTop0} width={8}>
-										</Grid.Column>
-										<Grid.Column style={style.paddingTop0} width={8}>
-											<div style={style.styleLabelDiv}>
-												<div style={style.displayInlineBlock}>Sân bóng</div>
-											</div>
-											<input style={style.paddingLeftRight4} value={this.state.userInfo.stadium.name} readOnly/>
-										</Grid.Column>
-										<Grid.Column style={style.paddingTop0} width={8}>
-											<div style={style.styleLabelDiv}>
-												<div style={style.displayInlineBlock}>Sân con</div>
-											</div>
-											<select style={style.paddingLeftRight4} value={this.state.stadiumChildValue}
-											onChange={this.handleChangeSelectChildStadium}>
-											{
-												this.state.stadiumChild.map(x => {
-													return (<option key={x.value} value={x.value}>{x.text}</option>)
-												})
-											}
-											</select>
-										</Grid.Column>
-										<Grid.Column style={style.paddingTop0} width={8}>
-											<div style={style.styleLabelDiv}>
-												<div style={style.displayInlineBlock}>Đối tượng đặt sân</div>
-											</div>
-											<select style={style.paddingLeftRight4} name="bookingObject1" value={this.state.bookingObject1} onChange={this.handleChangeSelect}>
-												<option value={0}>Đội bóng hệ thống</option>
-												<option value={1}>Khách vãng lai</option>
-											</select>
-										</Grid.Column>
-										<Grid.Column style={style.paddingTop0} width={8}>
-											<div style={style.styleLabelDiv}>
-												<div style={style.displayInlineBlock}>Đội bóng</div>
-												<div style={style.styleStarDanger}>*</div>
-											</div>
-											{
-												(!this.state.bookingObject1)?(
-													<Search style={style.paddingLeftRight4}
-													onResultSelect={this.handleResultSelect1}
-													resultRenderer={this.handlePresentResults} loading={this.state.isLoading1}
-													onSearchChange={this.handleSearchChange1} noResultsMessage="Không tìm thấy"
-													results={this.state.results1} value={this.state.value1} {...this.props} />
-												):(
-													<input style={style.paddingLeftRight4} name="value1" value={this.state.value1} onChange={this.handleChange}/>
-												)
-											}
-										</Grid.Column>
+							<Grid style={style.margin0}>
+								<Grid.Row columns={3}>
+									<Grid.Column width={5}>
+										<div style={style.styleLabelDiv}>
+											<div style={style.displayInlineBlock}>Loại sân</div>
+										</div>
+										<select style={style.paddingLeftRight4} name="typeStadiumValue" value={this.state.typeStadiumValue} onChange={this.handleChangeSelect}>
+											<option value={0}>Nguyên sân</option>
+											<option value={1}>Cáp kèo</option>
+										</select>
+									</Grid.Column>
+									<Grid.Column width={5}>
+										<div style={style.styleLabelDiv}>
+											<div style={style.displayInlineBlock}>Sân con</div>
+										</div>
+										<select style={style.paddingLeftRight4} value={this.state.stadiumChildValue}
+										onChange={this.handleChangeSelectChildStadium}>
 										{
-											(!this.state.typeStadiumValue)?"":(
-												<Grid.Column style={style.paddingTop0} width={8}>
-													<div style={style.styleLabelDiv}>
-														<div style={style.displayInlineBlock}>Đối tượng thứ 2</div>
-													</div>
-													<select style={style.paddingLeftRight4} name="bookingObject2" value={this.state.bookingObject2} onChange={this.handleChangeSelect}>
-														<option value={0}>Đội bóng hệ thống</option>
-														<option value={1}>Khách vãng lai</option>
-													</select>
-												</Grid.Column>
+											this.state.stadiumChild.map(x => {
+												return (<option key={x.value} value={x.value}>{x.text}</option>)
+											})
+										}
+										</select>
+									</Grid.Column>
+									<Grid.Column width={6}>
+										<div style={style.styleLabelDiv}>
+											<div style={style.displayInlineBlock}>Sân bóng</div>
+										</div>
+										<input style={style.paddingLeftRight4} value={this.state.userInfo.stadium.name} readOnly/>
+									</Grid.Column>
+								</Grid.Row>
+								<Grid.Row columns={3}>
+									<Grid.Column width={5}>
+										<div style={style.styleLabelDiv}>
+											<div style={style.displayInlineBlock}>Đối tượng đặt sân</div>
+										</div>
+										<select style={style.paddingLeftRight4} name="bookingObject1" value={this.state.bookingObject1} onChange={this.handleChangeSelect}>
+											<option value={0}>Đội bóng hệ thống</option>
+											<option value={1}>Khách vãng lai</option>
+										</select>
+									</Grid.Column>
+									<Grid.Column width={5}>
+										<span className="err-span">{this.state.errTeam1}</span>
+										<div style={style.styleLabelDiv}>
+											<div style={style.displayInlineBlock}>Đội bóng</div>
+											<div style={style.styleStarDanger}>*</div>
+										</div>
+										{
+											(!this.state.bookingObject1)?(
+												<Search
+												onResultSelect={this.handleResultSelect1}
+												resultRenderer={this.handlePresentResults} loading={this.state.isLoading1}
+												onSearchChange={this.handleSearchChange1} noResultsMessage="Không tìm thấy"
+												results={this.state.results1} value={this.state.value1} {...this.props} />
+											):(
+												<input style={style.paddingLeftRight4} name="value1" value={this.state.value1} onChange={this.handleChange}/>
 											)
 										}
-										{
-											(!this.state.typeStadiumValue)?"":(
-												<Grid.Column style={style.paddingTop0} width={8}>
-													<div style={style.styleLabelDiv}>
-														<div style={style.displayInlineBlock}>Đội bóng thứ 2</div>
-														<div style={style.styleStarDanger}>*</div>
-													</div>
-													{
-														(!this.state.bookingObject2)?(
-															<Search style={style.paddingLeftRight4}
-															onResultSelect={this.handleResultSelect2}
-															resultRenderer={this.handlePresentResults} loading={this.state.isLoading2}
-															onSearchChange={this.handleSearchChange2} noResultsMessage="Không tìm thấy"
-															results={this.state.results2} value={this.state.value2} {...this.props} />
-														):(
-															<input style={style.paddingLeftRight4} name="value2" value={this.state.value2} onChange={this.handleChange}/>
-														)
-													}
-												</Grid.Column>
-											)
-										}	
-										<Grid.Column style={style.paddingTop0} width={8}>
-											<div style={style.styleLabelDiv}>
-												<div style={style.displayInlineBlock}>Ngày bắt đầu</div>
-												<div style={style.styleStarDanger}>*</div>
-											</div>
-											<DatePicker fixedHeight peekNextMonth showMonthDropdown showYearDropdown dropdownMode="select" dateFormat="DD/MM/YYYY"
-											placeholderText="Chọn ngày bắt đầu" selected={this.state.startDate} onChange={this.handleChangeStartDate} />
-										</Grid.Column>
-										<Grid.Column style={style.paddingTop0} width={8}>
-											<div style={style.styleLabelDiv}>
-												<div style={style.displayInlineBlock}>Thời gian bắt đầu</div>
-											</div>
-											<Grid columns={2}>
-												<Grid.Column width={8}>
-													<select className="select-hour" style={style.paddingLeftRight4}
-													value={this.state.startHour} onChange={this.handleChangeSelectStartHour}>
-													{
-														this.handleCreateNumberList(24).map(x => {
-															return (<option key={x.value} value={x.value}>{x.text}</option>)
-														})
-													}
-													</select>
-												</Grid.Column>
-												<Grid.Column width={8}>
-													<select className="select-hour" style={style.paddingLeftRight4}
-													value={this.state.startMinute} onChange={this.handleChangeSelectStartMinute}>
-													{
-														this.handleCreateNumberList(60).map(x => {
-															return (<option key={x.value} value={x.value}>{x.text}</option>)
-														})
-													}
-													</select>
-												</Grid.Column>
-											</Grid>
-										</Grid.Column>
-										<Grid.Column style={style.paddingTop0} width={8}>
-											<div style={style.styleLabelDiv}>
-												<div style={style.displayInlineBlock}>Ngày kết thúc</div>
-												<div style={style.styleStarDanger}>*</div>
-											</div>
-											<DatePicker fixedHeight peekNextMonth showMonthDropdown showYearDropdown dropdownMode="select" dateFormat="DD/MM/YYYY"
-											placeholderText="Chọn ngày kết thúc" selected={this.state.endDate} onChange={this.handleChangeEndDate} />
-										</Grid.Column>
-										<Grid.Column style={style.paddingTop0} width={8}>
-											<div style={style.styleLabelDiv}>
-												<div style={style.displayInlineBlock}>Thời gian kết thúc</div>
-											</div>
-											<Grid columns={2}>
-												<Grid.Column width={8}>
-													<select className="select-hour" style={style.paddingLeftRight4}
-													value={this.state.endHour} onChange={this.handleChangeSelectEndHour}>
-													{
-														this.handleCreateNumberList(24).map(x => {
-															return (<option key={x.value} value={x.value}>{x.text}</option>)
-														})
-													}
-													</select>
-												</Grid.Column>
-												<Grid.Column width={8}>
-													<select className="select-hour" style={style.paddingLeftRight4}
-													value={this.state.endMinute} onChange={this.handleChangeSelectEndMinute}>
-													{
-														this.handleCreateNumberList(60).map(x => {
-															return (<option key={x.value} value={x.value}>{x.text}</option>)
-														})
-													}
-													</select>
-												</Grid.Column>
-											</Grid>
-										</Grid.Column>
-									</Grid>
-								</Grid.Column>
-								<Grid.Column width={6}>
-									<Grid>
-										<Grid.Column style={style.paddingTop0} width={16}>
-											<div style={style.styleLabelDiv}>
-												<div style={style.displayInlineBlock}>Điện thoại liên hệ</div>
-												<div style={style.styleStarDanger}>*</div>
-											</div>
-											<input style={style.paddingLeftRight4} name="phone" value={this.state.phone} onChange={this.handleChange} />
-										</Grid.Column>
-										{
-											(!this.state.typeStadiumValue)?"":(
-												<Grid.Column style={style.paddingTop0} width={16}>
-													<div style={style.styleLabelDiv}>
-														<div style={style.displayInlineBlock}>Điện thoại đội thứ 2</div>
-														<div style={style.styleStarDanger}>*</div>
-													</div>
-													<input style={style.paddingLeftRight4} name="phone2" value={this.state.phone2} onChange={this.handleChange} />
-												</Grid.Column>
-											)
-										}	
-										<Grid.Column style={style.paddingTop0} width={16}>
-											<div style={style.styleLabelDiv}>
-												<div style={style.displayInlineBlock}>Ghi chú</div>
-											</div>
-											<TextArea name="note" value={this.state.note} onChange={this.handleChange} />
-										</Grid.Column>
-										<Grid.Column width={16}>
-											<Segment style={{backgroundColor: "rgba(0, 104, 56, 0.8)", color: "#fff", padding: 0}}>
-												<div style={{backgroundColor: "rgba(0, 104, 56, 0.9)", padding: "14px"}}>{this.handleTodayString()}</div>
-												<div style={{padding: "0 14px"}}>
+									</Grid.Column>
+									<Grid.Column width={6}>
+										<span className="err-span">{this.state.errPhone}</span>
+										<div style={style.styleLabelDiv}>
+											<div style={style.displayInlineBlock}>Điện thoại liên hệ</div>
+											<div style={style.styleStarDanger}>*</div>
+										</div>
+										<input style={style.paddingLeftRight4} name="phone" value={this.state.phone} onChange={this.handleChange} />
+									</Grid.Column>
+								</Grid.Row>
+								{
+									(!this.state.typeStadiumValue)?"":(
+										<Grid.Row columns={3}>
+											<Grid.Column style={style.paddingTop0} width={5}>
+												<div style={style.styleLabelDiv}>
+													<div style={style.displayInlineBlock}>Đối tượng thứ 2</div>
+												</div>
+												<select style={style.paddingLeftRight4} name="bookingObject2" value={this.state.bookingObject2} onChange={this.handleChangeSelect}>
+													<option value={0}>Đội bóng hệ thống</option>
+													<option value={1}>Khách vãng lai</option>
+												</select>
+											</Grid.Column>
+											<Grid.Column style={style.paddingTop0} width={5}>
+												<span className="err-span">{this.state.errTeam2}</span>
+												<div style={style.styleLabelDiv}>
+													<div style={style.displayInlineBlock}>Đội bóng thứ 2</div>
+													<div style={style.styleStarDanger}>*</div>
+												</div>
+												{
+													(!this.state.bookingObject2)?(
+														<Search
+														onResultSelect={this.handleResultSelect2}
+														resultRenderer={this.handlePresentResults} loading={this.state.isLoading2}
+														onSearchChange={this.handleSearchChange2} noResultsMessage="Không tìm thấy"
+														results={this.state.results2} value={this.state.value2} {...this.props} />
+													):(
+														<input style={style.paddingLeftRight4} name="value2" value={this.state.value2} onChange={this.handleChange}/>
+													)
+												}
+											</Grid.Column>
+											<Grid.Column style={style.paddingTop0} width={6}>
+												<span className="err-span">{this.state.errPhone2}</span>
+												<div style={style.styleLabelDiv}>
+													<div style={style.displayInlineBlock}>Điện thoại đội thứ 2</div>
+													<div style={style.styleStarDanger}>*</div>
+												</div>
+												<input style={style.paddingLeftRight4} name="phone2" value={this.state.phone2} onChange={this.handleChange} />
+											</Grid.Column>
+										</Grid.Row>
+									)
+								}
+								<Grid.Row columns={2}>
+									<Grid.Column style={style.paddingTotal0} width={10}>
+										<Grid style={style.margin0} columns={2}>
+											<Grid.Column style={style.paddingTopBot0} width={8}>
+												<span className="err-span">{this.state.errStartDate}</span>
+												<div style={style.styleLabelDiv}>
+													<div style={style.displayInlineBlock}>Ngày bắt đầu</div>
+													<div style={style.styleStarDanger}>*</div>
+												</div>
+												<DatePicker fixedHeight peekNextMonth showMonthDropdown showYearDropdown dropdownMode="select" dateFormat="DD/MM/YYYY"
+												placeholderText="Chọn ngày bắt đầu" selected={this.state.startDate} onChange={this.handleChangeStartDate} />
+											</Grid.Column>
+											<Grid.Column style={style.paddingTopBot0} width={8}>
+												<div style={style.styleLabelDiv}>
+													<div style={style.displayInlineBlock}>Thời gian bắt đầu</div>
+												</div>
+												<Grid columns={2}>
+													<Grid.Column width={8}>
+														<select className="select-hour" style={style.paddingLeftRight4}
+														value={this.state.startHour} onChange={this.handleChangeSelectStartHour}>
+														{
+															this.handleCreateNumberList(24).map(x => {
+																return (<option key={x.value} value={x.value}>{x.text}</option>)
+															})
+														}
+														</select>
+													</Grid.Column>
+													<Grid.Column width={8}>
+														<select className="select-hour" style={style.paddingLeftRight4}
+														value={this.state.startMinute} onChange={this.handleChangeSelectStartMinute}>
+														{
+															this.handleCreateNumberList(60).map(x => {
+																return (<option key={x.value} value={x.value}>{x.text}</option>)
+															})
+														}
+														</select>
+													</Grid.Column>
+												</Grid>
+											</Grid.Column>
+											<Grid.Column style={style.paddingTopBot0} width={8}>
+												<span className="err-span">{this.state.errTeam1}</span>
+												<div style={style.styleLabelDiv}>
+													<div style={style.displayInlineBlock}>Ngày kết thúc</div>
+													<div style={style.styleStarDanger}>*</div>
+												</div>
+												<DatePicker fixedHeight peekNextMonth showMonthDropdown showYearDropdown dropdownMode="select" dateFormat="DD/MM/YYYY"
+												placeholderText="Chọn ngày kết thúc" selected={this.state.endDate} onChange={this.handleChangeEndDate} />
+											</Grid.Column>
+											<Grid.Column style={style.paddingTopBot0} width={8}>
+												<div style={style.styleLabelDiv}>
+													<div style={style.displayInlineBlock}>Thời gian kết thúc</div>
+												</div>
+												<Grid columns={2}>
+													<Grid.Column width={8}>
+														<select className="select-hour" style={style.paddingLeftRight4}
+														value={this.state.endHour} onChange={this.handleChangeSelectEndHour}>
+														{
+															this.handleCreateNumberList(24).map(x => {
+																return (<option key={x.value} value={x.value}>{x.text}</option>)
+															})
+														}
+														</select>
+													</Grid.Column>
+													<Grid.Column width={8}>
+														<select className="select-hour" style={style.paddingLeftRight4}
+														value={this.state.endMinute} onChange={this.handleChangeSelectEndMinute}>
+														{
+															this.handleCreateNumberList(60).map(x => {
+																return (<option key={x.value} value={x.value}>{x.text}</option>)
+															})
+														}
+														</select>
+													</Grid.Column>
+												</Grid>
+											</Grid.Column>
+											<Grid.Column style={style.paddingTop0} width={16}>
+												<div style={style.styleLabelDiv}>
+													<div style={style.displayInlineBlock}>Ghi chú</div>
+												</div>
+												<TextArea name="note" value={this.state.note} onChange={this.handleChange} />
+											</Grid.Column>
+										</Grid>
+									</Grid.Column>
+									<Grid.Column width={6}>
+										<Segment style={style.styleSegmentAsPriceTable}>
+											<div style={style.styleTitleSegmentAsPriceTable}>{this.handleTodayString()}</div>
+											<Grid style={style.paddingLeftRight14}>
+												<Grid.Column style={style.paddingBot0} width={16}>
+													<div className="err-span">{this.state.errAlreadyPaid}</div>
 													<div style={style.styleLabelDiv}>
 														<div style={style.displayInlineBlock}>Tiền đặt cọc</div>
-														<div style={style.styleStarDanger}>*</div>
 													</div>
-													<input name="alreadyPaid" style={style.paddingLeftRight4} value={this.state.alreadyPaid} onChange={this.handleChange} />
+													<input type="number" name="alreadyPaid" style={style.paddingLeftRight4} value={this.state.alreadyPaid} onChange={this.handleChange} />
+												</Grid.Column>
+												<Grid.Column width={16}>
+													<span className="err-span">{this.state.errPrice}</span>
 													<div style={style.styleLabelDiv}>
 														<div style={style.displayInlineBlock}>Tiền sân</div>
 														<div style={style.styleStarDanger}>*</div>
 													</div>
-													<input name="price" style={style.paddingLeftRight4} value={this.state.price} onChange={this.handleChange} />
-												</div>
-												<div style={{width: "100%", padding: "14px", textAlign: "center"}}>
-													<Modal trigger={<Button loading={this.state.loadingBut} onClick={() => this.handleOnSubmit}>Đặt sân</Button>}
-													open={this.state.openErrModal} basic size='small'>
-														<Header icon='archive' content='Thông báo' />
-														<Modal.Actions>
-															<Button onClick={this.handleCloseErrModal} basic color='red' inverted>
-																<Icon name='remove' /> Đóng
-															</Button>
-														</Modal.Actions>
-														<Modal.Content>
-															<p style={(this.state.errTeam1 === "")?style.displayNone:style.styleErrNotification}>{this.state.errTeam1}</p>
-															<p style={(!this.state.typeStadiumValue || (this.state.errTeam2 === ""))?style.displayNone:style.styleErrNotification}>{this.state.errTeam2}</p>
-															<p style={(this.state.errStartDate === "")?style.displayNone:style.styleErrNotification}>{this.state.errStartDate}</p>
-															<p style={(this.state.errEndDate === "")?style.displayNone:style.styleErrNotification}>{this.state.errEndDate}</p>
-															<p style={(this.state.errPhone === "")?style.displayNone:style.styleErrNotification}>{this.state.errPhone}</p>
-															<p style={(!this.state.typeStadiumValue || (this.state.errPhone2 === ""))?style.displayNone:style.styleErrNotification}>{this.state.errPhone2}</p>
-															<p style={(this.state.errAlreadyPaid === "")?style.displayNone:style.styleErrNotification}>{this.state.errAlreadyPaid}</p>
-															<p style={(this.state.errPrice === "")?style.displayNone:style.styleErrNotification}>{this.state.errPrice}</p>
-															<p style={(this.state.reponseNotification === "")?style.displayNone:style.styleErrNotification}>{this.state.reponseNotification}</p>
-														</Modal.Content>
-													</Modal>
-												</div>
-											</Segment>
-										</Grid.Column>
-									</Grid>
-								</Grid.Column>
+													<input type="number" name="price" style={style.paddingLeftRight4} value={this.state.price} onChange={this.handleChange} />
+												</Grid.Column>
+											</Grid>
+											<div style={{width: "100%", padding: "14px", textAlign: "center"}}>
+												<Button loading={this.state.loadingBut} onClick={() => this.handleOnSubmit}>Đặt sân</Button>
+											</div>
+										</Segment>
+									</Grid.Column>
+								</Grid.Row>
+								{
+									(this.state.openMessage)?(
+										<Segment textAlign="right" style={style.styleResponseNotification}>
+											<div style={style.marginRight14}>{this.state.responseNotification}</div>
+											<Icon style={style.styleRTCloseIcon} name="close" size="small" onClick={this.handleCloseMessage}/>
+										</Segment>
+									):""
+								}
 							</Grid>
 						)
-					}	
+					}		
 				</Form>
 			</Segment>
 		)

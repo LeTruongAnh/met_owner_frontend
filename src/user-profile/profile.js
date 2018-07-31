@@ -15,7 +15,7 @@ class StadiumForm extends Component {
 			screenSize: window.innerWidth,
 			token: JSON.parse(localStorage.getItem('MET_userInfo')).token,
 			avatar: props.userInfo.avatar || "",
-			phone: props.userInfo.country_code + props.userInfo.phone || "" ,
+			phone: props.userInfo.phone || "" ,
 			firstName: props.userInfo.first_name || "",
 			lastName: props.userInfo.last_name || "",
 			bio: props.userInfo.bio || "",
@@ -107,17 +107,17 @@ class StadiumForm extends Component {
 		styleColLogoImage.backgroundImage = `url('${this.state.avatar}')`
 		if (this.state.screenSize > 1024)
 			if (localStorage.getItem("isExpand") === "true") {
-				styleColLogoImage.height = "calc(((81.25vw - 224px) * 0.3) - 14px)"
+				styleColLogoImage.height = "calc(((81.25vw - 140px) * 0.3) - 14px)"
 			}
 			else {
-				styleColLogoImage.height = "calc(((93.75vw - 224px) * 0.3) - 14px)"
+				styleColLogoImage.height = "calc(((93.75vw - 140px) * 0.3) - 14px)"
 			}
 		else if (this.state.screenSize >= 768)
 			if (localStorage.getItem("isExpand") === "true") {
-				styleColLogoImage.height = "calc(((75vw - 224px) * 0.3) - 14px)"
+				styleColLogoImage.height = "calc(((75vw - 140px) * 0.3) - 14px)"
 			}
 			else {
-				styleColLogoImage.height = "calc(((87.5vw - 224px) * 0.3) - 14px)"
+				styleColLogoImage.height = "calc(((87.5vw - 140px) * 0.3) - 14px)"
 			}
 		return (
 			<Grid className="grid-form stadium-grid">
@@ -169,28 +169,33 @@ class StadiumForm extends Component {
 						  	</Form>
 						):(
 							<Form style={style.styleStadiumForm} loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
-								<label>Logo sân</label>
+								<label style={style.styleLabelDivMobile}>Logo sân</label>
 								<Form.Field style={style.styleFieldLogoCoverChange}>
 									<div style={this.state.styleIconChangeLogo} onClick={() => this.props.handleTabImage(1)}>
 										<Icon name="photo" size="large" />
 									</div>
 									<Image src={this.state.avatar} onClick={() => this.props.handleTabImage(1)} />
 								</Form.Field>
+								<label style={style.styleLabelDivMobile}>Số điện thoại</label>
 								<Form.Field>
 							      	<input value={this.state.phone} readOnly placeholder="Số điện thoại" name="phone" />
 							    </Form.Field>
-								<span className="err-span">{this.state.errFirstName}</span>
+								<div className="err-span">{this.state.errFirstName}</div>
+								<label style={style.styleLabelDivMobile}>Tên</label>
 								<Form.Field>
 							      	<input value={this.state.firstName} name="firstName" placeholder="Tên" onChange={this.handleChange} />
 							    </Form.Field>
-								<span className="err-span">{this.state.errLastName}</span>
+								<div className="err-span">{this.state.errLastName}</div>
+								<label style={style.styleLabelDivMobile}>Họ</label>
 								<Form.Field>
 							      	<input value={this.state.lastName} name="lastName" placeholder="Họ" onChange={this.handleChange} />
 							    </Form.Field>
+							    <label style={style.styleLabelDivMobile}>Giới thiệu</label>
 							    <Form.Field>
 									<textarea value={this.state.bio} name="bio" placeholder="Giới thiệu" onChange={this.handleChange} />
 							    </Form.Field>
-							    <span className="err-span">{this.state.errDob}</span>
+							    <div className="err-span">{this.state.errDob}</div>
+							    <label style={style.styleLabelDivMobile}>Ngày sinh</label>
 							    <Form.Field className="date-picker-profile">
 									<DatePicker fixedHeight showMonthDropdown showYearDropdown dropdownMode="select" dateFormat="DD/MM/YYYY"
 									placeholderText="Chọn ngày sinh" selected={this.state.dob} onChange={this.handleChangeDate} />

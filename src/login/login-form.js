@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Button, Form, Grid, Image, Icon } from 'semantic-ui-react'
 import axios from 'axios'
 import config from '../config'
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import logo from '../asset/favicon.png'
 
 class LoginForm extends Component {
@@ -107,7 +107,7 @@ class LoginForm extends Component {
 					    	<Button loading={this.state.loading} className="form-but" type='submit'>Đăng nhập</Button>
 					    </Form.Field>
 					    <Form.Field>
-					    	<a href="./register" target="_blank">Đăng ký tài khoản</a>
+					    	<Link to="./register">Đăng ký tài khoản</Link>
 					    </Form.Field>
 				  	</Form>
 			  	</Grid>

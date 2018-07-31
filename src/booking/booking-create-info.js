@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Grid, Tab, Loader } from 'semantic-ui-react'
-import { Redirect } from 'react-router-dom'
+import { Grid, Tab, Loader, Breadcrumb } from 'semantic-ui-react'
+import { Redirect, Link } from 'react-router-dom'
 import BookingPermanent from './booking-permanent'
 import BookingOnce from './booking-once'
 import style from '../dashboard/style.js'
@@ -50,6 +50,13 @@ class BookingCreateInfo extends Component {
 			if (!this.state.loading) {
 				return (
 					<Grid style={style.marginTotal0px} className="stadium-info">
+						<Grid.Column style={style.styleHeaderBreadcrumb} textAlign="left" width={16}>
+							<Breadcrumb size="small">
+                        		<Link style={style.styleLinkBreadcrumb} to="/booking">Quản lý đặt sân</Link>
+                        		<Breadcrumb.Divider />
+								<Breadcrumb.Section active>Đặt sân</Breadcrumb.Section>
+							</Breadcrumb>
+						</Grid.Column>
 						<Tab style={style.styleClassInfo} menu={{ secondary: true, pointing: true }} 
 						panes={
 							[

@@ -73,13 +73,13 @@ class StadiumChild extends Component {
 										<Table.Cell>{x.name}</Table.Cell>
 										{
 											(x.status === 1)?(
-												<Table.Cell style={style.approvedColor}>Hoạt động</Table.Cell>
+												<Table.Cell style={style.fontWeightBold} positive>Hoạt động</Table.Cell>
 											):(
-												<Table.Cell style={style.errorColor}>Khóa</Table.Cell>
+												<Table.Cell style={style.fontWeightBold} nagative>Khóa</Table.Cell>
 											)
 										}
 										<Table.Cell>{this.handleTypeStadiumChild(x.type)}</Table.Cell>
-										<Table.Cell textAlign="center">{(!x.is_merge)?"Không":(this.handleMergeList(x.merge_list))}</Table.Cell>
+										<Table.Cell textAlign="center">{(!x.is_merge)?"":(this.handleMergeList(x.merge_list))}</Table.Cell>
 									</Table.Row>
 								)
 							})

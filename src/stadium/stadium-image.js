@@ -116,12 +116,12 @@ class StadiumImage extends Component {
 								position: "relative"
 							}
 							if (this.state.screenSize > 1024)
-								if (localStorage.getItem("isExpand") === "true") styleCol.height = "calc((81.25vw - 224px) / 6)"
-								else styleCol.height = "calc((93.75vw - 224px) / 6)"
+								if (localStorage.getItem("isExpand") === "true") styleCol.height = "calc(((81.25vw - 56px) / 6) - 28px)"
+								else styleCol.height = "calc(((93.75vw - 56px) / 6) - 28px)"
 							else if (this.state.screenSize >= 768)
-								if (localStorage.getItem("isExpand") === "true") styleCol.height = "calc((75vw - 224px) / 6)"
-								else styleCol.height = "calc((87.5vw - 224px) / 6)"
-							else styleCol.height = "calc((100vw - 84px) / 2)"
+								if (localStorage.getItem("isExpand") === "true") styleCol.height = "calc(((75vw - 56px) / 6) - 28px)"
+								else styleCol.height = "calc(((87.5vw - 56px) / 6) - 28px)"
+							else styleCol.height = "calc(((100vw - 28px) / 2) - 28px)"
 							styleImageStadium.backgroundImage = `url('${x}')`
 							let styleImageStadiumSelect = Object.assign({}, styleImageStadium)
 							styleImageStadiumSelect.border = `2px solid #006838`

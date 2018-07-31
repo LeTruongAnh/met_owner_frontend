@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Checkbox, Form, Grid, Icon, Image, Header, Modal } from 'semantic-ui-react'
+import { Segment, Button, Checkbox, Form, Grid, Icon, Image } from 'semantic-ui-react'
 import moment from 'moment'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -13,6 +13,7 @@ class RegistForm extends Component {
 	constructor(props){
 		super(props);
 		this.state = {
+			screenSize: window.innerWidth,
 			firstName:"",
 			lastName:"",
 			phone:"",
@@ -31,7 +32,8 @@ class RegistForm extends Component {
 			errDob: "",
 			userInfo: localStorage.getItem('MET_userInfo'),
 			loading: false,
-			modalOpen: false
+			openMessage: false,
+			responseNotification: ""
 		}
 	}
 	handleChange = (e, { name, value }) => this.setState({ [name]: value })
@@ -117,21 +119,17 @@ class RegistForm extends Component {
 			this.setState({
 				errPassRep: ""
 			})
-		var regMail = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-		var regBoolMail = this.state.email.match(regMail);
-		if (this.state.email === "") {
-			regBoolMail = true;
+		if ((/^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[A-Za-z]+$/.test(this.state.email)) || (this.state.email === "")) {
+			this.setState({
+				errEmail: ""
+			})
 		}
-		if (!regBoolMail) {
+		else {
 			this.setState({
 				errEmail: "*Email không đúng định dạng"
 			})
 			isOK = false;
 		}
-		else
-			this.setState({
-				errEmail: ""
-			})
 		if (!document.getElementById('check-regist').checked) {
 			this.setState({errCheckTerm:"*Bạn chưa đồng ý với chúng tôi"})
 			isOK = false;
@@ -167,8 +165,9 @@ class RegistForm extends Component {
 					email:"",
 					dob:null,
 					loading: false,
-					modalOpen: true
-				})
+					openMessage: true,
+					responseNotification: "Đăng ký thành công!"
+				}, () => setTimeout(() => this.handleCloseMessage(), 3000))
 			})
 			.catch((error)=> {
 				if (!error.response.data)
@@ -182,8 +181,14 @@ class RegistForm extends Component {
 			})			
 		}
 	}
-	handleCloseModal = () => {
-		this.setState({ modalOpen: false })
+	componentDidMount = () => {
+		window.addEventListener('resize',this.detectScreenChange)
+	}
+	handleCloseMessage = () => {
+		this.setState({ openMessage: false })
+	}
+	detectScreenChange = () => {
+		this.setState({ screenSize: window.innerWidth })
 	}
 	render() {
 		if (this.state.userInfo) {
@@ -248,19 +253,17 @@ class RegistForm extends Component {
 							<Checkbox id="check-regist" label='Tôi đồng ý với các điều khoản và điều kiện' />						
 							<a href="https://www.google.com/?gws_rd=ssl" rel="noopener noreferrer" target="_blank">Điều khoản và điều kiện</a>
 						</Form.Field>
-						<Modal open={this.state.modalOpen} basic size="small" trigger={
+						<Form.Field>
 							<Button className="form-but" loading={this.state.loading} type='submit'>Đăng ký</Button>
-						}>
-							<Header icon='archive' content='Thông báo' />
-							<Modal.Content>
-								<p>Chúc mừng bạn đã đăng ký thành công</p>
-							</Modal.Content>
-							<Modal.Actions>
-								<Button basic color='red' inverted onClick={this.handleCloseModal}>
-									<Icon name='remove' /> Đóng
-								</Button>
-							</Modal.Actions>
-						</Modal>
+						</Form.Field>
+						{
+							(this.state.openMessage)?(
+								<Segment textAlign="right" style={(this.state.screenSize >= 768)?style.styleResponseNotification:style.styleResponseNotificationLoginMobile}>
+									<div style={style.marginRight14}>{this.state.responseNotification}</div>
+									<Icon style={style.styleRTCloseIcon} name="close" size="small" onClick={this.handleCloseMessage}/>
+								</Segment>
+							):""
+						}
 					</Form>
 				</Grid>
 			);

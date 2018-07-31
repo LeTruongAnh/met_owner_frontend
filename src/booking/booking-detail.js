@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Grid, Button, Icon, Sidebar } from 'semantic-ui-react'
+import { Grid, Icon, Sidebar } from 'semantic-ui-react'
 import MenuApp from '../dashboard/menu-app.js'
 import style from '../dashboard/style'
 import BookingForm from './booking-form'
@@ -61,7 +61,7 @@ class BookingDetail extends Component {
                         <Grid.Column className="menu-column" width={this.state.menuWidth}>
                             <MenuApp handleMenuParent={this.handleMenuParent} content="booking"/>
                         </Grid.Column>
-                        <Grid.Column className="content-column" width={this.state.contentWidth}>
+                        <Grid.Column style={style.paddingTotal0} className="content-column" width={this.state.contentWidth}>
                             <BookingForm bookingID={this.props.bookingID} />
                         </Grid.Column>
                     </Grid.Row>
@@ -80,10 +80,11 @@ class BookingDetail extends Component {
                                     ):""
                                 }
                                 <Grid.Column className="content-column" width={16}>
-                                    <Grid.Row style={style.button}>
-                                        <Button style={style.buttonColor} onClick={this.handleButtonClick}>
-                                            <Icon name="bars"/>
-                                        </Button>
+                                    <Grid.Row style={style.styleMobileHeader}>
+                                        <div style={style.styleMobileHeaderButton} onClick={this.handleButtonClick}>
+                                            <Icon size="large" style={{color: "#fff"}} name="bars"/>
+                                        </div>
+                                        <h3 style={style.styleMobileHeaderTitle}>MET</h3>
                                     </Grid.Row>
                                     <BookingForm isMobile={this.state.screenSize} bookingID={this.props.bookingID} />
                                 </Grid.Column>

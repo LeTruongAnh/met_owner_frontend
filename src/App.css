@@ -1,6 +1,9 @@
 body * {
 	font-family: roboto;
 }
+.header {
+	font-family: roboto !important;
+}
 button {
 	font-family: roboto !important;
 }
@@ -44,11 +47,14 @@ button {
 	color: #f15a26;
 }
 .err-span {
-	position: relative;
+	position: absolute;
 	float: left;
 	font-size: 10px;
 	font-weight: bold;
 	color: #ed1c24;
+}
+::placeholder {
+	font-family: roboto;
 }
 .react-datepicker-wrapper, .react-datepicker__input-container {
 	width: 100%;
@@ -111,6 +117,9 @@ button {
 .button-column button {
 	padding: 2px !important;
 	background-color: #006838 !important;
+}
+input, select {
+	font-family: roboto !important;
 }
 .content-column {
 	padding-top: 14px;
