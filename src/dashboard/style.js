@@ -484,5 +484,9 @@ module.exports = {
 	},
 	styleHeaderBreadcrumb: {
 		backgroundColor: "#f2f2f2"
+	},
+	styleIconOpenModal: {
+		color: "#006836",
+		cursor: "pointer"
 	}
 }

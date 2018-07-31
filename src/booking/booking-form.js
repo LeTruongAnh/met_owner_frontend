@@ -5,6 +5,7 @@ import axios from 'axios'
 import config from '../config.js'
 import style from '../dashboard/style.js'
 import CountDownTime from './count-down-time'
+import BookingHistoryDetail from './booking-history-detail'
 
 class BookingForm extends Component {
     constructor(props) {
@@ -13,18 +14,19 @@ class BookingForm extends Component {
             screenSize: window.innerWidth,
             token: (localStorage.getItem('MET_userInfo'))?JSON.parse(localStorage.getItem('MET_userInfo')).token:"",
             bookingInfo: [],
-            bookingHistoryPayment: [],
+            bookingPayment: [],
             creator: {},
             loading: true,
             approved: false,
             canceled: false,
-            loadingPayment: true,
-            loadingBookingDetail: true,
             note: "",
-            amount: 0,
+            amount: "",
             errAmount: "",
             loadingBut: false,
-            openModal: false
+            loadingUpdateBut: false,
+            openModal: false,
+            openUpdateModal: false,
+            openHistoryModal: false
         }
     }
     componentDidMount = () => {
@@ -34,11 +36,7 @@ class BookingForm extends Component {
         })
         .then((response) => {
             this.setState({ 
-                bookingHistoryPayment: response.data.items,
-                loadingPayment: false
-            }, () => {
-                if (!this.state.loadingPayment && !this.state.loadingBookingDetail)    
-                    this.setState({ loading: false })
+                bookingPayment: response.data.items
             })
         })
         .catch((error) => {
@@ -50,16 +48,26 @@ class BookingForm extends Component {
         .then((response) => {
             this.setState({ 
                 bookingInfo: response.data,
-                creator: response.data.creator,
-                loadingBookingDetail: false
-            }, () => {
-                if (!this.state.loadingPayment && !this.state.loadingBookingDetail)    
-                    this.setState({ loading: false })
-            })
+                creator: response.data.creator
+            }, () => this.setState({ loading: false }))
         })
         .catch((error) => {
             console.log(error)
         })
+    }
+    handleTimeString = (date_created) => {
+        let today = new Date(date_created)
+        let months = ['01','02','03','04','05','06','07','08','09','10','11','12']
+        let days = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy']
+        let year = today.getFullYear()
+        let month = months[today.getMonth()]
+        let date = (today.getDate() < 10)?("0" + today.getDate()):today.getDate()
+        let day = days[today.getDay()]
+        let hour = today.getHours()
+        let min = today.getMinutes()
+        let second = today.getSeconds()
+        let time = day + ", " + date + "/" + month + "/" + year + ", " + hour + ":" + min + ":" + second
+        return time
     }
     detectScreenChange = () => {
         this.setState({ screenSize: window.innerWidth })
@@ -84,6 +92,7 @@ class BookingForm extends Component {
         return time
     }
     handleAccept = () => {
+        this.setState({ loading: true })
         axios.post(`${config.apiBaseURL}/api/booking/${this.props.bookingID}/approve`, {}, {
             'headers': {
                 'Authorization': this.state.token,
@@ -91,10 +100,24 @@ class BookingForm extends Component {
             }
         })
         .then((response) => {
+            axios.get(`${config.apiBaseURL}/api/booking/${this.props.bookingID}`, {
+                'headers': {'Authorization': this.state.token}
+            })
+            .then((response) => {
+                this.setState({ 
+                    bookingInfo: response.data,
+                    creator: response.data.creator
+                }, () => this.setState({ loading: false }))
+            })
+            .catch((error) => {
+                console.log(error)
+                this.setState({ loading: false })
+            })
             this.setState({ approved: true })
         })
         .catch((error) => {
             console.log(error)
+            this.setState({ loading: false })
         })
     }
     handleCancel = () => {
@@ -105,10 +128,24 @@ class BookingForm extends Component {
             }
         })
         .then((response) => {
+            axios.get(`${config.apiBaseURL}/api/booking/${this.props.bookingID}`, {
+                'headers': {'Authorization': this.state.token}
+            })
+            .then((response) => {
+                this.setState({ 
+                    bookingInfo: response.data,
+                    creator: response.data.creator
+                }, () => this.setState({ loading: false }))
+            })
+            .catch((error) => {
+                console.log(error)
+                this.setState({ loading: false })
+            })
             this.setState({ canceled: true })
         })
         .catch((error) => {
             console.log(error)
+            this.setState({ loading: false })
         })
     }
     renderButton = () => {
@@ -177,10 +214,13 @@ class BookingForm extends Component {
     handlePay = () => {
         this.setState({ openModal: true })
     }
+    handleUpdatePay = () => {
+        this.setState({ openUpdateModal: true })
+    }
     handleSubmit = () => {
         this.setState({ loadingBut: true })
         let isOK = true
-        if (this.state.amount === "") {
+        if (this.state.amount === "" || (this.state.amount <= 0)) {
             this.setState({ errAmount: "Nhập số tiền thanh toán"})
             isOK = false
         }
@@ -188,65 +228,117 @@ class BookingForm extends Component {
             this.setState({ errAmount: ""})
         }
         if (isOK) {
-            if (this.state.bookingHistoryPayment.length > 0) {
-                axios.put(`${config.apiBaseURL}/api/booking/payment/${this.state.bookingHistoryPayment[0].id}`, {
-                    "note": this.state.note,
-                    "amount": parseInt(this.state.amount, 10)
-                }, {
-                    'headers': {
-                        'Authorization': this.state.token,
-                        'Content-Type': "application/json"
-                    }
+            axios.post(`${config.apiBaseURL}/api/booking/${this.props.bookingID}/deposit`, {
+                "note": this.state.note,
+                "amount": parseInt(this.state.amount, 10)
+            }, {
+                'headers': {
+                    'Authorization': this.state.token,
+                    'Content-Type': "application/json"
+                }
+            })
+            .then((response) => {
+                axios.get(`${config.apiBaseURL}/api/booking/${this.props.bookingID}/payment`, {
+                    'headers': {'Authorization': this.state.token}
                 })
                 .then((response) => {
-                    let bookingHistoryPayment = this.state.bookingHistoryPayment
-                    bookingHistoryPayment.already_paid = parseInt(this.state.amount, 10)
-                    this.setState({
+                    this.setState({ 
+                        bookingPayment: response.data.items,
                         loadingBut: false,
-                        amount: 0,
+                        amount: "",
                         note: "",
-                        errAmount: "Thanh toán thành công!",
-                        bookingHistoryPayment: bookingHistoryPayment
-                    }, ()=>window.location.reload())
-                })
-                .catch((error) => {
-                    console.log(error.response.data)
-                    this.setState({
-                        loadingBut: false,
-                        errAmount: error.response.data.message
+                        errAmount: "Thanh toán thành công!"
                     })
-                })
-            }
-            else {
-                axios.post(`${config.apiBaseURL}/api/booking/${this.props.bookingID}/deposit`, {
-                    "note": this.state.note,
-                    "amount": parseInt(this.state.amount, 10)
-                }, {
-                    'headers': {
-                        'Authorization': this.state.token,
-                        'Content-Type': "application/json"
-                    }
-                })
-                .then((response) => {
-                    let bookingHistoryPayment = this.state.bookingHistoryPayment
-                    bookingHistoryPayment.already_paid = parseInt(this.state.amount, 10)
-                    this.setState({
-                        loadingBut: false,
-                        amount: 0,
-                        note: "",
-                        errAmount: "Thanh toán thành công!",
-                        bookingHistoryPayment: bookingHistoryPayment
-                    }, ()=>window.location.reload())
                 })
                 .catch((error) => {
                     this.setState({
-                        loadingBut: false,
-                        errAmount: error.response.data.message
+                        loadingBut: false
                     })
                 })
-            }
+                axios.get(`${config.apiBaseURL}/api/booking/${this.props.bookingID}`, {
+                    'headers': {'Authorization': this.state.token}
+                })
+                .then((response) => {
+                    this.setState({ 
+                        bookingInfo: response.data,
+                        creator: response.data.creator
+                    }, () => this.setState({ loading: false }))
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+            })
+            .catch((error) => {
+                this.setState({
+                    loadingBut: false,
+                    errAmount: error.response.data.message
+                })
+            })
         }
 
+    }
+    handleUpdateSubmit = (numID) => {
+        this.setState({ loadingUpdateBut: true })
+        let isOK = true
+        if (this.state.amount === "" || (this.state.amount <= 0)) {
+            this.setState({ errAmount: "Nhập số tiền thanh toán"})
+            isOK = false
+        }
+        else {
+            this.setState({ errAmount: ""})
+        }
+        if (isOK) {
+            axios.put(`${config.apiBaseURL}/api/booking/payment/${numID}`, {
+                "note": this.state.note,
+                "amount": parseInt(this.state.amount, 10)
+            }, {
+                'headers': {
+                    'Authorization': this.state.token,
+                    'Content-Type': "application/json"
+                }
+            })
+            .then((response) => {
+                axios.get(`${config.apiBaseURL}/api/booking/${this.props.bookingID}/payment`, {
+                    'headers': {'Authorization': this.state.token}
+                })
+                .then((response) => {
+                    this.setState({ 
+                        bookingPayment: response.data.items,
+                        loadingUpdateBut: false,
+                        amount: "",
+                        note: "",
+                        errAmount: "Cập nhật thành công!"
+                    })
+                })
+                .catch((error) => {
+                    this.setState({
+                        loadingUpdateBut: false,
+                        errAmount: error.response.data.message
+                    })
+                })
+                axios.get(`${config.apiBaseURL}/api/booking/${this.props.bookingID}`, {
+                    'headers': {'Authorization': this.state.token}
+                })
+                .then((response) => {
+                    this.setState({ 
+                        bookingInfo: response.data,
+                        creator: response.data.creator
+                    }, () => this.setState({ loading: false }))
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+            })
+            .catch((error) => {
+                this.setState({
+                    loadingUpdateBut: false,
+                    errAmount: error.response.data.message
+                })
+            })
+        }
+    }
+    handleViewHistory = () => {
+        this.setState({ openHistoryModal: true })
     }
     handleCloseModal = () => {
         this.setState({
@@ -254,129 +346,171 @@ class BookingForm extends Component {
             errAmount: ""
         })
     }
-    handletest=()=>{
-        console.log(this.state.status)
+    handleCloseUpdateModal = () => {
+        this.setState({
+            openUpdateModal: false,
+            errAmount: ""
+        })
+    }
+    handleCloseHistoryModal = () => {
+        this.setState({
+            openHistoryModal: false
+        })
     }
     render() {
-        if (!this.state.loading) {
-            return (
-                <Grid style={style.marginTotal0px} className="stadium-grid">
-                    <Grid.Column textAlign="left" style={style.styleHeaderBreadcrumb} width={16}>
-                        <Breadcrumb size="small">
-                            <Link style={style.styleLinkBreadcrumb} to="/booking">Quản lý đặt sân</Link>
-                            <Breadcrumb.Divider />
-                            <Breadcrumb.Section active>{this.props.bookingID}</Breadcrumb.Section>
-                        </Breadcrumb>
-                    </Grid.Column>
-                    <Grid.Row><h3 style={style.marginTotal14px}>Thông tin đặt sân</h3></Grid.Row>
-                    <Grid.Row style={style.marginTotal14px} centered={true}>
-                        <Segment style={(this.props.isMobile)?style.fullWidth:style.width400px}>
-                            <Form style={style.styleBookingForm} loading={this.state.loading} className="format-form">
-                                <Form.Field className="detail-form-booking" style={style.flexCenter}>
-                                    <label style={style.styleInputBookingDetail}>Mã đặt sân</label>
-                                    <Form.Input>{this.state.bookingInfo.id}</Form.Input>
-                                </Form.Field>
-                                <Form.Field className="detail-form-booking" style={style.flexCenter}>
-                                    <label style={style.styleInputBookingDetail}>Số điện thoại</label>
-                                    <Form.Input>{this.state.creator.phone}</Form.Input>
-                                </Form.Field>
-                                <Form.Field className="detail-form-booking" style={style.flexCenter}>
-                                    <label style={style.styleInputBookingDetail}>Sân con</label>
-                                    <Form.Input>{this.state.bookingInfo.sc_name}</Form.Input>
-                                </Form.Field>
-                                <Form.Field className="detail-form-booking" style={style.flexCenter}>
-                                    <label style={style.styleInputBookingDetail}>Ngày đá</label>
-                                    <Form.Input>{this.dateConverter(this.state.bookingInfo.date_started)}</Form.Input>
-                                </Form.Field>
-                                <Form.Field className="detail-form-booking" style={style.flexCenter}>
-                                    <label style={style.styleInputBookingDetail}>Giờ đá</label>
-                                    <Form.Input>{this.timeConverter(this.state.bookingInfo.date_started,this.state.bookingInfo.date_ended)}</Form.Input>
-                                </Form.Field>
-                                <Form.Field className="detail-form-booking" style={style.flexCenter}>
-                                    <label style={style.styleInputBookingDetail}>Trạng thái</label>
-                                    <Form.Input style={this.handleStyleBookingStatus()}>
-                                        {this.handleBookingStatus(this.state.bookingInfo.status)}
-                                    </Form.Input>
-                                </Form.Field>
-                                <Form.Field className="detail-form-booking" style={style.flexCenter}>
-                                    <label style={style.styleInputBookingDetail}>Giá</label>
-                                    <Form.Input>{(!this.state.loading)?this.handleBookingMoney(this.state.bookingInfo.price):""}</Form.Input>
-                                </Form.Field>
-                                <Form.Field className="detail-form-booking" style={style.flexCenter}>
-                                    <label style={style.styleInputBookingDetail}>Đã thanh toán</label>
-                                    <Form.Input>{(!this.state.loading)?this.handleBookingMoney(this.state.bookingInfo.already_paid):""}</Form.Input>
-                                </Form.Field>
-                            </Form>
+        return (
+            <Grid style={style.marginTotal0px} className="stadium-grid">
+                <Grid.Column textAlign="left" style={style.styleHeaderBreadcrumb} width={16}>
+                    <Breadcrumb size="small">
+                        <Link style={style.styleLinkBreadcrumb} to="/booking">Quản lý đặt sân</Link>
+                        <Breadcrumb.Divider />
+                        <Breadcrumb.Section active>{this.props.bookingID}</Breadcrumb.Section>
+                    </Breadcrumb>
+                </Grid.Column>
+                <Grid.Row><h3 style={style.marginTotal14px}>Thông tin đặt sân</h3></Grid.Row>
+                <Grid.Row style={style.marginTotal14px} centered={true}>
+                    <Segment style={(this.props.isMobile)?style.fullWidth:style.width400px}>
+                        <Form style={style.styleBookingForm} loading={this.state.loading} className="format-form">
+                            <Form.Field className="detail-form-booking" style={style.flexCenter}>
+                                <label style={style.styleInputBookingDetail}>Mã đặt sân</label>
+                                <Form.Input>{this.state.bookingInfo.id}</Form.Input>
+                            </Form.Field>
+                            <Form.Field className="detail-form-booking" style={style.flexCenter}>
+                                <label style={style.styleInputBookingDetail}>Số điện thoại</label>
+                                <Form.Input>{this.state.creator.phone}</Form.Input>
+                            </Form.Field>
+                            <Form.Field className="detail-form-booking" style={style.flexCenter}>
+                                <label style={style.styleInputBookingDetail}>Sân con</label>
+                                <Form.Input>{this.state.bookingInfo.sc_name}</Form.Input>
+                            </Form.Field>
+                            <Form.Field className="detail-form-booking" style={style.flexCenter}>
+                                <label style={style.styleInputBookingDetail}>Ngày đá</label>
+                                <Form.Input>{this.dateConverter(this.state.bookingInfo.date_started)}</Form.Input>
+                            </Form.Field>
+                            <Form.Field className="detail-form-booking" style={style.flexCenter}>
+                                <label style={style.styleInputBookingDetail}>Giờ đá</label>
+                                <Form.Input>{this.timeConverter(this.state.bookingInfo.date_started,this.state.bookingInfo.date_ended)}</Form.Input>
+                            </Form.Field>
+                            <Form.Field className="detail-form-booking" style={style.flexCenter}>
+                                <label style={style.styleInputBookingDetail}>Trạng thái</label>
+                                <Form.Input style={this.handleStyleBookingStatus()}>
+                                    {this.handleBookingStatus(this.state.bookingInfo.status)}
+                                </Form.Input>
+                            </Form.Field>
+                            <Form.Field className="detail-form-booking" style={style.flexCenter}>
+                                <label style={style.styleInputBookingDetail}>Giá</label>
+                                <Form.Input>{(!this.state.loading)?this.handleBookingMoney(this.state.bookingInfo.price):""}</Form.Input>
+                            </Form.Field>
+                            <Form.Field className="detail-form-booking" style={style.flexCenter}>
+                                <label style={style.styleInputBookingDetail}>Đã thanh toán</label>
+                                <Form.Input>{(!this.state.loading)?this.handleBookingMoney(this.state.bookingInfo.already_paid):""}</Form.Input>
+                            </Form.Field>
+                        </Form>
+                        {
+                            this.renderButton()
+                        }
+                    </Segment>
+                </Grid.Row>
+                {
+                    ((this.state.bookingInfo.status === 2) || (this.state.bookingInfo.status === 7))?(
+                        <Grid.Row><h3 style={style.marginTotal14px}>Lịch sử thanh toán</h3></Grid.Row>
+                    ):""
+                }
+                {
+                    ((this.state.bookingInfo.status === 2) || (this.state.bookingInfo.status === 7))?(
+                        <Grid.Row>
+                            <Grid.Column textAlign="left" width={16}>
+                                <Modal open={this.state.openModal} basic trigger={
+                                    <Button style={style.paginationActive} onClick={this.handlePay}>Thanh toán</Button>
+                                }>
+                                    <Modal.Content style={style.flexCenter}>
+                                        <Form onSubmit={this.handleSubmit} className="format-form login-form ">
+                                            <Icon onClick={() => this.handleCloseModal()} name="close" size="large" style={style.styleRTCloseIcon}/>
+                                            <Form.Field style={style.flexCenter}>
+                                                <span style={{color: "#000"}} className="title-span">THANH TOÁN</span>                     
+                                            </Form.Field>
+                                            <Form.Field>
+                                                <span style={style.stylePayMessage}>{this.state.errAmount}</span>
+                                                <Form.Input value={this.state.amount} name="amount" type="number" onChange={this.handleChange} placeholder='Số tiền'/>
+                                            </Form.Field>
+                                            <Form.Field>
+                                                <Form.Input value={this.state.note} name="note" onChange={this.handleChange} placeholder='Ghi chú'/>
+                                            </Form.Field>
+                                            <Form.Field>
+                                                <Button loading={this.state.loadingBut} className="form-but" type='submit'>Thanh toán</Button>
+                                            </Form.Field>
+                                        </Form>
+                                    </Modal.Content>
+                                </Modal>
+                            </Grid.Column>
                             {
-                                this.renderButton()
+                                (this.state.bookingPayment.length > 0)?(
+                                    <Grid.Column style={style.marginTopBot} width={16}>
+                                        <Table celled striped unstackable={true}>
+                                            <Table.Header>
+                                                <Table.Row>
+                                                    <Table.HeaderCell>Thời gian</Table.HeaderCell>
+                                                    <Table.HeaderCell>Số tiền</Table.HeaderCell>
+                                                    <Table.HeaderCell>Ghi chú</Table.HeaderCell>
+                                                    <Table.HeaderCell textAlign="center"></Table.HeaderCell>
+                                                </Table.Row>
+                                            </Table.Header>
+                                            <Table.Body>
+                                            {
+                                                this.state.bookingPayment.map((x, index) => {
+                                                    return (
+                                                        <Table.Row key={index}>
+                                                            <Table.Cell>{this.handleTimeString(x.date_created)}</Table.Cell>
+                                                            <Table.Cell>{x.amount}</Table.Cell>
+                                                            <Table.Cell>{x.note}</Table.Cell>
+                                                            <Table.Cell textAlign="center">
+                                                                <Button.Group>
+                                                                    <Modal open={this.state.openHistoryModal} basic trigger={
+                                                                        <Button style={{backgroundColor: "#f15a26", color: "#fff"}} onClick={this.handleViewHistory}>Lịch sử</Button>
+                                                                    }>
+                                                                        <Modal.Content style={style.flexCenter}>
+                                                                            <Icon onClick={() => this.handleCloseHistoryModal()} name="close" size="large" style={style.styleRTCloseIcon}/>
+                                                                            <BookingHistoryDetail lst={x.history} />
+                                                                        </Modal.Content>
+                                                                    </Modal>
+                                                                    <Modal open={this.state.openUpdateModal} basic trigger={
+                                                                        <Button style={{backgroundColor: "#ed1c24", color: "#fff"}} onClick={this.handleUpdatePay}>Cập nhật</Button>
+                                                                    }>
+                                                                        <Modal.Content style={style.flexCenter}>
+                                                                            <Form className="format-form login-form ">
+                                                                                <Icon onClick={() => this.handleCloseUpdateModal()} name="close" size="large" style={style.styleRTCloseIcon}/>
+                                                                                <Form.Field style={style.flexCenter}>
+                                                                                    <span style={{color: "#000"}} className="title-span">Cập nhật</span>                     
+                                                                                </Form.Field>
+                                                                                <Form.Field>
+                                                                                    <span style={style.stylePayMessage}>{this.state.errAmount}</span>
+                                                                                    <Form.Input value={this.state.amount} name="amount" type="number" onChange={this.handleChange} placeholder='Số tiền'/>
+                                                                                </Form.Field>
+                                                                                <Form.Field>
+                                                                                    <Form.Input value={this.state.note} name="note" onChange={this.handleChange} placeholder='Ghi chú'/>
+                                                                                </Form.Field>
+                                                                                <Form.Field>
+                                                                                    <Button onClick={() => this.handleUpdateSubmit(x.id)} loading={this.state.loadingUpdateBut} className="form-but" type='submit'>Cập nhật</Button>
+                                                                                </Form.Field>
+                                                                            </Form>
+                                                                        </Modal.Content>
+                                                                    </Modal>
+                                                                </Button.Group>
+                                                            </Table.Cell>
+                                                        </Table.Row>
+                                                    )
+                                                })
+                                            }
+                                            </Table.Body>
+                                        </Table>
+                                    </Grid.Column>
+                                ):""
                             }
-                        </Segment>
-                    </Grid.Row>
-                    {
-                        ((this.state.bookingInfo.status === 2) || (this.state.bookingInfo.status === 7))?(
-                            <Grid.Row><h3 style={style.marginTotal14px}>Lịch sử thanh toán</h3></Grid.Row>
-                        ):""
-                    }
-                    {
-                        ((this.state.bookingInfo.status === 2) || (this.state.bookingInfo.status === 7))?(
-                            <Grid.Row>
-                                <Grid.Column textAlign="left" width={16}>
-                                    <Modal open={this.state.openModal} basic trigger={
-                                        <Button style={style.paginationActive} onClick={this.handlePay}>{(this.state.bookingHistoryPayment.length > 0)?"Cập nhật":"Thanh toán"}</Button>
-                                    }>
-                                        <Modal.Content style={style.flexCenter}>
-                                            <Form onSubmit={this.handleSubmit} className="format-form login-form ">
-                                                <Icon onClick={() => this.handleCloseModal()} name="close" size="large" style={style.styleRTCloseIcon}/>
-                                                <Form.Field style={style.flexCenter}>
-                                                    <span style={{color: "#000"}} className="title-span">THANH TOÁN</span>                     
-                                                </Form.Field>
-                                                <Form.Field>
-                                                    <span style={style.stylePayMessage}>{this.state.errAmount}</span>
-                                                    <Form.Input value={this.state.amount} name="amount" type="number" min={0} onChange={this.handleChange} placeholder='Số tiền'/>
-                                                </Form.Field>
-                                                <Form.Field>
-                                                    <Form.Input value={this.state.note} name="note" onChange={this.handleChange} placeholder='Ghi chú'/>
-                                                </Form.Field>
-                                                <Form.Field>
-                                                    <Button loading={this.state.loadingBut} className="form-but" type='submit'>{(this.state.bookingHistoryPayment.length > 0)?"Cập nhật":"Thanh toán"}</Button>
-                                                </Form.Field>
-                                            </Form>
-                                        </Modal.Content>
-                                    </Modal>
-                                </Grid.Column>
-                                {
-                                    (this.state.bookingHistoryPayment.length > 0)?(
-                                        <Grid.Column style={style.marginTopBot} width={16}>
-                                            <Table celled striped unstackable={true}>
-                                                <Table.Header>
-                                                    <Table.Row>
-                                                        <Table.HeaderCell>Số tiền</Table.HeaderCell>
-                                                        <Table.HeaderCell>Ghi chú</Table.HeaderCell>
-                                                    </Table.Row>
-                                                </Table.Header>
-                                                <Table.Body>
-                                                {
-                                                    this.state.bookingHistoryPayment.map(x => {
-                                                        return (
-                                                            <Table.Row key={x.id}>
-                                                                <Table.Cell>{x.amount}</Table.Cell>
-                                                                <Table.Cell>{x.note}</Table.Cell>
-                                                            </Table.Row>
-                                                        )
-                                                    })
-                                                }
-                                                </Table.Body>
-                                            </Table>
-                                        </Grid.Column>
-                                    ):""
-                                }
-                            </Grid.Row>
-                        ):""
-                    }
-                </Grid>
-            )
-        }
-        else return ""
+                        </Grid.Row>
+                    ):""
+                }
+            </Grid>
+        )
     }
 }
 
