@@ -24,34 +24,42 @@ class StadiumImage extends Component {
 		document.getElementById('input-image').click()
 	}
 	handleAddImage = (selectorFiles) => {
-		var file = selectorFiles[0];
-		var reader = new FileReader();
-		this.setState( {loading: true} )
-		reader.onloadend = () => {
-			axios.post(`${config.apiBaseURL}/api/user/upload`, {
-				"image": reader.result,
-				"stadiumID": this.state.userInfo.default_stadium_id
-			}, {
-				'headers': {
-					'Authorization': this.state.userInfo.token,
-					'Content-Type': 'application/json'
-				}
-			})
-			.then((response) => {
-				console.log(response.data)
-				let lst = [...this.state.imageList, response.data.url]
-				this.props.handleAddImage(lst)
+		if (selectorFiles.length > 0) {
+			if (selectorFiles[0].name.endsWith(".gif") || selectorFiles[0].name.endsWith(".jpg") || selectorFiles[0].name.endsWith(".jpeg") || selectorFiles[0].name.endsWith(".tiff") || selectorFiles[0].name.endsWith(".png")) {
 				this.setState({
-					imageList: lst,
-					loading: false
+					errAddImage: ""
 				})
-			})
-			.catch((error) => {
-				console.log(error)
 				this.setState( {loading: true} )
-			})
+				var file = selectorFiles[0]
+				var reader = new FileReader()
+				reader.onloadend = () => {
+					axios.post(`${config.apiBaseURL}/api/stadium/upload`, {
+						"image": reader.result,
+						"stadiumID": this.state.userInfo.default_stadium_id
+					}, {
+						'headers': {
+							'Authorization': this.state.userInfo.token,
+							'Content-Type': 'application/json'
+						}
+					})
+					.then((response) => {
+						console.log(response.data)
+						let lst = [...this.state.imageList, response.data.url]
+						this.props.handleAddImage(lst)
+						this.setState({
+							imageList: lst,
+							loading: false,
+							errAddImage: ""
+						})
+					})
+					.catch((error) => {
+						console.log(error)
+						this.setState( {loading: false} )
+					})
+				}
+				reader.readAsDataURL(file)
+			}
 		}
-		reader.readAsDataURL(file)
 	}
 	handleClickImage = (event) => {
 		let srcSelect = event.target.getAttribute('link')
