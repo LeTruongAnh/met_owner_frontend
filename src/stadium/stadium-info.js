@@ -18,7 +18,6 @@ class StadiumInfo extends Component {
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
 			stadiumData: {},
 			cityList: [],
-			imageList: [],
 			loading: true,
 			managerList: [],
 			stadiumChild: [],
@@ -58,9 +57,6 @@ class StadiumInfo extends Component {
 			activeIndex: data.activeIndex
 		})
 	}
-	handleAddImage = (lst) => {
-		this.setState({ imageList: lst})
-	}
 	fetchData = () => {
 		let loading1 = true
 		let loading2 = true
@@ -70,8 +66,7 @@ class StadiumInfo extends Component {
 		})
 		.then((response) => {
 			this.setState({
-				stadiumData: response.data,
-				imageList: response.data.image_list.filter((x) => x.includes("_thumbnail.jpg"))
+				stadiumData: response.data
 			}, () => {
 				loading1 = false
 				if (!loading1 && !loading2 && !loading3) this.setState({ loading: false })
@@ -155,11 +150,9 @@ class StadiumInfo extends Component {
 								},
 								{ menuItem: (this.state.screenSize >= 768)?'Hình ảnh sân':'Hình ảnh', render: () => <Tab.Pane className="detail-stadium" attached={false}>
 									<StadiumImage
-										handleAddImage={this.handleAddImage}
 										handleImageChange={this.handleImageChange}
 										handleBgImageChange={this.handleBgImageChange}
 										numberImageChange={this.state.numberImageChange}
-										imageList={this.state.imageList}
 										handleTabForm={this.handleTabForm}
 									/></Tab.Pane>
 								},

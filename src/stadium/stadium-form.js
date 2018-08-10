@@ -111,18 +111,6 @@ class StadiumForm extends Component {
 			console.log(error)
 		})
 	}
-	handleMouseOverIconLogo = () => {
-		this.setState({ styleIconChangeLogo: style.changeImageHover })
-	}
-	handleMouseOutIconLogo = () => {
-		this.setState({ styleIconChangeLogo: style.changeImage })
-	}
-	handleMouseOverIconCover = () => {
-		this.setState({ styleIconChangeCover: style.changeImageHover })
-	}
-	handleMouseOutIconCover = () => {
-		this.setState({ styleIconChangeCover: style.changeImage })
-	}
 	render() {
 		let styleColLogoImage = Object.assign({}, style.styleColLogoImage)
 		styleColLogoImage.backgroundImage = `url('${this.state.logoImage}')`
@@ -156,8 +144,7 @@ class StadiumForm extends Component {
 									<div style={style.width30}>
 										<div style={style.styleLabelDiv}><label>Logo sân</label></div>
 										<div style={styleColLogoImage}>
-											<div onMouseOver={this.handleMouseOverIconLogo} onMouseOut={this.handleMouseOutIconLogo}
-											style={this.state.styleIconChangeLogo}
+											<div style={style.changeImageHover}
 											onClick={() => this.props.handleTabImage(1)}>
 												<Icon name="photo" size="large" />
 											</div>
@@ -166,8 +153,7 @@ class StadiumForm extends Component {
 									<div style={style.width70}>
 										<div style={style.styleLabelDiv}><label>Ảnh nền sân</label></div>
 										<div style={styleColBgImage}>
-											<div onMouseOver={this.handleMouseOverIconCover} onMouseOut={this.handleMouseOutIconCover}
-											style={this.state.styleIconChangeCover} onClick={() => this.props.handleTabImage(2)}>
+											<div style={style.changeImageHover} onClick={() => this.props.handleTabImage(2)}>
 												<Icon name="photo" size="large" />
 											</div>
 										</div>
@@ -218,14 +204,14 @@ class StadiumForm extends Component {
 							<Form style={style.styleStadiumForm} loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
 								<label style={style.styleLabelDivMobile}>Logo sân</label>
 								<Form.Field style={style.styleFieldLogoCoverChange}>
-									<div style={this.state.styleIconChangeLogo} onClick={() => this.props.handleTabImage(1)}>
+									<div style={style.changeImageHover} onClick={() => this.props.handleTabImage(1)}>
 										<Icon name="photo" size="large" />
 									</div>
 									<Image src={this.state.logoImage} onClick={() => this.props.handleTabImage(1)} />
 								</Form.Field>
 								<label style={style.styleLabelDivMobile}>Ảnh nền sân</label>
 								<Form.Field style={style.styleFieldLogoCoverChange}>
-									<div onMouseOver={this.handleMouseOverIconCover} onMouseOut={this.handleMouseOutIconCover} style={this.state.styleIconChangeCover} onClick={() => this.props.handleTabImage(2)}>
+									<div style={style.changeImageHover} onClick={() => this.props.handleTabImage(2)}>
 										<Icon name="photo" size="large" />
 									</div>
 									<Image src={this.state.bgImage} onClick={() => this.props.handleTabImage(2)} />

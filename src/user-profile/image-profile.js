@@ -96,7 +96,8 @@ class StadiumImage extends Component {
 							let styleImageStadium = Object.assign({}, style.styleImageStadium)
 							let styleCol = {
 								marginBottom: "14px",
-								height: "auto"
+								height: "auto",
+								position: "relative"
 							}
 							if (this.state.screenSize > 1024)
 								if (localStorage.getItem("isExpand") === "true") styleCol.height = "calc(((81.25vw - 56px) / 6) - 28px)"
@@ -106,57 +107,39 @@ class StadiumImage extends Component {
 								else styleCol.height = "calc(((87.5vw - 56px) / 6) - 28px)"
 							else styleCol.height = "calc(((100vw - 28px) / 2) - 28px)"
 							styleImageStadium.backgroundImage = `url('${x}')`
-							let styleImageStadiumSelect = Object.assign({}, styleImageStadium)
-							styleImageStadiumSelect.border = `2px solid #006838`
-							return (
-								<Grid.Column style={styleCol} key={index}>
-									<Modal centered={false} closeIcon={true} trigger={
-											<div style={(this.props.isImageChange)?style.styleExternalIconDivRT:style.styleExternalIconDivCenter}>
-												<Icon style={style.detailLink} size={(this.props.isImageChange)?"":"large"} name="external"/>
-											</div>
-										}>
-										<Modal.Content>
-											<Image style={{margin: "auto"}} src={x} />
-										</Modal.Content>
-									</Modal>
-									<div link={x} onClick={this.handleClickImage}
-									style={(x === this.state.srcSelect)?styleImageStadiumSelect:styleImageStadium}></div>
-								</Grid.Column>
-							)
-						})
-					}
-					{
-						this.state.imageList.map((x, index) => {
-							let styleImageStadium = Object.assign({}, style.styleImageStadium)
-							let styleCol = {
-								marginBottom: "14px",
-								height: "auto"
+							if (!this.props.isImageChange) {
+								styleImageStadium.cursor = "pointer"
+								return (
+									<Grid.Column style={styleCol} key={index}>
+										<Modal centered={false} closeIcon={true} trigger={
+												<div link={x} style={styleImageStadium}></div>
+											}>
+											<Modal.Content>
+												<Image style={style.marginAuto} src={x} />
+											</Modal.Content>
+										</Modal>
+									</Grid.Column>
+								)
 							}
-							if (this.state.screenSize > 1024)
-								if (localStorage.getItem("isExpand") === "true") styleCol.height = "calc(((81.25vw - 56px) / 6) - 28px)"
-								else styleCol.height = "calc(((93.75vw - 56px) / 6) - 28px)"
-							else if (this.state.screenSize >= 768)
-								if (localStorage.getItem("isExpand") === "true") styleCol.height = "calc(((75vw - 56px) / 6) - 28px)"
-								else styleCol.height = "calc(((87.5vw - 56px) / 6) - 28px)"
-							else styleCol.height = "calc(((100vw - 28px) / 2) - 28px)"
-							styleImageStadium.backgroundImage = `url('${x}')`
-							let styleImageStadiumSelect = Object.assign({}, styleImageStadium)
-							styleImageStadiumSelect.border = `2px solid #006838`
-							return (
-								<Grid.Column style={styleCol} key={index}>
-									<Modal centered={false} closeIcon={true} trigger={
-											<div style={style.styleExternalIconDivRT}>
-												<Icon style={style.detailLink} name="external"/>
-											</div>
-										}>
-										<Modal.Content>
-											<Image style={{margin: "auto"}} src={x} />
-										</Modal.Content>
-									</Modal>
-									<div link={x} onClick={this.handleClickImage}
-									style={(x === this.state.srcSelect)?styleImageStadiumSelect:styleImageStadium}></div>
-								</Grid.Column>
-							)
+							else {
+								let styleImageStadiumSelect = Object.assign({}, styleImageStadium)
+								styleImageStadiumSelect.border = `2px solid #006838`
+								return (
+									<Grid.Column style={styleCol} key={index}>
+										<Modal centered={false} closeIcon={true} trigger={
+												<div style={style.styleExternalIconDivRT}>
+													<Icon style={style.detailLink} size="small" name="external"/>
+												</div>
+											}>
+											<Modal.Content>
+												<Image style={style.marginAuto} src={x} />
+											</Modal.Content>
+										</Modal>
+										<div link={x} onClick={this.handleClickImage}
+										style={(x === this.state.srcSelect)?styleImageStadiumSelect:styleImageStadium}></div>
+									</Grid.Column>
+								)
+							}
 						})
 					}
 				</Grid.Row>

@@ -184,29 +184,16 @@ module.exports = {
 		height: "150px",
 		opacity: "0.5"
 	},
-	changeImage: {
-		color: "#000",
-		position: "absolute",
-		top: "14px",
-		right: "14px",
-		zIndex: 2,
-		cursor: "pointer",
-		opacity: "0.3",
-		padding: "4px 6px",
-		borderRadius: "50%",
-		display: "flex",
-		justifyContent: "center"
-	},
 	changeImageHover: {
-		color: "#000",
+		color: "#d2d2d2",
 		position: "absolute",
 		top: "14px",
 		right: "14px",
 		zIndex: 2,
 		cursor: "pointer",
 		opacity: 1,
-		backgroundColor: "rgba(0,0,0,0.3)",
-		padding: "4px 6px",
+		backgroundColor: "rgba(0,0,0,0.5)",
+		padding: "4px 2.5px 4px 6px",
 		borderRadius: "2px",
 		display: "flex",
 		justifyContent: "center"
@@ -258,7 +245,8 @@ module.exports = {
 		backgroundRepeat: "no-repeat",
 		backgroundSize: "cover",
 		backgroundPosition: "center",
-		height: "100%"
+		height: "100%",
+		border: "0.5px solid rgba(0, 104, 56, 0.3)"
 	},
 	scrollX: {
 		overflowX: "scroll"
@@ -277,14 +265,6 @@ module.exports = {
 		position: "absolute",
 		top: 0,
 		right: "14px",
-		zIndex: 2,
-		cursor: "pointer",
-		opacity: 0.5
-	},
-	styleExternalIconDivCenter: {
-		position: "absolute",
-		top: 'calc(50% - 11px)',
-		right: 'calc(50% - 14px)',
 		zIndex: 2,
 		cursor: "pointer",
 		opacity: 0.5

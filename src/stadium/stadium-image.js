@@ -11,15 +11,24 @@ class StadiumImage extends Component {
 		this.state = {
 			screenSize: window.innerWidth,
 			userInfo: JSON.parse(localStorage.getItem('MET_userInfo')),
-			imageList: props.imageList || [],
+			imageList: [],
 			srcSelect: "",
 			loading: true,
 			errAddImage: ""
 		}
 	}
 	componentDidMount = () => {
-		this.setState({
-			loading:false
+		axios.get(`${config.apiBaseURL}/api/stadium/pictures?stadiumID=${this.state.userInfo.default_stadium_id}`)
+		.then(response => {
+			let imageList = response.data.filter(x => x.includes("_thumbnail.jpg"))
+			this.setState({
+				imageList: imageList,
+				loading: false
+			})
+		})
+		.catch(error => {
+			console.log(error)
+			this.setState({ loading: false })
 		})
 		window.addEventListener('resize', this.detectScreenChange)
 	}
@@ -51,7 +60,6 @@ class StadiumImage extends Component {
 					.then((response) => {
 						console.log(response.data)
 						let lst = [...this.state.imageList, response.data.url]
-						this.props.handleAddImage(lst)
 						this.setState({
 							imageList: lst,
 							loading: false,
@@ -123,23 +131,39 @@ class StadiumImage extends Component {
 								else styleCol.height = "calc(((87.5vw - 56px) / 6) - 28px)"
 							else styleCol.height = "calc(((100vw - 28px) / 2) - 28px)"
 							styleImageStadium.backgroundImage = `url('${x}')`
-							let styleImageStadiumSelect = Object.assign({}, styleImageStadium)
-							styleImageStadiumSelect.border = `2px solid #006838`
-							return (
-								<Grid.Column style={styleCol} key={index}>
-									<Modal centered={false} closeIcon={true} trigger={
-											<div style={(this.props.numberImageChange !== 0)?style.styleExternalIconDivRT:style.styleExternalIconDivCenter}>
-												<Icon style={style.detailLink} size={(this.props.numberImageChange === 0)?"large":""} name="external"/>
-											</div>
-										}>
-										<Modal.Content>
-											<Image style={style.marginAuto} src={x} />
-										</Modal.Content>
-									</Modal>
-									<div link={x} onClick={this.handleClickImage}
-									style={(x === this.state.srcSelect)?styleImageStadiumSelect:styleImageStadium}></div>
-								</Grid.Column>
-							)
+							if (this.props.numberImageChange === 0) {
+								styleImageStadium.cursor = "pointer"
+								return (
+									<Grid.Column style={styleCol} key={index}>
+										<Modal centered={false} closeIcon={true} trigger={
+												<div link={x} style={styleImageStadium}></div>
+											}>
+											<Modal.Content>
+												<Image style={style.marginAuto} src={x} />
+											</Modal.Content>
+										</Modal>
+									</Grid.Column>
+								)
+							}
+							else {
+								let styleImageStadiumSelect = Object.assign({}, styleImageStadium)
+								styleImageStadiumSelect.border = `2px solid #006838`
+								return (
+									<Grid.Column style={styleCol} key={index}>
+										<Modal centered={false} closeIcon={true} trigger={
+												<div style={style.styleExternalIconDivRT}>
+													<Icon style={style.detailLink} size="small" name="external"/>
+												</div>
+											}>
+											<Modal.Content>
+												<Image style={style.marginAuto} src={x} />
+											</Modal.Content>
+										</Modal>
+										<div link={x} onClick={this.handleClickImage}
+										style={(x === this.state.srcSelect)?styleImageStadiumSelect:styleImageStadium}></div>
+									</Grid.Column>
+								)
+							}
 						})
 					}
 				</Grid.Row>

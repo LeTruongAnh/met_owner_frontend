@@ -93,15 +93,6 @@ class StadiumForm extends Component {
 			<input style={style.fullWidth}></input>
 		)
 	}
-	openImageChangeAvatar = () => {
-		this.props.handleTabImage()
-	}
-	handleMouseOverIconLogo = () => {
-		this.setState({ styleIconChangeLogo: style.changeImageHover })
-	}
-	handleMouseOutIconLogo = () => {
-		this.setState({ styleIconChangeLogo: style.changeImage })
-	}
 	render() {
 		let styleColLogoImage = Object.assign({}, style.styleColLogoImage)
 		styleColLogoImage.backgroundImage = `url('${this.state.avatar}')`
@@ -129,10 +120,8 @@ class StadiumForm extends Component {
 									<div style={style.width30}>
 										<div style={style.styleLabelDiv}><label>Avatar</label></div>
 										<div style={styleColLogoImage}>
-											<div onMouseOver={this.handleMouseOverIconLogo} onMouseOut={this.handleMouseOutIconLogo}
-											style={this.state.styleIconChangeLogo}
-											onClick={() => this.props.handleTabImage(1)}>
-												<Icon name="photo" size="large" />
+											<div style={style.changeImageHover} onClick={() => this.props.handleTabImage(1)}>
+												<Icon className="margin-right-reduce" name="photo" size="large" />
 											</div>
 										</div>
 									</div>
@@ -171,8 +160,8 @@ class StadiumForm extends Component {
 							<Form style={style.styleStadiumForm} loading={this.state.loadingForm} onSubmit={this.handleSubmit} className="format-form stadium-form">
 								<label style={style.styleLabelDivMobile}>Logo sân</label>
 								<Form.Field style={style.styleFieldLogoCoverChange}>
-									<div style={this.state.styleIconChangeLogo} onClick={() => this.props.handleTabImage(1)}>
-										<Icon name="photo" size="large" />
+									<div style={style.changeImageHover} onClick={() => this.props.handleTabImage(1)}>
+										<Icon className="margin-right-reduce" name="photo" size="large" />
 									</div>
 									<Image src={this.state.avatar} onClick={() => this.props.handleTabImage(1)} />
 								</Form.Field>
