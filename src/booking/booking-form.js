@@ -200,14 +200,21 @@ class BookingForm extends Component {
                 return ""
         }
     }
-    handleBookingMoney = (num) => {
+    handleBookingMoney = num => {
         let moneyString = ""
         while (num >= 1000) {
             let surplus = num % 1000
-            moneyString = (surplus >= 100)?`.${surplus}`:((surplus >= 10)?`.0${surplus}`:`.00${surplus}`) + moneyString
-            num = num / 1000
+            let temp = ""
+            if (surplus >= 100)
+                temp = `.${surplus}`
+            else if (surplus >= 10)
+                temp = `.0${surplus}`
+            else
+                temp =`.00${surplus}`
+            moneyString = `${temp}${moneyString}`
+            num = Math.floor(num / 1000)
         }
-        return moneyString = `${num}` + moneyString
+        return moneyString = `${num}${moneyString}`
     }
     handleChange = (e) => this.setState({[e.target.name]: e.target.value})
     handleCheckAmount = () => {}
